@@ -18,8 +18,9 @@ kCommandXMLNS = "http://jabber.org/protocol/commands"
 kChatXMLNS = 'bemyserver:chat'
 
 class MasterHandler(object):
-	def __init__(self, actions, parent):
+	def __init__(self, actions, config, parent):
 		self.actions = actions
+		self.config = config
 		self._command = CommandHandler(self)
 		self._command.setHandlerParent(parent)
 		self._message = MessageHandler(self)
@@ -75,7 +76,7 @@ class DiscoHandler(DiscoClientProtocol):
 		self._master = master
 
 	def connectionMade(self):
-		response = self.requestItems(JID(u'bemyserver.org'), nodeIdentifier='online users', sender=JID(u'sweetpea@eyes.bemyserver.org'))
+		response = self.requestItems(JID(self._master.config.get('server', 'jid')), nodeIdentifier='online users', sender=JID(u'{}@{}'.format(self._master.config.get('component', 'admin_user'), self._master.config.get('component', 'jid'))))
 		response.addCallback(self._master.onlineUsers)
 
 def command_iq_to_element(iq, status='completed'):
@@ -85,7 +86,7 @@ def command_iq_to_element(iq, status='completed'):
 	return element
 
 class CommandHandler(XMPPHandler, IQHandlerMixin):
-	kCommand = "/iq[@type='set']/command[@xmlns='http://jabber.org/protocol/commands']"
+	kCommand = "/iq[@type='set']/command[@xmlns='" + kCommandXMLNS + "']"
 
 	iqHandlers = { kCommand : 'onCommand', }
 

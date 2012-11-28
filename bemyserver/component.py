@@ -7,6 +7,7 @@ __docformat__ = "restructuredtext en"
 from twisted.words.xish import domish
 from twisted.words.protocols.jabber.jid import JID
 from twisted.words.protocols.jabber.error import StanzaError
+from twisted.python import log
 from wokkel.xmppim import MessageProtocol, PresenceProtocol
 from wokkel.disco import DiscoClientProtocol
 from wokkel.generic import FallbackHandler, Request
@@ -39,6 +40,9 @@ class MasterHandler(object):
 			jid = item.entity
 			self._presence.probe(jid)
 
+	def confirmChatRequest(self, iq):
+		log.msg("Chat request confirmation from {}".format(iq['from']))
+
 class PresenceHandler(PresenceProtocol):
 	def __init__(self, master):
 		PresenceProtocol.__init__(self)
@@ -54,11 +58,11 @@ class PresenceHandler(PresenceProtocol):
 		self._master.actions.disable_client(presence.sender.full())
 
 	def subscribeReceived(self, presence):
-		self.unsubscribed(presence.sender) # users can't subscribe to the service
-		self.subscribe(presence.sender) # request a subscription
+		self.subscribed(presence.sender) # sure, why not?
+		self.subscribe(presence.sender)
 
 	def probeReceived(self, probe):
-		self.available(probe.sender) # we are always available
+		self.available(probe.sender)
 
 class MessageHandler(MessageProtocol):
 	def __init__(self, master):
@@ -71,6 +75,11 @@ class MessageHandler(MessageProtocol):
 			self.send(error.toResponse(message))
 
 class DiscoHandler(DiscoClientProtocol):
+	"""
+	Service discovery handler
+
+	TODO: handle discovery requests from clients
+	"""
 	def __init__(self, master):
 		DiscoClientProtocol.__init__(self)
 		self._master = master
@@ -109,43 +118,16 @@ class CommandHandler(XMPPHandler, IQHandlerMixin):
 		command = node.replace(kCommandNodePrefix, '')
 		return getattr(self, CommandHandler.subHandlers[command])(iq)
 
-	def onChatCancel(self, iq):
-		client_id = iq['from']
-		request_id = iq.command.request_id
-		request = self._master.actions.cancel_request(request_id, client_id)
-		result = command_iq_to_element(iq, 'canceled')
-		result.addElement('request_id', kChatXMLNS, request_id)
-		if request:
-			# TODO: send cancellations
-			pass
-		else:
-			result.addElement('note', None, 'The requested chat is not available')
-			result.note['type'] = 'error'
-		return result
-
 	def onChatRequest(self, iq):
-		if iq.command['action'] == 'cancel':
-			return onChatCancel(self, iq)
 		client_id = iq['from']
-		request = self._master.actions.initiate_chat(client_id)
+		session = self._master.actions.initiate_chat(client_id)
+		for invitee in session.clients[1:]:
+			response = self.requestChat(JID(invitee), session.session_id, session.remote_session_id, session.remote_tokens.pop())
+			response.addCallback(self._master.confirmChatRequest)
 		result = command_iq_to_element(iq)
-		self._master.actions.notify_all(request.request_id, self) # TODO: async
-		result.addElement('request_id', kChatXMLNS, request.request_id)
-		return result
-
-	def onChatAccept(self, iq):
-		client_id = iq['from']
-		request_id = iq.command.request_id
-		session = self._master.actions.accept_chat(request_id, client_id)
-		result = command_iq_to_element(iq)
-		result.addElement('request_id', kChatXMLNS, request_id)
-		if session:
-			# TODO: send session notification
-			pass
-		else:
-			result.addElement('note', None, 'The requested chat is not available')
-			result.note['type'] = 'error'
-		# TODO: send cancellations
+		result.addElement('session_id', kChatXMLNS, session.session_id)
+		result.addElement('remote_session_id', kChatXMLNS, session.remote_session_id)
+		result.addElement('remote_token', kChatXMLNS, session.remote_tokens.pop())
 		return result
 
 	def onChatLeave(self, iq):
@@ -156,14 +138,15 @@ class CommandHandler(XMPPHandler, IQHandlerMixin):
 		result.addElement('session_id', kChatXMLNS, session_id)
 		return result
 
-	def requestChat(self, client_id, request_id):
+	def requestChat(self, client_id, session_id, remote_session_id, remote_token):
 		iq = Request(recipient=JID(client_id), stanzaType='set')
 		iq = iq.toElement()
 		command = domish.Element((kCommandXMLNS, 'command'))
 		command['node'] = kCommandNodePrefix + 'chat#request'
 		command['action'] = 'execute'
-		command.addElement('request_id', kChatXMLNS, request_id)
+		command.addElement('session_id', kChatXMLNS, session_id)
+		command.addElement('remote_session_id', kChatXMLNS, remote_session_id)
+		command.addElement('remote_token', kChatXMLNS, remote_token)
 		iq.addChild(command)
-		#iq = Request.fromElement(iq)
 		result = self.send(iq)
 		return result

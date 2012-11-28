@@ -140,13 +140,6 @@ class Client(object):
 		self.level = level
 		self.available = available
 
-class ChatRequest(object):
-	def __init__(self, request_id, from_client):
-		self.request_id = request_id
-		self.from_client = from_client
-		self.active = True
-		self.notified = set()
-
 class ChatSession(object):
 	"""
 	Represents an established chat connection between two clients.
@@ -157,12 +150,11 @@ class ChatSession(object):
 	:param remote_tokens: A :py:class:`list` of authentication token allowing each client to connect to the chat
 	:param start_date: A :py:class:`datetime.datetime` object containing the timestamp in UTC time for the start of the session.  If :py:const:`None` is supplied, the current time is used.
 	"""
-	def __init__(self, session_id, remote_session, request_id=None, start_date=None):
+	def __init__(self, session_id, remote_session, start_date=None):
 		""" Initializes a new :py:class:`ChatSession` instance """
 		self.session_id = session_id
 		self.start_date = start_date
 		self.remote_session = remote_session
-		self.request_id = request_id
 		self.clients = list()
 		self.remote_tokens = list()
 		if start_date is None:
@@ -170,26 +162,24 @@ class ChatSession(object):
 		self.start_date = start_date
 		self.end_date = None
 
-	def add(self, client, remote_token):
+	def add(self, client):
 		"""
 		Adds a client to a chat session
 
 		:param client: A client ID representing a chat participant
-		:param remote_token: The token used to authorize the client to connect to the chat session
 		"""
 		self.clients.append(client)
-		self.remote_tokens.append(remote_token)
 
 	def remove(self, client):
-		if not client in clients:
-			return
-		index = self.clients.index(client)
-		clients.pop(index)
-		remote_tokens.pop(index)
+		try:
+			self.clients.remove(client)
+		except ValueError:
+			pass
 		if len(clients) == 0:
 			self.end_date = datetime.utcnow()
 
 	def clear(self):
 		clients.clear()
 		remote_tokens.clear()
-		self.end_date = datetime.utcnow()
+		if not self.end_date:
+			self.end_date = datetime.utcnow()

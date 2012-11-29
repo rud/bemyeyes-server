@@ -3,29 +3,21 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Be My Server's documentation!
-========================================
+Be My Server Documentation
+==========================
 
 .. toctree::
    :maxdepth: 2
 
 API Documentation
 =================
-.. automodule:: bemyserver.actions
-  :members:
-  :undoc-members:
+.. toctree::
+   :maxdepth: 2
 
-.. automodule:: bemyserver.component
-  :members:
-  :undoc-members:
-
-.. automodule:: bemyserver.log
-  :members:
-  :undoc-members:
-
-.. automodule:: bemyserver.model
-  :members:
-  :undoc-members:
+   actions
+   component
+   log
+   model
 
 Indices and tables
 ==================

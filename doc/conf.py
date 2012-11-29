@@ -184,7 +184,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'BeMyServer.tex', u'Be My Server Documentation',
-   u'Kevin Rauwolf', 'manual'),
+   u'The Blindsight Corporation', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -214,7 +214,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'bemyserver', u'Be My Server Documentation',
-     [u'Kevin Rauwolf'], 1)
+     [u'The Blindsight Corporation'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -228,7 +228,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'BeMyServer', u'Be My Server Documentation',
-   u'Kevin Rauwolf', 'BeMyServer', 'One line description of project.',
+   u'The Blindsight Corporation', 'BeMyServer', 'One line description of project.',
    'Miscellaneous'),
 ]
 

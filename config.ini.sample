@@ -2,7 +2,7 @@
 host=localhost
 port=5237
 secret=bad_password_33341
-jid=bemyserver
+jid=example.org
 
 [database]
 path=bemyserver.db
@@ -10,7 +10,7 @@ path=bemyserver.db
 [component]
 log_traffic=yes
 admin_user=admin
-jid=eyes.bemyserver
+jid=chat.example.org
 
 [opentok]
 api_key=

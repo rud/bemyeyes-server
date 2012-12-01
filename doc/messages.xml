@@ -1,4 +1,4 @@
-<!-- example messages.  TODO: move into Sphinx documentation -->
+<!-- example messages.  TODO: move into Sphinx documentation and explain further -->
 
 <iq from='from_jid' id='1' to='server' type='set' >
 	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#request' action='execute'/>
@@ -6,85 +6,33 @@
 
 <iq from='server' id='1' to='from_jid' type='result'>
 	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#request' status='completed'>
-		<request_id xmlns='bemyserver:chat'>1ae4</request_id>
+		<session_id xmlns='bemyserver:chat'>1ae4</session_id>
+		<remote_session_id xmlns='bemyserver:chat'>2eef</remote_session_id>
+		<remote_token xmlns='bemyserver:chat'>abcde</remote_token>
 	</command>
 </iq>
 
 <iq from='server' id='2' to='to_jid' type='set'>
 	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#request' action='execute'>
-		<request_id xmlns='bemyserver:chat'>1ae4</request_id>
+		<session_id xmlns='bemyserver:chat'>1ae4</session_id>
+		<remote_session_id xmlns='bemyserver:chat'>2eef</remote_session_id>
+		<remote_token xmlns='bemyserver:chat'>12345</remote_token>
 	</command>
 </iq>
 
 <iq from='to_jid' id='2' to='server' type='result'>
 	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#request' status='completed'>
-		<request_id xmlns='bemyserver:chat'>1ae4</request_id>
+		<session_id xmlns='bemyserver:chat'>1ae4</session_id>
 	</command>
 </iq>
 
-<iq from='to_jid' id='3' to='server' type='set'>
-	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#accept' action='execute'>
-		<request_id xmlns='bemyserver:chat'>1ae4</request_id>
-	</command>
+<iq from='from_jid' id='3' to='server' type='set' >
+	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#leave' action='execute'/>
+		<session_id xmlns='bemyserver:chat'>1ae4</session_id>
 </iq>
 
-<iq from='server' id='3' to='to_jid' type='result'>
-	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#accept' status='completed'>
-		<request_id xmlns='bemyserver:chat'>1ae4</request_id>
-	</command>
-</iq>
-
-<!-- OR -->
-
-<iq from='server' id='3' to='to_jid' type='result'>
-	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#accept' status='completed'>
-		<request_id xmlns='bemyserver:chat'>1ae4</request_id>
-		<note type='error'>The requested chat is not available</note>
-	</command>
-</iq>
-
-<!-- end -->
-
-<iq from='server' id='4' to='to_jid' type='set'>
-	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#request' action='cancel'>
-		<request_id xmlns='bemyserver:chat'>1ae4</request_id>
-	</command>
-</iq>
-
-<iq from='to_jid' id='4' to='server' type='result'>
-	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#request' status='canceled'>
-		<request_id xmlns='bemyserver:chat'>1ae4</request_id>
-	</command>
-</iq>
-
-<iq from='server' id='6' to='from_jid' type='set'>
-	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#session' action='execute'>
-		<request_id xmlns='bemyserver:chat'>1ae4</request_id>
-		<session_id>ffd9</session_id>
-		<token>9d55</token>
-	</command>
-</iq>
-
-<!-- pretend I wrote ack here -->
-
-<iq from='server' id='7' to='to_jid' type='set'>
-	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#session' action='execute'>
-		<request_id xmlns='bemyserver:chat'>1ae4</request_id>
-		<session_id>ffd9</session_id>
-		<token>26b7</token>
-	</command>
-</iq>
-
-<!-- pretend I wrote ack here -->
-
-<iq from='from_jid' id='8' to='server' type='set'>
-	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#leave' action='execute'>
-		<session_id>ffd9</session_id>
-	</command>
-</iq>
-
-<iq from='to_jid' id='9' to='server' type='set'>
-	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#leave' action='execute'>
-		<session_id>ffd9</session_id>
+<iq from='server' id='3' to='from_jid' type='result'>
+	<command xmlns='http://jabber.org/protocol/commands' node='bemyserver:chat#leave' status='completed'>
+		<session_id xmlns='bemyserver:chat'>1ae4</session_id>
 	</command>
 </iq>

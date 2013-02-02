@@ -20,8 +20,8 @@ class Log(object):
 		:param session: The :py:class:`~bemyserver.model.ChatSession` instance
 		"""
 		with self._db as conn:
-			conn.execute("""INSERT INTO log_session (session_id, remote_session_id) VALUES (?, ?)""", (session.session_id, session.remote_session_id))
-			conn.executemany("""INSERT INTO log_session_participant (session_id, client_id) VALUES (?, ?)""", ((client, ) for client in session.clients))
+			conn.execute("""INSERT INTO log_session (session_id, remote_session_id) VALUES (?, ?)""", (session.session_id, session.remote_session))
+			conn.executemany("""INSERT INTO log_session_participant (session_id, client_id) VALUES (?, ?)""", ((session.session_id, client) for client in session.clients))
 
 	def chat_session_close(self, session):
 		"""

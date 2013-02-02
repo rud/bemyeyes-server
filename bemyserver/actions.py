@@ -81,11 +81,11 @@ class Actions(object):
 		self.disable_client(client_id)
 		session_id = str(uuid.uuid4())
 		remote_session = self._opentok.create_session()
-		session = ChatSession(session_id, remote_session)
+		session = ChatSession(session_id, remote_session.session_id)
 		for token in range(2):
-			session.remote_tokens.append(self._opentok.generate_token(remote_session.session_id, self._opentok.RoleConstants.PUBLISHER))
+			session.remote_tokens.append(self._opentok.generate_token(remote_session.session_id))
 		to_id = self.engage_client()
-		session.add(from_id)
+		session.add(client_id)
 		session.add(to_id)
 		self._chat_sessions[session_id] = session
 		self._log.chat_session_create(session)

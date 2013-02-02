@@ -211,11 +211,11 @@ class CommandHandler(XMPPHandler, IQHandlerMixin):
 		client_id = iq['from']
 		session = self._master.actions.initiate_chat(client_id)
 		for invitee in session.clients[1:]:
-			response = self.requestChat(JID(invitee), session.session_id, session.remote_session_id, session.remote_tokens.pop())
+			response = self.requestChat(invitee, session.session_id, session.remote_session, session.remote_tokens.pop())
 			response.addCallback(self._master.confirmChatRequest)
 		result = command_iq_to_element(iq)
 		result.addElement('session_id', kChatXMLNS, session.session_id)
-		result.addElement('remote_session_id', kChatXMLNS, session.remote_session_id)
+		result.addElement('remote_session_id', kChatXMLNS, session.remote_session)
 		result.addElement('remote_token', kChatXMLNS, session.remote_tokens.pop())
 		return result
 
@@ -253,5 +253,5 @@ class CommandHandler(XMPPHandler, IQHandlerMixin):
 		command.addElement('remote_session_id', kChatXMLNS, remote_session_id)
 		command.addElement('remote_token', kChatXMLNS, remote_token)
 		iq.addChild(command)
-		result = self.send(iq)
+		result = self.request(iq)
 		return result

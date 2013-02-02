@@ -1,3 +1,4 @@
 doc/_build
 twistd.pid
 config.ini
+log.db

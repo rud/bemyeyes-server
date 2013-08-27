@@ -6,6 +6,7 @@ require 'opentok'
 require 'mongo_mapper'
 require 'json'
 require 'urbanairship'
+require_relative 'error_codes'
 require_relative 'models/init'
 require_relative 'routes/init'
 require_relative 'helpers/request_id_shortener'
@@ -19,6 +20,9 @@ class App < Sinatra::Base
   configure do
     set :environment, :development
     set :app_file, __FILE__
+    
+    Log = Logger.new('sinatra.log')
+    Log.level  = Logger::INFO 
     
     @@config = YAML.load_file('config/config.yml') rescue nil || {}
     

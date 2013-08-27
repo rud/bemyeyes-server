@@ -6,7 +6,11 @@ class Request
   key :short_id, String
   key :session_id, String
   key :token, String
-  key :name, String
+  key :blind_name, String
+  key :helper_name, String
+  key :answered, Boolean
+  key :blind_rating, Integer
+  key :helper_rating, Integer
   auto_increment!
   timestamps!
 

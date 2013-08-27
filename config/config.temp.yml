@@ -1,0 +1,28 @@
+# Database configurations
+database:
+  host: 'localhost'
+  name: ''
+  username: ''
+  password: ''
+
+# HTTP basic authentication configurations, used for the API
+authentication:
+  username: ''
+  password: ''
+  
+# OpenTok configurations
+opentok:
+  api_key: ''
+  api_secret: ''
+  
+# Urban Airship configurations
+urbanairship:
+  is_production: false # Whether or not the app is in production
+  development: # Information for the development app on Urban Airship
+    app_key: ''
+    app_secret: ''
+    master_secret: ''
+  production: # Information for the production app on Urban Airship
+    app_key: ''
+    app_secret: ''
+    master_secret: ''

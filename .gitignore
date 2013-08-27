@@ -1,4 +1,2 @@
-doc/_build
-twistd.pid
-config.ini
-log.db
+config/config.yml
+Gemfile.lock

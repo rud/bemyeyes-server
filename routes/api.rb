@@ -145,8 +145,14 @@ class App < Sinatra::Base
                "token" => request.token
              },
              "short_id" => request.short_id,
-             "blind_name" => request.blind_name,
-             "helper_name" => request.helper_name,
+             "names" => {
+               "blind" => request.blind_name,
+               "helper" => request.helper_name
+             },
+             "ratings" => {
+               "blind" => request.blind_rating,
+               "helper" => request.helper_rating
+             },
              "answered" => request.answered
            }
   end

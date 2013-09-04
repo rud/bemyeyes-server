@@ -7,26 +7,27 @@ class App < Sinatra::Base
     end
     
     namespace '/requests' do
+    
       # Create new request
       post '/?' do
         content_type 'application/json'
         
-        # Get name from body
         begin
           body_params = JSON.parse(request.body.read)
-          name = body_params["name"]
+          token_repr = body_params["token"]
         rescue Exception => e
-          name = NIL
+          give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
         end
+  
+        token = token_from_representation_with_validation(token_repr, true)
+        user = token.user
   
         begin
           session_properties = { OpenTok::SessionPropertyConstants::P2P_PREFERENCE => "enabled" }
           session_id = OpenTokSDK.create_session(NIL, session_properties)
           token = OpenTokSDK.generateToken :session_id => session_id
         rescue Exception => e
-          halt 500,
-          {'Content-Type' => 'application/json'},
-          create_error_hash(ERROR_REQUEST_SESSION_NOT_CREATED, "The session could not be created.").to_json
+          give_error(500, ERROR_REQUEST_SESSION_NOT_CREATED, "The session could not be created.")
         end
   
         # Store request in database
@@ -34,14 +35,21 @@ class App < Sinatra::Base
         request.short_id_salt = settings.config["short_id_salt"]
         request.session_id = session_id
         request.token = token
-        request.blind_name = name
+        request.blind = user
         request.answered = false
         request.save!
         
+        # Find helpers
+        helpers = Helper.all()
+        
+        # Find device tokens
+        tokens = helpers.collect { |u| u.devices.collect { |d| d.device_token } }.flatten
+        
         # Create notification
-        notification_args_name = (name.nil? || name.empty?) ? "Someone" : name
+        name = user.first_name + " " + user.last_name
+        notification_args_name = name
         notification = {
-          :tags => ['helper'],
+          :device_tokens => tokens,
           :aps => {
             :alert => {
               :"loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_MESSAGE",
@@ -62,37 +70,30 @@ class App < Sinatra::Base
       # Get a request
       get '/:short_id' do
         content_type 'application/json'
-  
-        request = Request.first(:short_id => params[:short_id])
-        if request.nil?
-          return create_error_hash(ERROR_REQUEST_NOT_FOUND, "Request not found.").to_json
-        end
-        
-        return request.to_json
+
+        return request_from_short_id(params[:short_id]).to_json
       end
       
       # Get a request
       put '/:short_id/answer' do
         content_type 'application/json'
         
-        # Get name from body
         begin
           body_params = JSON.parse(request.body.read)
-          name = body_params["name"]
+          token_repr = body_params["token"]
         rescue Exception => e
-          name = NIL
+          give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
         end
   
-        request = Request.first(:short_id => params[:short_id])
-        if request.nil?
-          return create_error_hash(ERROR_REQUEST_NOT_FOUND, "Request not found.").to_json
-        end
+        token = token_from_representation_with_validation(token_repr, true)
+        user = token.user
+        request = request_from_short_id(params[:short_id])
         
         if request.answered?
-          return create_error_hash(ERROR_REQUEST_ALREADY_ANSWERED, "The request has already been answered.").to_json
+          give_error(400, ERROR_REQUEST_ALREADY_ANSWERED, "The request has already been answered.").to_json
         else
           # Update request
-          request.helper_name = name
+          request.helper = user
           request.answered = true
           request.save!
       
@@ -104,35 +105,55 @@ class App < Sinatra::Base
       put '/:short_id/rate' do
         content_type 'application/json'
         
-        # Get role and rating from body
         begin
           body_params = JSON.parse(request.body.read)
-          role = body_params["role"]
           rating = body_params["rating"]
+          token_repr = body_params["token"]
         rescue Exception => e
-          return create_error_hash(ERROR_INVALID_BODY, "The body is not valid. This could mean that one or more paramters are missing.").to_json
+          give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
         end
     
-        request = Request.first(:short_id => params[:short_id])
-        if request.nil?
-          return create_error_hash(ERROR_REQUEST_NOT_FOUND, "Request not found.").to_json
-        end
+        token = token_from_representation_with_validation(token_repr, true)
+        user = token.user
+        request = request_from_short_id(params[:short_id])
         
-        if request.answered?       
-          if role == "blind"
+        if request.answered?
+          if user.role == "blind"
             request.blind_rating = rating
             request.save!
-          elsif role == "helper"
+          elsif user.role == "helper"
             request.helper_rating = rating
             request.save!
-          else
-            return create_error_hash(ERROR_UNDEFINED_ROLE, "Undefined role.").to_json
           end
         else
-          return create_error_hash(ERROR_REQUEST_NOT_ANSWERED, "The request has not been answered and can therefore not be rated.").to_json
+          give_error(400, ERROR_REQUEST_NOT_ANSWERED, "The request has not been answered and can therefore not be rated.").to_json
         end
       end
     end # End namespace /request
   end # End namespace /api
+  
+  # Find a request from a short ID
+  def request_from_short_id(short_id)
+    request = Request.first(:short_id => short_id)
+    if request.nil?
+      give_error(400, ERROR_REQUEST_NOT_FOUND, "Request not found. => " + short_id).to_json
+    end
+    
+    return request
+  end
+  
+  # Find token by representation of the token
+  def token_from_representation_with_validation(repr, validation)
+    token = Token.first(:token => repr)
+    if token.nil?
+      give_error(400, ERROR_USER_TOKEN_NOT_FOUND, "Token not found.").to_json
+    end
+    
+    if validation && !token.valid?
+      give_error(400, ERROR_USER_TOKEN_EXPIRED, "Token has expired.").to_json
+    end
+    
+    return token
+  end
 
 end

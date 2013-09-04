@@ -11,17 +11,18 @@ require 'bcrypt'
 require_relative 'models/init'
 require_relative 'routes/init'
 require_relative 'helpers/error_codes'
-require_relative 'helpers/create_error'
+require_relative 'helpers/api_error'
 require_relative 'helpers/request_id_shortener'
 
 class App < Sinatra::Base
   register Sinatra::ConfigFile
   
   config_file 'config/config.yml'
-
+  
   # Do any configurations
   configure do
     set :environment, :development
+    set :show_exceptions, false
     set :app_file, __FILE__
     set :config, YAML.load_file('config/config.yml') rescue nil || {}
     
@@ -43,6 +44,15 @@ class App < Sinatra::Base
     MongoMapper.connection = Mongo::Connection.new(db_config['host'])
     MongoMapper.database = db_config['name']
     MongoMapper.connection[db_config['name']].authenticate(db_config['username'], db_config['password'])
+  end
+  
+  # Handle errors
+  error do
+    content_type :json
+    status 500
+
+    e = env["sinatra.error"]
+    return { "result" => "error", "message" => e.message }.to_json
   end
 
   # Check if ww are authorized

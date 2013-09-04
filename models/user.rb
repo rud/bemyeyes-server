@@ -3,14 +3,16 @@ require 'mongomapper_id2'
 class User
   include MongoMapper::Document
 
+  many :tokens, :foreign_key => :user_id, :class_name => "Token"
+  many :devices, :foreign_key => :user_id, :class_name => "Device"
+  
   key :username, String, :required => true, :unique => true
   key :password_hash, String
   key :password_salt, String
   key :email, String, :required => true, :unique => true
   key :first_name, String, :required => true
   key :last_name, String, :required => true
-  key :role, String, :required => true
-  many :tokens
+  
   auto_increment!
   timestamps!
   

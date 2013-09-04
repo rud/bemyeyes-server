@@ -3,14 +3,16 @@ require 'mongomapper_id2'
 class Request
   include MongoMapper::Document
 
+  belongs_to :blind, :class_name => "Blind"
+  belongs_to :helper, :class_name => "Helper"
+
   key :short_id, String
   key :session_id, String, :required => true
   key :token, String, :required => true
-  key :blind_name, String
-  key :helper_name, String
   key :answered, Boolean
   key :blind_rating, Integer
   key :helper_rating, Integer
+
   auto_increment!
   timestamps!
 
@@ -26,10 +28,6 @@ class Request
                "token" => self.token
              },
              "short_id" => self.short_id,
-             "names" => {
-               "blind" => self.blind_name,
-               "helper" => self.helper_name
-             },
              "ratings" => {
                "blind" => self.blind_rating,
                "helper" => self.helper_rating

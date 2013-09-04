@@ -3,19 +3,29 @@ require 'mongomapper_id2'
 class Token
   include MongoMapper::Document
 
+  key :user_id, ObjectId
+  belongs_to :user, :class_name => "User"
+  
+
   key :token, String, :unique => true
-  key :expiry_date, Date
-  belongs_to :user
+  key :expiry_time, Time
+  
+  auto_increment!
+  timestamps!
   
   before_create :generate_token
-  before_create :calculate_expiry_date
+  before_create :calculate_expiry_time
   
   def to_json()
-    return { "token" => self.token }.to_json
+    return { "token" => self.token, "expiry_time" => self.expiry_time.utc.iso8601 }.to_json
   end
   
   def valid()
     return Time.now < self.expiry_date
+  end
+  
+  def valid_time=(valid_time)
+    @valid_time = valid_time
   end
   
   private
@@ -24,8 +34,8 @@ class Token
   end
   
   private
-  def calculate_expiry_date()
+  def calculate_expiry_time()
     now = Time.now
-    self.expiry_date = Time.new(now.year, now.month, now.day, 0, 0, 0) + 3.days
+    self.expiry_time = Time.new(now.year, now.month, now.day, 0, 0, 0) + @valid_time.to_i
   end
 end

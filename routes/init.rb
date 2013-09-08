@@ -1,3 +1,3 @@
-require_relative 'api-requests'
-require_relative 'api-users'
-require_relative 'api-devices'
+require_relative 'requests'
+require_relative 'users'
+require_relative 'devices'

@@ -12,6 +12,7 @@ class Request
   key :answered, Boolean
   key :blind_rating, Integer
   key :helper_rating, Integer
+  key :stopped, Boolean
 
   auto_increment!
   timestamps!

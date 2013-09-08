@@ -74,7 +74,7 @@ class App < Sinatra::Base
         return request_from_short_id(params[:short_id]).to_json
       end
       
-      # Get a request
+      # Answer a request
       put '/:short_id/answer' do
         content_type 'application/json'
         
@@ -91,6 +91,8 @@ class App < Sinatra::Base
         
         if request.answered?
           give_error(400, ERROR_REQUEST_ALREADY_ANSWERED, "The request has already been answered.").to_json
+        elsif request.stopped?
+          give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
         else
           # Update request
           request.helper = user
@@ -99,6 +101,63 @@ class App < Sinatra::Base
       
           return request.to_json
         end
+      end
+      
+      # A helper can cancel his own answer. This should only be done if the session has not already started.
+      put '/:short_id/answer/cancel' do
+        content_type 'application/json'
+        
+        begin
+          body_params = JSON.parse(request.body.read)
+          token_repr = body_params["token"]
+        rescue Exception => e
+          give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        end
+        
+        token = token_from_representation_with_validation(token_repr, true)
+        user = token.user
+        request = request_from_short_id(params[:short_id])
+        
+        if request.stopped?
+          give_error(400, ERROR_EQUEST_STOPPED, "The request has been stopped.").to_json
+        elsif request.helper.id2 != user.id2
+          give_error(400, ERROR_NOT_PERMITTED, "This action is not permitted for the user.").to_json
+        end
+        
+        # Update request
+        request.helper = nil
+        request.answered = false
+        request.save!
+        
+        return request.to_json
+      end
+      
+      # The blind or a helper can disconnect from a started session thereby stopping the session.
+      put '/:short_id/disconnect' do
+        content_type 'application/json'
+        
+        begin
+          body_params = JSON.parse(request.body.read)
+          token_repr = body_params["token"]
+        rescue Exception => e
+          give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        end
+        
+        token = token_from_representation_with_validation(token_repr, true)
+        user = token.user
+        request = request_from_short_id(params[:short_id])
+        
+        if request.stopped?
+          give_error(400, ERROR_EQUEST_STOPPED, "The request has been stopped.").to_json
+        elsif request.blind.id2 != user.id2 && request.helper.id2 != user.id2
+          give_error(400, ERROR_NOT_PERMITTED, "This action is not permitted for the user.").to_json
+        end
+        
+        # Update request
+        request.stopped = true
+        request.save!
+        
+        return request.to_json
       end
       
       # Rate a request
@@ -129,6 +188,7 @@ class App < Sinatra::Base
           give_error(400, ERROR_REQUEST_NOT_ANSWERED, "The request has not been answered and can therefore not be rated.").to_json
         end
       end
+      
     end # End namespace /request
   end # End namespace /api
   
@@ -136,7 +196,7 @@ class App < Sinatra::Base
   def request_from_short_id(short_id)
     request = Request.first(:short_id => short_id)
     if request.nil?
-      give_error(400, ERROR_REQUEST_NOT_FOUND, "Request not found. => " + short_id).to_json
+      give_error(400, ERROR_REQUEST_NOT_FOUND, "Request not found.").to_json
     end
     
     return request

@@ -77,22 +77,28 @@ class App < Sinatra::Base
         end
         
         # We need either a username or an e-mail to login
-        if body_params['username'].nil? && body_params['email'].nil?
+        if body_params['username'].nil?
           give_error(400, ERROR_INVALID_BODY, "Missing username or e-mail.").to_json
         end
 
         password = decrypted_password(secure_password)
         
+        # Try to log in using username
         if !body_params['username'].nil? # Login using username
           user = User.authenticate_using_username(body_params['username'], password)
-        elsif !body_params['email'].nil? # Login using e-mail
+        end
+        
+        # Try to log in using e-mail
+        if user.nil?
           user = User.authenticate_using_email(body_params['email'], password)
         end
         
+        # Check if we logged in
         if user.nil?
           give_error(400, ERROR_USER_INCORRECT_CREDENTIALS, "No user found matching the credentials.").to_json
         end
         
+        # We did log in, create token
         token = Token.new
         token.valid_time = 365.days
         user.tokens.push(token)

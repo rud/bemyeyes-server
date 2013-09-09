@@ -19,7 +19,7 @@ class User
   before_create :encrypt_password
   
   def self.authenticate_using_username(username, password)
-    user = User.first(:username => username)
+    user = User.first(:username => { $regex => /#username/i })
     if !user.nil?
       return authenticate_password(user, password)
     end
@@ -28,7 +28,7 @@ class User
   end
   
   def self.authenticate_using_email(email, password)
-    user = User.first(:email => email)
+    user = User.first(:email => { $regex => /#email/i })
     if !user.nil?
       return authenticate_password(user, password)
     end

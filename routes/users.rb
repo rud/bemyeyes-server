@@ -25,7 +25,7 @@ class App < Sinatra::Base
         end
         
         # Check if role is supported
-        if !(role.eql? "blind") && !(role.eql? "helper")
+        if !(role.downcase.eql? "blind") && !(role.downcase.eql? "helper")
           give_error(400, ERROR_UNDEFINED_ROLE, "Undefined role.").to_json
         end
         

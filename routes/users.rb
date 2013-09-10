@@ -36,7 +36,7 @@ class App < Sinatra::Base
         end
         
         # Check if e-mail is already registered
-        existing_user = User.first(:email => email)
+        existing_user = User.first(:email => email.downcase)
         if !existing_user.nil?
           give_error(400, ERROR_USER_EMAIL_ALREADY_REGISTERED, "The e-mail is already registered.").to_json
         end

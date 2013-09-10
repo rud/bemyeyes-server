@@ -30,7 +30,7 @@ class App < Sinatra::Base
         end
         
         # Check if username is taken
-        existing_user = User.first(:username => username)
+        existing_user = User.first(:username => { :$regex => /#{username}/i })
         if !existing_user.nil?
           give_error(400, ERROR_USER_USERNAME_TAKEN, "The username is taken.").to_json
         end

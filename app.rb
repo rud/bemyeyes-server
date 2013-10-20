@@ -75,7 +75,8 @@ class App < Sinatra::Base
   # Require authentication
   def protected!
     return if authorized?
+    content_type :json
     headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
-    halt 401, "Not authorized\n"
+    halt 401, { "result" => "error", "message" => "Not authorized" }.to_json
   end
 end

@@ -33,3 +33,6 @@ short_id_salt: ''
 # Salt for sensitive data sent back and forth between the server and the app
 # This exact same slat must also be entered in the configurations in the app
 security_salt: ''
+
+# URL to redirect to when visiting root
+redirect_root: 'http://bemyeyes.org'

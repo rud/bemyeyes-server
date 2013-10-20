@@ -46,6 +46,11 @@ class App < Sinatra::Base
     MongoMapper.connection[db_config['name']].authenticate(db_config['username'], db_config['password'])
   end
   
+  # Protect anything but the root
+  before /^\/.+/ do
+    protected!
+  end
+  
   # Root route
   get '/?' do
     redirect settings.config['redirect_root']

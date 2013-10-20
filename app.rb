@@ -77,13 +77,13 @@ class App < Sinatra::Base
     return if authorized?
     content_type :json
     headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
-    halt 401, { "result" => "error", "message" => "Not authorized" }.to_json
+    halt 401, create_error_hash(ERROR_NOT_AUTHORIZED, "Not authorized.").to_json
   end
   
   # 404 not found
   not_found do
     content_type :json
-    { "result" => "error", "message" => "Resource not found." }.to_json
+    give_error(404, ERROR_RESOURCE_NOT_FOUND, "Resource not found.").to_json
   end
   
 end

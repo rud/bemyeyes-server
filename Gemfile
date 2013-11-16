@@ -6,4 +6,5 @@ gem 'mongomapper_id2'
 gem 'hashids'
 gem 'urbanairship'
 gem 'aescrypt'
+gem 'json-schema'
 gem "bcrypt-ruby", :require => "bcrypt"

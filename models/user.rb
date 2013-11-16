@@ -2,6 +2,21 @@ require 'mongomapper_id2'
 
 class User
   include MongoMapper::Document
+  SCHEMA = {
+      "type" => "object",
+      "required" => [],
+      "additionalProperties" => false,
+      "properties" => {
+          "id2" => {"type" => "integer"},
+          "username" => {"type" => "string"},
+          "password" => {"type" => "string"},
+          "email" => {"type" => "string"},
+          "first_name" => {"type" => "string"},
+          "last_name" => {"type" => "string"},
+          "role" => {"type" => "string"},
+          "languages" => {"type" => "array"},
+      }
+  }
 
   many :tokens, :foreign_key => :user_id, :class_name => "Token"
   many :devices, :foreign_key => :user_id, :class_name => "Device"

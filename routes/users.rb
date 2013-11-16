@@ -10,49 +10,30 @@ class App < Sinatra::Base
     
       begin
         body_params = JSON.parse(request.body.read)
-        username = body_params["username"]
-        secure_password = body_params["password"]
-        email = body_params["email"]
-        first_name = body_params["first_name"]
-        last_name = body_params["last_name"]
-        role = body_params["role"]
-        languages = body_params["languages"]
+        required_fields = {"required" => ["username", "password", "email", "first_name", "last_name", "role", "languages"]}
+        schema = User::SCHEMA.merge(required_fields)
+        JSON::Validator.validate!(schema, body_params)
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
-      
-      # Check if role is supported
-      if !(role.downcase.eql? "blind") && !(role.downcase.eql? "helper")
-        give_error(400, ERROR_UNDEFINED_ROLE, "Undefined role.").to_json
+      user = case body_params["role"].downcase
+               when "blind"
+                 Blind.new
+               when "helper"
+                 Helper.new
+               else
+                 give_error(400, ERROR_UNDEFINED_ROLE, "Undefined role.").to_json
       end
-      
-      # Check if username is taken
-      existing_user = User.first(:username => { :$regex => /#{username}/i })
-      if !existing_user.nil?
-        give_error(400, ERROR_USER_USERNAME_TAKEN, "The username is taken.").to_json
+      password = decrypted_password(body_params['password'])
+      user.update_attributes body_params.merge({ "password" => password })
+      begin
+        user.save!
+      rescue Exception => e
+        puts e.message
+        give_error(400, ERROR_USER_USERNAME_TAKEN, "The username is taken.").to_json if e.message.match /username/i
+        give_error(400, ERROR_USER_EMAIL_ALREADY_REGISTERED, "The e-mail is already registered.").to_json if e.message.match /email/i
       end
-      
-      # Check if e-mail is already registered
-      existing_user = User.first(:email => email.downcase)
-      if !existing_user.nil?
-        give_error(400, ERROR_USER_EMAIL_ALREADY_REGISTERED, "The e-mail is already registered.").to_json
-      end
-      
-      password = decrypted_password(secure_password)
-      
-      if role.eql? "blind"
-        user = Blind.new
-      else
-        user = Helper.new
-      end
-      user.username = username
-      user.password = password
-      user.email = email
-      user.first_name = first_name
-      user.last_name = last_name
-      user.languages = languages
-      user.save!
-      
+
       return user_from_id(user.id2)
     end
     
@@ -62,7 +43,21 @@ class App < Sinatra::Base
     
       return user_from_id(params[:user_id].to_i).to_json
     end
-    
+
+    # Update a user
+    put '/:user_id' do
+      user = user_from_id(params[:user_id].to_i)
+      begin
+        body_params = JSON.parse(request.body.read)
+        JSON::Validator.validate!(User::SCHEMA, body_params)
+        user.update_attributes!(body_params)
+      rescue Exception => e
+        puts e.message
+        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+      end
+      return user
+    end
+
     # Login, thereby creating an ew token
     post '/login' do
       content_type 'application/json'

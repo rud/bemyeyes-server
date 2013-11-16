@@ -16,6 +16,7 @@ class App < Sinatra::Base
         first_name = body_params["first_name"]
         last_name = body_params["last_name"]
         role = body_params["role"]
+        languages = body_params["languages"]
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
@@ -49,6 +50,7 @@ class App < Sinatra::Base
       user.email = email
       user.first_name = first_name
       user.last_name = last_name
+      user.languages = languages
       user.save!
       
       return user_from_id(user.id2)

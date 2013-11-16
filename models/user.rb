@@ -12,12 +12,16 @@ class User
   key :email, String, :required => true, :unique => true
   key :first_name, String, :required => true
   key :last_name, String, :required => true
+  key :languages, Array, :default => ["da","en"]
   
   auto_increment!
   timestamps!
   
   before_create :encrypt_password
-  
+
+  # dynamic scopes
+  scope :by_languages,  lambda { |languages| where(:languages => { :$in => languages }) }
+
   def self.authenticate_using_username(username, password)
     user = User.first(:username => { :$regex => /#{username}/i })
     if !user.nil?
@@ -35,7 +39,7 @@ class User
     
     return nil
   end
-  
+
   def password=(pwd)
     @password = pwd
   end
@@ -46,7 +50,8 @@ class User
              "email" => self.email,
              "first_name" => self.first_name,
              "last_name" => self.last_name,
-             "role" => self.role }.to_json
+             "role" => self.role,
+             "languages" => self.languages }.to_json
   end
   
   private

@@ -7,7 +7,7 @@ class User
       "required" => [],
       "additionalProperties" => false,
       "properties" => {
-          "id2" => {"type" => "integer"},
+          "user_id" => {"type" => "integer"},
           "username" => {"type" => "string"},
           "password" => {"type" => "string"},
           "email" => {"type" => "string"},
@@ -28,11 +28,13 @@ class User
   key :first_name, String, :required => true
   key :last_name, String, :required => true
   key :languages, Array, :default => ["da","en"]
-  
+  key :user_id, Integer, :unique => true #, :required => true #Unique identifier from FB
+
   auto_increment!
   timestamps!
   
   before_create :encrypt_password
+  before_create :set_unique_id
 
   # dynamic scopes
   scope :by_languages,  lambda { |languages| where(:languages => { :$in => languages }) }
@@ -85,4 +87,22 @@ class User
       self.password_hash = BCrypt::Engine.hash_secret(@password, password_salt)
     end
   end
+
+  def generate_unique_id
+    rand = ("817173" + rand(9999999).to_s.center(8, rand(9).to_s)).to_i
+    if User.where(:user_id => rand).count > 0
+      generate_unique_id
+    else
+      return rand
+    end
+  end
+
+  def set_unique_id
+    unless self.user_id
+      unique_id =  generate_unique_id
+      self.user_id = unique_id
+    end
+  end
+
+
 end

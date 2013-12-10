@@ -63,6 +63,7 @@ class User
   
   def to_json()
     return { "id" => self.id2,
+             "user_id" => self.user_id,
              "username" => self.username,
              "email" => self.email,
              "first_name" => self.first_name,

@@ -70,7 +70,10 @@ class User
              "role" => self.role,
              "languages" => self.languages }.to_json
   end
-  
+
+  def to_s
+    "#{self.first_name} #{self.last_name}"
+  end
   private
   def self.authenticate_password(user, password)
     if user && user.password_hash == BCrypt::Engine.hash_secret(password, user.password_salt)

@@ -8,3 +8,4 @@ gem 'urbanairship'
 gem 'aescrypt'
 gem 'json-schema'
 gem "bcrypt-ruby", :require => "bcrypt"
+gem 'rufus-scheduler'

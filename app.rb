@@ -14,6 +14,7 @@ require_relative 'routes/init'
 require_relative 'helpers/error_codes'
 require_relative 'helpers/api_error'
 require_relative 'helpers/request_id_shortener'
+require_relative 'helpers/cron_jobs'
 
 class App < Sinatra::Base
   register Sinatra::ConfigFile
@@ -45,8 +46,10 @@ class App < Sinatra::Base
     MongoMapper.connection = Mongo::Connection.new(db_config['host'])
     MongoMapper.database = db_config['name']
     MongoMapper.connection[db_config['name']].authenticate(db_config['username'], db_config['password'])
+
+    CronJobs.start_jobs
   end
-  
+
   # Protect anything but the root
   before /^\/.+/ do
     protected!

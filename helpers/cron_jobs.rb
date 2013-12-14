@@ -2,7 +2,7 @@ require 'rufus-scheduler'
 
 module CronJobs
   def self.scheduler
-    @scheduler ||= Rufus::Scheduler.start_new
+    @scheduler ||= Rufus::Scheduler.new
   end
 
   def self.job

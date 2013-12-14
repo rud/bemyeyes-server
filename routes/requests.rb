@@ -42,12 +42,13 @@ class App < Sinatra::Base
       tokens = helpers.collect { |u| u.devices.collect { |d| d.device_token } }.flatten
       
       # Create notification
+      notification_args_name = user.first_name
       notification = {
         :device_tokens => tokens,
         :aps => {
           :alert => {
             :"loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_MESSAGE",
-            :"loc-args" => [ user.first_name ],
+            :"loc-args" => [ notification_args_name ],
             :"action-loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_ACTION",
             :short_id => request.short_id,
           },

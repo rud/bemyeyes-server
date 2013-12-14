@@ -37,27 +37,27 @@ class App < Sinatra::Base
       return user_from_id(user.id2)
     end
     
-    # Get user by id
-    get '/:user_id' do
+    # Logout, thereby deleting the token
+    put '/logout' do
       content_type 'application/json'
     
-      return user_from_id(params[:user_id].to_i).to_json
-    end
-
-    # Update a user
-    put '/:user_id' do
-      user = user_from_id(params[:user_id].to_i)
       begin
         body_params = JSON.parse(request.body.read)
-        JSON::Validator.validate!(User::SCHEMA, body_params)
-        user.update_attributes!(body_params)
+        token_repr = body_params["token"]
       rescue Exception => e
-        puts e.message
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
-      return user
+            
+      token = token_from_representation(token_repr)
+      if !token.valid?
+        give_error(400, ERROR_USER_TOKEN_EXPIRED, "Token has expired.").to_json
+      end
+      
+      token.delete
+      
+      return { "success" => true }.to_json
     end
-
+    
     # Login, thereby creating an ew token
     post '/login' do
       content_type 'application/json'
@@ -118,26 +118,26 @@ class App < Sinatra::Base
 
       return { "user" => JSON.parse(token.user.to_json) }.to_json
     end
-
-    # Logout, thereby deleting the token
-    put '/logout' do
+    
+    # Get user by id
+    get '/:user_id' do
       content_type 'application/json'
     
+      return user_from_id(params[:user_id].to_i).to_json
+    end
+
+    # Update a user
+    put '/:user_id' do
+      user = user_from_id(params[:user_id].to_i)
       begin
         body_params = JSON.parse(request.body.read)
-        token_repr = body_params["token"]
+        JSON::Validator.validate!(User::SCHEMA, body_params)
+        user.update_attributes!(body_params)
       rescue Exception => e
+        puts e.message
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
-      
-      token = token_from_representation(token_repr)
-      if !token.valid?
-        give_error(400, ERROR_USER_TOKEN_EXPIRED, "Token has expired.").to_json
-      end
-      
-      token.delete
-      
-      return { "success" => true }.to_json
+      return user
     end
   
   end # End namespace /users

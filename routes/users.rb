@@ -95,7 +95,7 @@ class App < Sinatra::Base
       token = Token.new
       token.valid_time = 365.days
       user.tokens.push(token)
-      user.save!
+      token.save!
       
       return { "token" => JSON.parse(token.to_json), "user" => JSON.parse(token.user.to_json) }.to_json
     end

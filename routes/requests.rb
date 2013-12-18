@@ -35,29 +35,14 @@ class App < Sinatra::Base
       request.answered = false
       request.save!
       #TODO set all this in helper method since it's reused in the cronjob...
-      # Find helpers
+      #1. Find helpers
       helpers = Helper.available(request, 5)
-      
-      # Find device tokens
+      #2. Find device tokens
       tokens = helpers.collect { |u| u.devices.collect { |d| d.device_token } }.flatten
-      
-      # Create notification
-      notification_args_name = user.first_name
-      notification = {
-        :device_tokens => tokens,
-        :aps => {
-          :alert => {
-            :"loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_MESSAGE",
-            :"loc-args" => [ notification_args_name ],
-            :"action-loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_ACTION",
-            :short_id => request.short_id,
-          },
-          :sound => "default"
-        }
-      }
-      
-      # Send notification
-  		Urbanairship.push(notification)
+      #3. Send notification
+      RequestsHelper.send_notifications request, tokens
+      #4. Set notified helpers as contacted for this request.
+      RequestsHelper.set_sent_helper helpers, request
     
       return request.to_json
     end

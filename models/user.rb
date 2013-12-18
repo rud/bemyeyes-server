@@ -7,6 +7,7 @@ class User
       "required" => [],
       "additionalProperties" => false,
       "properties" => {
+          "id2" => {"type" => "integer"},
           "user_id" => {"type" => "integer"},
           "username" => {"type" => "string"},
           "password" => {"type" => "string"},
@@ -34,7 +35,7 @@ class User
   timestamps!
   
   before_create :encrypt_password
-  before_create :set_unique_id
+  before_save :set_unique_id
 
   # dynamic scopes
   scope :by_languages,  lambda { |languages| where(:languages => { :$in => languages }) }
@@ -75,6 +76,7 @@ class User
   def to_s
     "#{self.first_name} #{self.last_name}"
   end
+
   private
   def self.authenticate_password(user, password)
     if user && user.password_hash == BCrypt::Engine.hash_secret(password, user.password_salt)
@@ -83,8 +85,7 @@ class User
     
     return nil
   end
-  
-  private
+
   def encrypt_password
     if @password.present?
       self.password_salt = BCrypt::Engine.generate_salt
@@ -107,6 +108,4 @@ class User
       self.user_id = unique_id
     end
   end
-
-
 end

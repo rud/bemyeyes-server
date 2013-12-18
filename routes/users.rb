@@ -10,7 +10,7 @@ class App < Sinatra::Base
     
       begin
         body_params = JSON.parse(request.body.read)
-        required_fields = {"required" => ["username", "password", "email", "first_name", "last_name", "role", "languages"]}
+        required_fields = {"required" => ["username", "password", "email", "first_name", "last_name", "role"]}
         schema = User::SCHEMA.merge(required_fields)
         JSON::Validator.validate!(schema, body_params)
       rescue Exception => e
@@ -96,7 +96,7 @@ class App < Sinatra::Base
       token.valid_time = 365.days
       user.tokens.push(token)
       token.save!
-      
+
       return { "token" => JSON.parse(token.to_json), "user" => JSON.parse(token.user.to_json) }.to_json
     end
     

@@ -10,7 +10,7 @@ class App < Sinatra::Base
     
       begin
         body_params = JSON.parse(request.body.read)
-        required_fields = {"required" => ["username", "password", "email", "first_name", "last_name", "role"]}
+        required_fields = {"required" => ["password", "email", "first_name", "last_name", "role"]}
         schema = User::SCHEMA.merge(required_fields)
         JSON::Validator.validate!(schema, body_params)
       rescue Exception => e
@@ -30,7 +30,6 @@ class App < Sinatra::Base
         user.save!
       rescue Exception => e
         puts e.message
-        give_error(400, ERROR_USER_USERNAME_TAKEN, "The username is taken.").to_json if e.message.match /username/i
         give_error(400, ERROR_USER_EMAIL_ALREADY_REGISTERED, "The e-mail is already registered.").to_json if e.message.match /email/i
       end
 
@@ -69,22 +68,15 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
       
-      # We need either a username or an e-mail to login
-      if body_params['username'].nil?
-        give_error(400, ERROR_INVALID_BODY, "Missing username or e-mail.").to_json
+      # We need either an e-mail to login
+      if body_params['email'].nil?
+        give_error(400, ERROR_INVALID_BODY, "Missing e-mail.").to_json
       end
 
       password = decrypted_password(secure_password)
-      
-      # Try to log in using username
-      if !body_params['username'].nil? # Login using username
-        user = User.authenticate_using_username(body_params['username'], password)
-      end
-      
+
       # Try to log in using e-mail
-      if user.nil?
-        user = User.authenticate_using_email(body_params['email'], password)
-      end
+      user = User.authenticate_using_email(body_params['email'], password)
       
       # Check if we logged in
       if user.nil?

@@ -35,7 +35,7 @@ class User
   timestamps!
   
   before_create :encrypt_password
-  before_save :set_unique_id
+  before_create :set_unique_id
 
   # dynamic scopes
   scope :by_languages,  lambda { |languages| where(:languages => { :$in => languages }) }

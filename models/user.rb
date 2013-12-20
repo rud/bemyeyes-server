@@ -39,7 +39,7 @@ class User
   scope :by_languages,  lambda { |languages| where(:languages => { :$in => languages }) }
 
   def self.authenticate_using_email(email, password)
-    user = User.first(:email => { :$regex => /#{email}/i })
+    user = User.first(:email => { :$regex => /#{Regexp.escape(email)}/i })
     if !user.nil?
       return authenticate_password(user, password)
     end

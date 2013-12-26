@@ -10,7 +10,7 @@ class App < Sinatra::Base
     
       begin
         body_params = JSON.parse(request.body.read)
-        required_fields = {"required" => ["password", "email", "first_name", "last_name", "role"]}
+        required_fields = {"required" => ["email", "first_name", "last_name", "role"]}
         schema = User::SCHEMA.merge(required_fields)
         JSON::Validator.validate!(schema, body_params)
       rescue Exception => e
@@ -24,8 +24,14 @@ class App < Sinatra::Base
                else
                  give_error(400, ERROR_UNDEFINED_ROLE, "Undefined role.").to_json
       end
-      password = decrypted_password(body_params['password'])
-      user.update_attributes body_params.merge({ "password" => password })
+      if !body_params['password'].nil?
+        password = decrypted_password(body_params['password'])
+        user.update_attributes body_params.merge({ "password" => password })
+      else if !body_params['user_id'].nil?
+        user.update_attribute body_params
+      else
+        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+      end
       begin
         user.save!
       rescue Exception => e

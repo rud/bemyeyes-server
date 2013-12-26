@@ -27,7 +27,7 @@ class App < Sinatra::Base
       if !body_params['password'].nil?
         password = decrypted_password(body_params['password'])
         user.update_attributes body_params.merge({ "password" => password })
-      else if !body_params['user_id'].nil?
+      elsif !body_params['user_id'].nil?
         user.update_attribute body_params
       else
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json

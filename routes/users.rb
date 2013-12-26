@@ -28,9 +28,9 @@ class App < Sinatra::Base
         password = decrypted_password(body_params['password'])
         user.update_attributes body_params.merge({ "password" => password })
       elsif !body_params['user_id'].nil?
-        user.update_attribute body_params
+        user.update_attribute body_params.merge({ "user_id" => body_params['user_id'] })
       else
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        give_error(400, ERROR_INVALID_BODY, "Missing parameter 'user_id' for registering a Facebook user or parameter 'password' for registering a regular user.").to_json
       end
       begin
         user.save!

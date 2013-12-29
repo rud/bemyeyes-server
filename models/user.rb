@@ -46,6 +46,15 @@ class User
     
     return nil
   end
+  
+  def self.authenticate_using_user_id(email, user_id)
+    user = User.first(:user_id => user_id)
+    if !user.nil?
+      return authenticate_password(user, password)
+    end
+    
+    return nil
+  end
 
   def password=(pwd)
     @password = pwd

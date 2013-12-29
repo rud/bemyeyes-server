@@ -90,14 +90,19 @@ class App < Sinatra::Base
         # Login using e-mail and password
         password = decrypted_password(secure_password)
         user = User.authenticate_using_email(body_params['email'], password)
+        
+        # Check if we managed to log in
+        if user.nil?
+          give_error(400, ERROR_USER_INCORRECT_CREDENTIALS, "No user found matching the credentials.").to_json
+        end
       elsif !user_id.nil?
         # Login using user ID
         user = User.authenticate_using_user_id(body_params['email'], body_params['user_id'])    
-      end
-      
-      # Check if we logged in
-      if user.nil?
-        give_error(400, ERROR_USER_INCORRECT_CREDENTIALS, "No user found matching the credentials.").to_json
+        
+        # Check if we managed to log in
+        if user.nil?
+          give_error(400, ERROR_USER_FACEBOOK_USER_NOT_FOUND, "The Facebook user was not found.").to_json
+        end
       end
       
       # We did log in, create token

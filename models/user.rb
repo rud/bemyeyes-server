@@ -50,7 +50,7 @@ class User
   def self.authenticate_using_user_id(email, user_id)
     user = User.first(:user_id => user_id)
     if !user.nil?
-      return authenticate_password(user, password)
+      return user
     end
     
     return nil

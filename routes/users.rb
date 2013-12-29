@@ -69,9 +69,16 @@ class App < Sinatra::Base
     
       begin
         body_params = JSON.parse(request.body.read)
-        secure_password = body_params["password"]
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+      end
+      
+      secure_password = body_params["password"]
+      user_id = body_params["user_id"]
+      
+      # We need either a password or a user ID to login
+      if secure_password.nil? && user_id.nil?
+        give_error(400, ERROR_INVALID_BODY, "Missing password or user ID.").to_json
       end
       
       # We need either an e-mail to login
@@ -79,10 +86,14 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "Missing e-mail.").to_json
       end
 
-      password = decrypted_password(secure_password)
-
-      # Try to log in using e-mail
-      user = User.authenticate_using_email(body_params['email'], password)
+      if !secure_password.nil?
+        # Login using e-mail and password
+        password = decrypted_password(secure_password)
+        user = User.authenticate_using_email(body_params['email'], password)
+      elsif !user_id.nil?
+        # Login using user ID
+        user = User.authenticate_using_user_id(body_params['email'], body_params['user_id'])    
+      end
       
       # Check if we logged in
       if user.nil?

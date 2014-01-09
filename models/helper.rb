@@ -15,6 +15,10 @@ class Helper < User
   def self.available request=nil, limit=5
     request_id = request.present? ? request.id : nil
     contacted_helpers = HelperRequest.where(:request_id => request_id).fields(:helper_id).all.collect(&:helper_id)
-    Helper.where(:id.nin => contacted_helpers).all.sample(limit)
+    Helper.where(:id.nin => contacted_helpers,
+                 "$or" => [
+                     {:available_from => nil},
+                     {:available_from.lt => Time.now.utc}
+                 ]).all.sample(limit)
   end
 end

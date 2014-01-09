@@ -28,6 +28,8 @@ class User
   key :last_name, String, :required => true
   key :languages, Array, :default => ["da","en"]
   key :user_id, Integer, :unique => true #, :required => true #Unique identifier from FB
+  key :available_from, Time
+  key :snooze_period, String
 
   auto_increment!
   timestamps!
@@ -59,7 +61,17 @@ class User
   def password=(pwd)
     @password = pwd
   end
-  
+
+  def snooze
+    if self.available_from && Time.now.utc < self.available_from
+      { "period" => self.snooze_period,
+        "until" => self.available_from
+      }
+    else
+      nil
+    end
+  end
+
   def to_json()
     return { "id" => self.id2,
              "user_id" => self.user_id,
@@ -67,7 +79,9 @@ class User
              "first_name" => self.first_name,
              "last_name" => self.last_name,
              "role" => self.role,
-             "languages" => self.languages }.to_json
+             "languages" => self.languages,
+             "snooze" => self.snooze
+    }.to_json
   end
 
   def to_s

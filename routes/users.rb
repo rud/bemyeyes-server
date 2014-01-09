@@ -153,7 +153,31 @@ class App < Sinatra::Base
       end
       return user
     end
-  
+
+    put '/:user_id/snooze/:period' do
+      puts params[:period]
+      raise Sinatra::NotFound unless params[:period].match /^(1h|3h|1d|3d|1w|stop)$/
+      user = user_from_id(params[:user_id].to_i)
+      #Stores it in UTC, perhaps change it using timezone info later on.
+      current_time = Time.now.utc
+      #TODO refactor this case...
+      new_time = case params[:period]
+        when '1h'
+          current_time + 1.hour
+        when '3h'
+          current_time + 3.hour
+        when '1d'
+          current_time + 1.day
+        when '3d'
+          current_time + 3.day
+        when '1w'
+          current_time + 1.week
+        when 'stop'
+          current_time
+      end
+      user.update_attributes!({:snooze_period => params[:period], :available_from => new_time})
+      return user.to_json
+    end
   end # End namespace /users
   
   # Get user from ID

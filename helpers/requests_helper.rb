@@ -8,7 +8,6 @@ module RequestsHelper
   end
 
   def self.send_notifications request, device_tokens
-    puts request.inspect
     # Create notification
     user = request.blind
     notification_args_name = user.to_s

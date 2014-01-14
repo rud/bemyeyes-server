@@ -9,6 +9,7 @@ require 'urbanairship'
 require 'aescrypt'
 require 'bcrypt'
 require 'json-schema'
+require 'rufus-scheduler'
 require_relative 'helpers/requests_helper'
 require_relative 'models/init'
 require_relative 'routes/init'
@@ -16,6 +17,7 @@ require_relative 'helpers/error_codes'
 require_relative 'helpers/api_error'
 require_relative 'helpers/request_id_shortener'
 require_relative 'helpers/cron_jobs'
+require_relative 'helpers/thelogger_module'
 
 class App < Sinatra::Base
   register Sinatra::ConfigFile
@@ -28,9 +30,10 @@ class App < Sinatra::Base
     set :show_exceptions, false
     set :app_file, __FILE__
     set :config, YAML.load_file('config/config.yml') rescue nil || {}
+    set :scheduler, Rufus::Scheduler.new
     
-    Log = Logger.new('sinatra.log')
-    Log.level  = Logger::INFO 
+    TheLogger.log.level = Logger::DEBUG  # could be DEBUG, ERROR, FATAL, INFO, UNKNOWN, WARN
+    TheLogger.log.formatter = proc { |severity, datetime, progname, msg| "[#{severity}] #{datetime.strftime('%Y-%m-%d %H:%M:%S')} : #{msg}\n" }
     
     opentok_config = settings.config['opentok']
     OpenTokSDK = OpenTok::OpenTokSDK.new opentok_config['api_key'], opentok_config['api_secret']
@@ -47,7 +50,7 @@ class App < Sinatra::Base
     MongoMapper.connection = Mongo::Connection.new(db_config['host'])
     MongoMapper.database = db_config['name']
     MongoMapper.connection[db_config['name']].authenticate(db_config['username'], db_config['password'])
-
+    
     CronJobs.start_jobs
   end
 

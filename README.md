@@ -1,6 +1,6 @@
 BeMyEyes Server
 ============
-**Getting started
+##Getting started
 gem install bundler
 bundle install
 
@@ -12,5 +12,5 @@ db.addUser( { user: "bemyeyes",
               roles: [ "readWrite", "dbAdmin" ]
             } )
 
-**Start the server
+##Start the server
 ruby app.rb

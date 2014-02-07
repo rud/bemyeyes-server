@@ -2,3 +2,4 @@ config/config.yml
 Gemfile.lock
 sinatra.log
 log/
+.DS_Store

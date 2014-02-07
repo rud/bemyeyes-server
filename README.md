@@ -13,6 +13,6 @@ db.addUser( { user: "bemyeyes",
             } )
 
 ##Start the server
-Copy config.yml to the config folder
-Use the config.temp.yml as a template
+Copy config.yml to the config folder    
+Use the config.temp.yml as a template    
 ruby app.rb

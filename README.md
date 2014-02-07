@@ -15,4 +15,4 @@ db.addUser( { user: "bemyeyes",
 ##Start the server
 Copy config.yml to the config folder    
 Use the config.temp.yml as a template    
-ruby app.rb
+ruby -S rackup -w config.ru

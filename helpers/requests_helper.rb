@@ -1,13 +1,15 @@
-module RequestsHelper
+class RequestsHelper
 
+def initialize
+end
   #Avoids resending push notification to an already notified user.
-  def self.set_sent_helper helpers, request
+  def set_sent_helper helpers, request
     helpers.each do |helper|
       HelperRequest.create! :request => request, :helper => helper
     end
   end
 
-  def self.send_notifications request, device_tokens
+  def send_notifications request, device_tokens
     # Create notification
     user = request.blind
     notification_args_name = user.to_s

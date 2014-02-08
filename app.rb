@@ -51,7 +51,8 @@ class App < Sinatra::Base
     MongoMapper.database = db_config['name']
     MongoMapper.connection[db_config['name']].authenticate(db_config['username'], db_config['password'])
     
-    CronJobs.start_jobs
+    cron_job = CronJobs.new(Helper.new, RequestsHelper.new)
+    cron_job.start_jobs
   end
 
   # Protect anything but the root

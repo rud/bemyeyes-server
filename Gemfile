@@ -11,3 +11,5 @@ gem "bcrypt-ruby", :require => "bcrypt"
 gem 'rufus-scheduler'
 gem "activesupport"
 gem 'bson_ext'
+
+gem 'rspec-mocks'

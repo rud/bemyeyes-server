@@ -18,6 +18,7 @@ require_relative 'helpers/api_error'
 require_relative 'helpers/request_id_shortener'
 require_relative 'helpers/cron_jobs'
 require_relative 'helpers/thelogger_module'
+require_relative 'helpers/waiting_requests'
 
 class App < Sinatra::Base
   register Sinatra::ConfigFile
@@ -51,7 +52,7 @@ class App < Sinatra::Base
     MongoMapper.database = db_config['name']
     MongoMapper.connection[db_config['name']].authenticate(db_config['username'], db_config['password'])
     
-    cron_job = CronJobs.new(Helper.new, RequestsHelper.new)
+    cron_job = CronJobs.new(Helper.new, RequestsHelper.new, Rufus::Scheduler.new, WaitingRequests.new)
     cron_job.start_jobs
   end
 

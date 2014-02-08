@@ -3,15 +3,12 @@ require 'active_support'
 
 class CronJobs
 
-  attr_reader :helper, :request_helper
-  def initialize(helper, request_helper)
+  attr_reader :helper, :request_helper, :scheduler, :waiting_requests
+  def initialize(helper, request_helper, scheduler, waiting_requests)
     @helper = helper
     @request_helper = request_helper
-  end
-
-
-  def scheduler
-    @scheduler ||= Rufus::Scheduler.new
+    @scheduler = scheduler
+    @waiting_requests = waiting_requests
   end
 
   def job
@@ -19,14 +16,15 @@ class CronJobs
   end
 
   def start_jobs
-    @job ||= scheduler.every('20s') do
+    @job ||= @scheduler.every('20s') do
+      puts "checking"
       check_requests
     end
   end
 
   def check_requests
     #1. Check for unanswered requests.
-    requests = Request.where(:stopped => false, :answered => false, :created_at.lte => 2.minutes.ago).all
+    requests = @waiting_requests.get_waiting_requests_from_lasts_2_minutes
     #For each request
     requests.each do |request|
       #2. Look for random helpers and its devices tokens
@@ -38,5 +36,4 @@ class CronJobs
       @request_helper.set_sent_helper helpers, request
     end
   end
-
 end

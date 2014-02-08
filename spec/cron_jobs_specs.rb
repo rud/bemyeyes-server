@@ -26,5 +26,15 @@ describe CronJobs do
 			@sut.check_requests
 			expect(@helper_double).to have_received(:available).with(anything(),5)
 		end
+
+		it "Sends notification" do
+			@sut.check_requests
+			expect(@request_helper).to have_received(:send_notifications)
+		end
+
+		it "Sets notified helpers as contacted for this request." do
+			@sut.check_requests
+			expect(@request_helper).to have_received(:set_sent_helper)
+		end
 	end	
 end

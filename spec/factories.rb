@@ -10,7 +10,6 @@ require_relative '../helpers/request_id_shortener'
 
 FactoryGirl.define do
 
-  # This will use the User class (Admin would have been guessed)
   factory :blind, class: User do
     first_name "Admin"
     last_name  "User"
@@ -33,5 +32,7 @@ FactoryGirl.define do
     token "1234"
     session_id "1234"
     short_id_salt "salt"
+    helper
+    blind
   end
 end

@@ -19,12 +19,8 @@ end
 
 describe Request do
 before do
-	blind = build(:blind)
-	helper = build(:helper)
 	IntegrationSpecHelper.InitializeMongo()
     @sut = build(:request)
-    @sut.blind = blind
-    @sut.helper = helper
     @sut.save
   end
 

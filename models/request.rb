@@ -19,7 +19,6 @@ class Request
 
   before_create :create_short_id
 
-  # scope :unattended, :answered => [nil, false], :stopped => [nil, false]
   scope :unattended,  lambda { |older_than| where(:answered => false, :stopped => false) }
 
   def short_id_salt=(salt)

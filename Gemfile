@@ -13,3 +13,4 @@ gem "activesupport"
 gem 'bson_ext'
 
 gem 'rspec-mocks'
+gem 'factory_girl'

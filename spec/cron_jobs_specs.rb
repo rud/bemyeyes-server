@@ -21,6 +21,7 @@ describe CronJobs do
 		before(:each) do
 			@sut.check_requests
 		end
+		
 		it "gets waiting reuests from last two minutes" do
 			expect(@waiting_requests_double).to have_received(:get_waiting_requests_from_lasts_2_minutes)
 		end

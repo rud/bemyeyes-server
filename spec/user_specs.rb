@@ -1,20 +1,24 @@
 require 'mongo_mapper'
 require 'shoulda'
+require 'factory_girl'
+
+require_relative './factories'
 require_relative './integration_spec_helper'
 require_relative '../models/device'
 require_relative '../models/token'
 require_relative '../models/user'
 require_relative '../models/blind'
 
+# rspec
+RSpec.configure do |config|
+  config.include FactoryGirl::Syntax::Methods
+end
+
 describe Blind do
 before do
     IntegrationSpecHelper.InitializeMongo()
-    @sut = Blind.new
-    @sut.email = "someone@example.com"
-    @sut.first_name = "firstName"
-    @sut.last_name = "lastName"
-    @sut.role = "blind"
-    @sut.password = "password"
+    @sut = build(:blind)
+    
     @sut.save
   end
 

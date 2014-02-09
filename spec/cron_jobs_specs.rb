@@ -17,23 +17,23 @@ describe CronJobs do
 	end
 
 	describe "check_requests" do
-		it "gets waiting reuests from last two minutes" do
+
+		before(:each) do
 			@sut.check_requests
+		end
+		it "gets waiting reuests from last two minutes" do
 			expect(@waiting_requests_double).to have_received(:get_waiting_requests_from_lasts_2_minutes)
 		end
 
 		it "asks for 5 available helpers for each request" do
-			@sut.check_requests
 			expect(@helper_double).to have_received(:available).with(anything(),5)
 		end
 
 		it "Sends notification" do
-			@sut.check_requests
 			expect(@request_helper).to have_received(:send_notifications)
 		end
 
 		it "Sets notified helpers as contacted for this request." do
-			@sut.check_requests
 			expect(@request_helper).to have_received(:set_sent_helper)
 		end
 	end	

@@ -15,7 +15,7 @@ RSpec.configure do |config|
 end
 
 describe Blind do
-before do
+  before do
     IntegrationSpecHelper.InitializeMongo()
     @sut = build(:blind)
     
@@ -23,6 +23,6 @@ before do
   end
 
  describe "can create user" do
-    it {  @sut.email.should eq("someone@example.com") }
+    it {  @sut.first_name.should eq("Blind") }
   end
 end

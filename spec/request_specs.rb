@@ -8,11 +8,11 @@ require_relative '../models/device'
 require_relative '../models/token'
 require_relative '../models/user'
 require_relative '../models/blind'
+require_relative '../models/helper'
 require_relative '../models/helper_request'
 require_relative '../models/request'
 
 
-# rspec
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 end
@@ -25,6 +25,6 @@ before do
   end
 
  describe "can create Request" do
-    it {  @sut.answered.should eq(false) }
+    it {@sut.answered.should eq(false) }
   end
 end

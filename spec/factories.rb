@@ -11,16 +11,16 @@ require_relative '../helpers/request_id_shortener'
 FactoryGirl.define do
 
   factory :blind, class: User do
-    first_name "Admin"
+    first_name "Blind"
     last_name  "User"
-    email "someone@example.com"
+    email {"user_#{(Time.now.to_f*100000).to_s}@example.com" }
     password "password"
   end
 
   factory :helper, class: User do
     first_name "Admin"
     last_name  "User"
-    email "someone@example.com"
+    email {"user_#{(Time.now.to_f*100000).to_s}@example.com" }  
     password "password"
   end
 

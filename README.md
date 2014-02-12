@@ -8,7 +8,7 @@ install mongodb
 
 start mongo shell
 db.addUser( { user: "bemyeyes",
-              pwd: "GuideBlind2012",
+              pwd: "myPassword",
               roles: [ "readWrite", "dbAdmin" ]
             } )
 

@@ -1,4 +1,6 @@
 require 'mongomapper_id2'
+require 'bcrypt'
+
 
 class User
   include MongoMapper::Document

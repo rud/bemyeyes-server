@@ -17,7 +17,6 @@ class CronJobs
 
   def start_jobs
     @job ||= @scheduler.every('20s') do
-      puts "checking"
       check_requests
     end
   end

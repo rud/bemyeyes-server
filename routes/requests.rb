@@ -1,3 +1,4 @@
+require_relative '../helpers/requests_helper'
 class App < Sinatra::Base
   register Sinatra::Namespace
 
@@ -7,10 +8,11 @@ class App < Sinatra::Base
     # Create new request
     post '/?' do
       content_type 'application/json'
-      
+
       begin
         body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
+        TheLogger.log.info("request post, token " + token_repr )      
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
@@ -50,7 +52,7 @@ class App < Sinatra::Base
     # Get a request
     get '/:short_id' do
       content_type 'application/json'
-
+        TheLogger.log.info("get request, shortId:  " + params[:short_id] )      
       return request_from_short_id(params[:short_id]).to_json
     end
     
@@ -61,6 +63,8 @@ class App < Sinatra::Base
       begin
         body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
+
+        TheLogger.log.info("answer request, token  " + token_repr )      
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end

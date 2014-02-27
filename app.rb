@@ -66,6 +66,9 @@ class App < Sinatra::Base
     redirect settings.config['redirect_root']
   end
   
+  get '/log' do
+    File.read("log/app.log")
+  end  
   # Handle errors
   error do
     content_type :json

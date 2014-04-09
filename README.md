@@ -1,5 +1,6 @@
 BeMyEyes Server
-============
+====[![Code Climate](https://codeclimate.com/github/bemyeyes/bemyeyes-server.png)](https://codeclimate.com/github/bemyeyes/bemyeyes-server)
+  
 ##Getting started
 gem install bundler
 bundle install
@@ -58,3 +59,4 @@ https://gist.github.com/jnx/1256593
 Install Passenger
 http://www.modrails.com/documentation/Users%20guide%20Apache.html#install_on_debian_ubuntu
 gem install passenger
+

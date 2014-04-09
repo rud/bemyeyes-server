@@ -2,6 +2,12 @@ require 'rest_client'
 require 'shoulda'
 require 'yaml'
 
+describe "Rest api" do
+  before(:each) do
+    config = YAML.load_file('config/config.yml')
+    @username = config['authentication']['username']
+    @password = config['authentication']['password']
+  end
 describe "User api" do 
   before(:each) do
     config = YAML.load_file('config/config.yml')
@@ -21,4 +27,4 @@ response = RestClient::Request.new(
 response.code.should eq(200)
 end
 end
-
+end

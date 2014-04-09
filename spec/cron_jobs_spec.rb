@@ -27,7 +27,7 @@ describe CronJobs do
 		end
 
 		it "asks for 5 available helpers for each request" do
-			expect(@helper_double).to have_received(:available).with(anything(),5)
+			expect(@helper_double).to have_received(:available).with(anything(),10)
 		end
 
 		it "Sends notification" do

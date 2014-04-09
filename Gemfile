@@ -14,3 +14,5 @@ gem 'bson_ext'
 
 gem 'rspec-mocks'
 gem 'factory_girl'
+gem 'rspec'
+gem 'shoulda'

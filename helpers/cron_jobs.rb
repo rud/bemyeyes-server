@@ -19,7 +19,7 @@ module CronJobs
 
   def self.check_requests
     #1. Check for unanswered requests.
-    requests = Request.where(:stopped => false, :answered => false, :created_at.lte => 2.minutes.ago).all
+    requests = Request.where(:stopped => false, :answered => false, :created_at.gte => 2.minutes.ago).all
     #For each request
     requests.each do |request|
       #2. Look for random helpers and its devices tokens

@@ -23,7 +23,7 @@ module CronJobs
     #For each request
     requests.each do |request|
       #2. Look for random helpers and its devices tokens
-      helpers = Helper.available(request, 10)
+      helpers = Helper.available(request, 50)
       device_tokens = helpers.collect { |u| u.devices.collect { |d| d.device_token } }.flatten
       #3. Send notification
       RequestsHelper.send_notifications request, device_tokens

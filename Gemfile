@@ -16,3 +16,5 @@ gem 'rspec-mocks'
 gem 'factory_girl'
 gem 'rspec'
 gem 'shoulda'
+
+gem 'rest-client'

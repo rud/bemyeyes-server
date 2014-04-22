@@ -48,11 +48,14 @@ class App < Sinatra::Base
   # Register a device for a user
   def register_device_for_user(user, device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
     device = Device.first(:device_token => device_token)
-    if device.nil?
-      # Create new device if it does not already exist
-      device = Device.new
-      user.devices.push(device)
+
+    unless device.nil?
+      device.destroy
     end
+
+    # Create new device if it does not already exist
+    device = Device.new
+    user.devices.push(device)
     
     # Update information
     device.device_token = device_token

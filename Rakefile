@@ -10,7 +10,7 @@ task :add_signup_points_to_all_helpers do
     if(helper.helper_points.count == 0)
       helper_point = HelperPoint. signup()  
       helper.helper_points.push helper_point
-      helper.w
+      helper.save
     end
   end
 end

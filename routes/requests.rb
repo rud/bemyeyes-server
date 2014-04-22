@@ -38,6 +38,7 @@ class App < Sinatra::Base
       request.save!
       #TODO set all this in helper method since it's reused in the cronjob...
       #1. Find helpers
+      helper = Helper.new
       helpers = helper.available(request, 10)
       #2. Find device tokens
       tokens = helpers.collect { |u| u.devices.collect { |d| d.device_token } }.flatten

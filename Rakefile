@@ -7,7 +7,14 @@ task :default => :spec
 
 task :add_signup_points_to_all_helpers do
   Helper.find_each() do |helper|
-    if(helper.helper_points.count == 0)
+    signup_found = false
+    helper.helper_points.each() do |hp| 
+      if(hp.message = "signup")
+        signup_found = true
+      end
+    end
+    
+    if(!signup_found)
       helper_point = HelperPoint. signup()  
       helper.helper_points.push helper_point
       helper.save

@@ -12,6 +12,8 @@ task :add_signup_points_to_all_helpers do
       if(hp.message = "signup")
         signup_found = true
       end
+      puts hp.message
+      puts signup_found
     end
     
     if(!signup_found)

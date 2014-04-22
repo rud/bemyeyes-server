@@ -10,7 +10,7 @@ task :add_signup_points_to_all_helpers do
     puts helper
     signup_found = false
     helper.helper_points.each() do |hp| 
-      if(hp.message = "signup")
+      if(hp.message == "signup")
         signup_found = true
       end
       puts hp.message

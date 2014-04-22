@@ -43,9 +43,10 @@ class App < Sinatra::Base
       #2. Find device tokens
       tokens = helpers.collect { |u| u.devices.collect { |d| d.device_token } }.flatten
       #3. Send notification
-      RequestsHelper.send_notifications request, tokens
+      requests_helper = RequestsHelper.new
+      requests_helper.send_notifications request, tokens
       #4. Set notified helpers as contacted for this request.
-      RequestsHelper.set_sent_helper helpers, request
+      requests_helper.set_sent_helper helpers, request
     
       return request.to_json
     end

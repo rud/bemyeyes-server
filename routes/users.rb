@@ -140,6 +140,12 @@ class App < Sinatra::Base
       return user_from_id(params[:user_id].to_i).to_json
     end
 
+    get '/helper_points/:user_id' do
+      content_type 'application/json'
+      helper = helper_from_id(params[:user_id].to_i)
+      return helper.helper_points.to_json
+    end
+
     # Update a user
     put '/:user_id' do
       user = user_from_id(params[:user_id].to_i)
@@ -188,6 +194,15 @@ class App < Sinatra::Base
     end
     
     return user
+  end
+
+  def helper_from_id(user_id)
+    helper = Helper.first(:id2 => user_id)
+    if helper.nil?
+      give_error(400, ERROR_USER_NOT_FOUND, "No helper found.").to_json
+    end
+    
+    return helper
   end
   
   # Find token by representation of the token

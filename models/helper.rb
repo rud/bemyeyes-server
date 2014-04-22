@@ -2,7 +2,7 @@ require 'mongomapper_id2'
 
 class Helper < User
   many :helper_request, :foreign_key => :helper_id, :class_name => "HelperRequest"
-
+  many :helper_points, :foreign_key => :user_id, :class_name => "HelperPoint"
   key :role, String
   
   before_create :set_role

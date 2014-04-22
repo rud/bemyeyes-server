@@ -142,7 +142,12 @@ class App < Sinatra::Base
       # Update request
       request.stopped = true
       request.save!
-
+      
+      #update helper with points for call
+      point = HelperPoint.finish_helping_request 
+      request.helper.helper_points.push point
+      request.helper.save
+      
       return request.to_json
     end
 

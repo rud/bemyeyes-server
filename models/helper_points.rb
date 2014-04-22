@@ -12,6 +12,7 @@ class HelperPoint
   def initialize(point, message)
     self.point = point
     self.message = message
+    self.log_time = generate_time()
   end
 
  def self.signup( )

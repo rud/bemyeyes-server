@@ -21,7 +21,7 @@ class App < Sinatra::Base
       user = token.user
 
       begin
-        session_properties = { OpenTok::SessionPropertyConstants::P2P_PREFERENCE => "enabled" }
+        session_properties = { OpenTok::SessionPropertyConstants::P2P_PREFERENCE => "disabled" }
         session_id = OpenTokSDK.create_session(NIL, session_properties)
         token = OpenTokSDK.generateToken :session_id => session_id
       rescue Exception => e

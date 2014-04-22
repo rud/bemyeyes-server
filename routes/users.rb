@@ -140,12 +140,19 @@ class App < Sinatra::Base
       return user_from_id(params[:user_id].to_i).to_json
     end
 
+    #days param
     get '/helper_points/:user_id' do
       content_type 'application/json'
       helper = helper_from_id(params[:user_id].to_i)
       return helper.helper_points.to_json
     end
 
+    get '/helper_points_sum/:user_id' do
+      content_type 'application/json'
+      helper = helper_from_id(params[:user_id].to_i)
+      return helper.helper_points.sum.point.to_json
+    end
+   
     # Update a user
     put '/:user_id' do
       user = user_from_id(params[:user_id].to_i)

@@ -78,6 +78,16 @@ class App < Sinatra::Base
     return { "result" => "error", "message" => e.message }.to_json
   end
 
+  get '/ui/sessions'  do
+    waiting_requests = WaitingRequests.new
+    requests = waiting_requests.get_waiting_requests_from_lasts_2_minutes
+    erb :index, :locals => {:requests => requests } 
+  end
+
+  get '/ui/session/:sessionid' do
+    opentok_config = settings.config['opentok']
+    erb :session, :locals => {:api_key => opentok_config['api_key'], :session_id => params[:sessionid] } 
+  end
   # Check if ww are authorized
   def authorized?
     auth_config = settings.config['authentication']

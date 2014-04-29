@@ -143,8 +143,15 @@ class App < Sinatra::Base
     #days param
     get '/helper_points/:user_id' do
       content_type 'application/json'
+      
+      days = params[:days]
       helper = helper_from_id(params[:user_id].to_i)
-      return helper.helper_points.to_json
+
+      if days.to_s == ''
+        return helper.helper_points.to_json
+      end
+      days = days.to_i
+      return helper.helper_points.where(:log_time.gte => days.days.ago).to_json
     end
 
     get '/helper_points_sum/:user_id' do

@@ -24,7 +24,7 @@ def self.answer_push_message( )
  end 
 
  def self.answer_push_message_technical_error( )
-   return HelperPoint.new(10, "nswer_push_message_technical_error")
+   return HelperPoint.new(10, "answer_push_message_technical_error")
  end 
  def self.finish_helping_request( )
    return HelperPoint.new(30, "finish_helping_request")

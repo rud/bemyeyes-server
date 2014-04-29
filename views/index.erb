@@ -1,6 +1,5 @@
 <h2>Sessions</h2>
-<% requests.each do |q| %>
-  <%= q.session_id %>
-  <%= q.token_id%>
+<% requests.each do |rq| %>
+  <a href="/ui/session/<%= rq.short_id%>">Start session</a>
 <% end %>
 <a href="/ui/session/1">test</a>

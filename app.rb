@@ -61,6 +61,9 @@ class App < Sinatra::Base
   before /^\/.+/ do
     protected!
   end
+  before do
+    content_type 'application/json'
+  end
   
   # Root route
   get '/?' do

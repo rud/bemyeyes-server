@@ -7,8 +7,6 @@ class App < Sinatra::Base
 
     # Create new request
     post '/?' do
-      content_type 'application/json'
-
       begin
         body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
@@ -53,15 +51,12 @@ class App < Sinatra::Base
 
     # Get a request
     get '/:short_id' do
-      content_type 'application/json'
         TheLogger.log.info("get request, shortId:  " + params[:short_id] )
       return request_from_short_id(params[:short_id]).to_json
     end
 
     # Answer a request
     put '/:short_id/answer' do
-      content_type 'application/json'
-
       begin
         body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
@@ -95,8 +90,6 @@ class App < Sinatra::Base
 
     # A helper can cancel his own answer. This should only be done if the session has not already started.
     put '/:short_id/answer/cancel' do
-      content_type 'application/json'
-
       begin
         body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
@@ -124,8 +117,6 @@ class App < Sinatra::Base
 
     # The blind or a helper can disconnect from a started session thereby stopping the session.
     put '/:short_id/disconnect' do
-      content_type 'application/json'
-
       begin
         body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
@@ -157,8 +148,6 @@ class App < Sinatra::Base
 
     # Rate a request
     put '/:short_id/rate' do
-      content_type 'application/json'
-
       begin
         body_params = JSON.parse(request.body.read)
         rating = body_params["rating"]

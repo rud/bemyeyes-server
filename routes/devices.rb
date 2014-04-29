@@ -6,8 +6,6 @@ class App < Sinatra::Base
     
     # Register device
     post '/register' do
-      content_type 'application/json'
-    
       begin
         body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]

@@ -6,8 +6,6 @@ class App < Sinatra::Base
   
     # Create new user
     post '/?' do
-      content_type 'application/json'
-    
       begin
         body_params = JSON.parse(request.body.read)
         required_fields = {"required" => ["email", "first_name", "last_name", "role"]}
@@ -44,8 +42,6 @@ class App < Sinatra::Base
     
     # Logout, thereby deleting the token
     put '/logout' do
-      content_type 'application/json'
-    
       begin
         body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
@@ -65,8 +61,6 @@ class App < Sinatra::Base
     
     # Login, thereby creating an ew token
     post '/login' do
-      content_type 'application/json'
-    
       begin
         body_params = JSON.parse(request.body.read)
       rescue Exception => e
@@ -116,8 +110,6 @@ class App < Sinatra::Base
     
     # Login with a token
     put '/login/token' do
-      content_type 'application/json'
-    
       begin
         body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
@@ -142,8 +134,6 @@ class App < Sinatra::Base
 
     #days param
     get '/helper_points/:user_id' do
-      content_type 'application/json'
-      
       days = params[:days]|| 30
       helper = helper_from_id(params[:user_id].to_i)
 
@@ -151,13 +141,10 @@ class App < Sinatra::Base
 
       sums = HelperPointDateHelper.get_aggregated_points_for_each_day(helper, days)
 
-      
       return sums.to_json
     end
 
     get '/helper_points_sum/:user_id' do
-      content_type 'application/json'
-      helper = helper_from_id(params[:user_id].to_i)
       return helper.helper_points.sum.point.to_json
     end
    

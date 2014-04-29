@@ -4,25 +4,26 @@ BeMyEyes Server
 [![Code Climate](https://codeclimate.com/github/bemyeyes/bemyeyes-server.png)](https://codeclimate.com/github/bemyeyes/bemyeyes-server)
 
 ##Getting started
-gem install bundler
-bundle install
+gem install bundler  
+bundle install  
+  
+install mongodb  
 
-install mongodb
-
-start mongo shell
-db.addUser( { user: "bemyeyes",
+start mongo shell  
+    db.addUser( { user: "bemyeyes",
               pwd: "myPassword",
               roles: [ "readWrite", "dbAdmin" ]
             } )
 
-##Start the server
+##Start the server locally
 Copy config.yml to the config folder    
 Use the config.temp.yml as a template    
 ruby -S rackup -w config.ru
 
 All interactions with the server demands HTTP Basic AUTH - the username password can be found in the config file under the "authentication" section.
 
-Setup server install rbenv system wide
+##	Setup server 
+Install rbenv system wide
 https://gist.github.com/jnx/1256593
 
 		# Update, upgrade and install development tools:

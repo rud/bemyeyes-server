@@ -76,6 +76,10 @@ class App < Sinatra::Base
       request = request_from_short_id(params[:short_id])
 
       if request.answered?
+        request.helper = user
+        HelperPoint.answer_push_message
+        request.helper.helper_points.push point
+        request.helper.save
         give_error(400, ERROR_REQUEST_ALREADY_ANSWERED, "The request has already been answered.").to_json
       elsif request.stopped?
         give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json

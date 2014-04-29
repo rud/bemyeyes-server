@@ -152,11 +152,11 @@ class App < Sinatra::Base
       
       days_from_db =helper.helper_points.where(:log_time.gte => days.days.ago)
 
-      retval = days_from_db.to_a | empty_days_array
-      grouped_retval = retval.group_by  {|a| a.log_time.strftime "%Y-%m-%d"}
+      grouped_days = days_from_db.to_a | empty_days_array
+      grouped_grouped_days = grouped_days.group_by  {|a| a.log_time.strftime "%Y-%m-%d"}
       sums = Array.new
       log_time = nil
-      grouped_retval.each do |id,values|
+      grouped_grouped_days.each do |id,values|
         sum = 0
         
         values.each do |x|

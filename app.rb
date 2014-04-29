@@ -19,6 +19,7 @@ require_relative 'helpers/request_id_shortener'
 require_relative 'helpers/cron_jobs'
 require_relative 'helpers/thelogger_module'
 require_relative 'helpers/waiting_requests'
+require_relative 'helpers/date_helper'
 
 class App < Sinatra::Base
   register Sinatra::ConfigFile

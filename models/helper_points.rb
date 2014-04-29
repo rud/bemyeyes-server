@@ -9,10 +9,11 @@ class HelperPoint
 
   belongs_to :user, :class_name => "User"
   before_create :generate_time
-  def initialize(point, message)
+  
+  def initialize(point, message, log_time = generate_time())
     self.point = point
     self.message = message
-    self.log_time = generate_time()
+    self.log_time = log_time
   end
 
  def self.signup( )

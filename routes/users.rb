@@ -144,14 +144,29 @@ class App < Sinatra::Base
     get '/helper_points/:user_id' do
       content_type 'application/json'
       
-      days = params[:days]
+      days = params[:days]|| 30
       helper = helper_from_id(params[:user_id].to_i)
 
-      if days.to_s == ''
-        return helper.helper_points.to_json
-      end
       days = days.to_i
-      return helper.helper_points.where(:log_time.gte => days.days.ago).to_json
+      empty_days_array = HelperPointDateHelper.get_date_array days
+      
+      days_from_db =helper.helper_points.where(:log_time.gte => days.days.ago)
+
+      retval = days_from_db.to_a | empty_days_array
+      grouped_retval = retval.group_by  {|a| a.log_time.strftime "%Y-%m-%d"}
+      sums = Array.new
+      log_time = nil
+      grouped_retval.each do |id,values|
+        sum = 0
+        
+        values.each do |x|
+          sum += x.point
+          log_time = x.log_time
+
+        end
+        sums << HelperPoint.new(sum, "day", log_time )
+      end
+      return sums.to_json
     end
 
     get '/helper_points_sum/:user_id' do

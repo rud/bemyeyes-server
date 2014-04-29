@@ -148,24 +148,10 @@ class App < Sinatra::Base
       helper = helper_from_id(params[:user_id].to_i)
 
       days = days.to_i
-      empty_days_array = HelperPointDateHelper.get_date_array days
+
+      sums = HelperPointDateHelper.get_aggregated_points_for_each_day(helper, days)
+
       
-      days_from_db =helper.helper_points.where(:log_time.gte => days.days.ago)
-
-      merged_days = days_from_db.to_a | empty_days_array
-      grouped_merged_days = merged_days.group_by  {|a| a.log_time.strftime "%Y-%m-%d"}
-      sums = Array.new
-      log_time = nil
-      grouped_merged_days.each do |id,values|
-        sum = 0
-        
-        values.each do |x|
-          sum += x.point
-          log_time = x.log_time
-
-        end
-        sums << HelperPoint.new(sum, "day", log_time )
-      end
       return sums.to_json
     end
 

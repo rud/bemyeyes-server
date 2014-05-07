@@ -15,6 +15,7 @@ FactoryGirl.define do
     last_name  "User"
     email {"user_#{(Time.now.to_f*100000).to_s}@example.com" }
     password "password"
+    role "blind"
   end
 
   factory :helper, class: User do
@@ -22,6 +23,7 @@ FactoryGirl.define do
     last_name  "User"
     email {"user_#{(Time.now.to_f*100000).to_s}@example.com" }  
     password "password"
+    role "helper"
   end
 
   factory :request , class: Request do

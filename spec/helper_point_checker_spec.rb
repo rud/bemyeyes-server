@@ -50,7 +50,7 @@ describe HelperPointChecker do
 
     @sut.check_helper_points
       
-    count = HelperPoint.all(:helper_id => helper.id).count
+    count = HelperPoint.all(:user_id => helper.id).count
     expect(count).to eq(1)
   end
   def create_high_five_for_helper(helper)

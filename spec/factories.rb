@@ -4,6 +4,7 @@ require_relative '../models/device'
 require_relative '../models/token'
 require_relative '../models/user'
 require_relative '../models/blind'
+require_relative '../models/helper'
 require_relative '../models/helper_request'
 require_relative '../models/request'
 require_relative '../helpers/request_id_shortener'
@@ -18,8 +19,8 @@ FactoryGirl.define do
     role "blind"
   end
 
-  factory :helper, class: User do
-    first_name "Admin"
+  factory :helper, class: Helper do
+    first_name "Helper"
     last_name  "User"
     email {"user_#{(Time.now.to_f*100000).to_s}@example.com" }  
     password "password"

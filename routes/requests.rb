@@ -72,7 +72,7 @@ class App < Sinatra::Base
 
       if request.answered?
         request.helper = user
-        HelperPoint.answer_push_message
+        point = HelperPoint.answer_push_message
         request.helper.helper_points.push point
         request.helper.save
         give_error(400, ERROR_REQUEST_ALREADY_ANSWERED, "The request has already been answered.").to_json

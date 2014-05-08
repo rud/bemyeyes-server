@@ -4,20 +4,30 @@ require 'active_support'
 class CronJobs
 
   attr_reader :helper, :request_helper, :scheduler, :waiting_requests
-  def initialize(helper, request_helper, scheduler, waiting_requests)
+  def initialize(helper, request_helper, scheduler, waiting_requests, helper_point_checker)
     @helper = helper
     @request_helper = request_helper
     @scheduler = scheduler
     @waiting_requests = waiting_requests
+    @helper_point_checker = helper_point_checker
   end
 
   def job
     return @job
   end
 
+  def point_job
+    return @point_job
+  end
+
+
   def start_jobs
     @job ||= @scheduler.every('20s') do
       check_requests
+    end
+
+    @point_job ||= @scheduler.every('1d') do
+      @helper_point_checker.check_helper_points
     end
   end
 

@@ -13,7 +13,8 @@ describe CronJobs do
 		allow(@request_helper).to receive(:send_notifications)
 		allow(@request_helper).to receive(:set_sent_helper)
 
-		@sut = CronJobs.new(@helper_double, @request_helper, double("scheduler"), @waiting_requests_double)
+		@helper_point_checker = double("helper_point_checker")
+		@sut = CronJobs.new(@helper_double, @request_helper, double("scheduler"), @waiting_requests_double, @helper_point_checker)
 	end
 
 	describe "check_requests" do

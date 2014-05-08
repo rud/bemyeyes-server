@@ -22,6 +22,7 @@ describe HelperPointChecker do
       HelperPoint.destroy_all
       HelperRequest.destroy_all
     end
+    context "5 high fives " do
   it "No helper requests does nothing" do
       @sut.check_helper_points
       
@@ -85,6 +86,7 @@ describe HelperPointChecker do
     count = HelperPoint.all(:user_id => helper.id).count
     expect(count).to eq(0)
   end
+end
 
   def create_high_five_for_helper(helper)
     request = Request.new

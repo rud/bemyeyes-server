@@ -148,6 +148,7 @@ class App < Sinatra::Base
       helper = helper_from_id(params[:user_id].to_i)
       if(helper.helper_points.count == 0)
         return 0.to_json
+      end
       return helper.helper_points.sum.point.to_json
     end
    

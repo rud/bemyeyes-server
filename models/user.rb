@@ -33,6 +33,7 @@ class User
   key :role, String, :required => true
   key :available_from, Time
   key :snooze_period, String
+  key :id2, Integer, :unique =>true
 
   auto_increment!
   timestamps!

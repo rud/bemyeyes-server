@@ -29,7 +29,7 @@ class App < Sinatra::Base
   
   # Do any configurations
   configure do
-    set :environment, :development
+    set :environment, ENV['RACK_ENV'].to_sym
     set :show_exceptions, false
     set :app_file, __FILE__
     set :config, YAML.load_file('config/config.yml') rescue nil || {}

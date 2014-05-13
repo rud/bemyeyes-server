@@ -18,3 +18,4 @@ gem 'rspec'
 gem 'shoulda'
 
 gem 'rest-client'
+gem 'newrelic_rpm'

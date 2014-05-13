@@ -72,7 +72,7 @@ class App < Sinatra::Base
   end
   
   get '/log' do
-    File.read("log/app.log")
+    File.read("log/app.log").gsub!(/\[/,"<br/>[")
   end  
   # Handle errors
   error do

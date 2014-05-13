@@ -27,8 +27,8 @@ describe CronJobs do
 			expect(@waiting_requests_double).to have_received(:get_waiting_requests_from_lasts_2_minutes)
 		end
 
-		it "asks for 5 available helpers for each request" do
-			expect(@helper_double).to have_received(:available).with(anything(),10)
+		it "asks for 200 available helpers for each request" do
+			expect(@helper_double).to have_received(:available).with(anything(),200)
 		end
 
 		it "Sends notification" do

@@ -11,11 +11,12 @@ gem 'bcrypt-ruby', :require => 'bcrypt'
 gem 'rufus-scheduler'
 gem "activesupport"
 gem 'bson_ext'
-
-gem 'rspec-mocks'
-gem 'factory_girl'
-gem 'rspec'
-gem 'shoulda'
-
+group :development do
+  gem 'rspec-mocks'
+  gem 'factory_girl'
+  gem 'rspec'
+  gem 'shoulda'
+end
 gem 'rest-client'
 gem 'newrelic_rpm'
+gem 'rake'

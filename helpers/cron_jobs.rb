@@ -1,5 +1,6 @@
 require 'rufus-scheduler'
 require 'active_support'
+require 'active_support/deprecation'
 
 class CronJobs
 

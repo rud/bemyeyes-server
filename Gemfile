@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'opentok'
-gem 'mongomapper_id2'
 gem 'hashids'
 gem 'urbanairship'
 gem 'aescrypt'
@@ -19,3 +18,4 @@ gem 'shoulda'
 
 gem 'rest-client'
 gem 'newrelic_rpm'
+gem "rack-test", require: "rack/test"

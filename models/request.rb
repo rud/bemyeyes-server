@@ -1,4 +1,3 @@
-require 'mongomapper_id2'
 
 class Request
   include MongoMapper::Document
@@ -14,7 +13,6 @@ class Request
   key :helper_rating, Integer
   key :stopped, Boolean
 
-  auto_increment!
   timestamps!
 
   before_create :create_short_id
@@ -41,6 +39,6 @@ class Request
 
   private
   def create_short_id
-    self.short_id = RequestIDShortener.new(@short_id_salt).encrypt(self.id2)
+    self.short_id = self._id
   end
 end

@@ -1,5 +1,3 @@
-require 'mongomapper_id2'
-
 class Blind < User
 
   key :role, String

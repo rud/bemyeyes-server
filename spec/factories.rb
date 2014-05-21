@@ -7,7 +7,6 @@ require_relative '../models/blind'
 require_relative '../models/helper'
 require_relative '../models/helper_request'
 require_relative '../models/request'
-require_relative '../helpers/request_id_shortener'
 
 FactoryGirl.define do
 

@@ -13,6 +13,13 @@ describe "Rest api" do
     @security_salt = config["security_salt"]
   end
  describe "smoketest" do
+     it "redirects from root" do
+         url = "http://localhost:9292"
+         response = RestClient.get url
+
+         #ok so this is not the most elegant way of testing the redirect - but its ok for now
+         response.should include("<title>Be My Eyes - crowdsourced help for the blind</title>")
+     end
       it "can get the logs" do
           url = "http://#{@username}:#{@password}@localhost:9292/log"
           response = RestClient.get url 

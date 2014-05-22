@@ -37,7 +37,7 @@ class App < Sinatra::Base
         give_error(400, ERROR_USER_EMAIL_ALREADY_REGISTERED, "The e-mail is already registered.").to_json if e.message.match /email/i
       end
 
-      return user_from_id(user.id2)
+      return user_from_id(user._id)
     end
     
     # Logout, thereby deleting the token
@@ -197,7 +197,7 @@ class App < Sinatra::Base
   
   # Get user from ID
   def user_from_id(user_id)
-    user = User.first(:id2 => user_id)
+    user = User.first(:_id => user_id)
     if user.nil?
       give_error(400, ERROR_USER_NOT_FOUND, "No user found.").to_json
     end
@@ -206,7 +206,7 @@ class App < Sinatra::Base
   end
 
   def helper_from_id(user_id)
-    helper = Helper.first(:id2 => user_id)
+    helper = Helper.first(:_id => user_id)
     if helper.nil?
       give_error(400, ERROR_USER_NOT_FOUND, "No helper found.").to_json
     end

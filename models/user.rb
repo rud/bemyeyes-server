@@ -1,4 +1,3 @@
-require 'mongomapper_id2'
 require 'bcrypt'
 
 
@@ -9,7 +8,6 @@ class User
       "required" => [],
       "additionalProperties" => false,
       "properties" => {
-          "id2" => {"type" => "integer"},
           "user_id" => {"type" => "integer"},
           "password" => {"type" => "string"},
           "email" => {"type" => "string"},
@@ -33,9 +31,7 @@ class User
   key :role, String, :required => true
   key :available_from, Time
   key :snooze_period, String
-  key :id2, Integer, :unique =>true
 
-  auto_increment!
   timestamps!
   
   before_create :encrypt_password
@@ -77,7 +73,7 @@ class User
   end
 
   def to_json()
-    return { "id" => self.id2,
+    return { "id" => self._id,
              "user_id" => self.user_id,
              "email" => self.email,
              "first_name" => self.first_name,

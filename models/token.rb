@@ -1,5 +1,3 @@
-require 'mongomapper_id2'
-
 class Token
   include MongoMapper::Document
 
@@ -10,7 +8,6 @@ class Token
   key :token, String, :unique => true
   key :expiry_time, Time
   
-  auto_increment!
   timestamps!
   
   before_create :generate_token

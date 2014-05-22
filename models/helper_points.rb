@@ -1,5 +1,3 @@
-require 'mongomapper_id2'
-
 class HelperPoint
   include MongoMapper::Document
   key :user_id, ObjectId

@@ -1,5 +1,3 @@
-require 'mongomapper_id2'
-
 class Device
   include MongoMapper::Document
 
@@ -14,7 +12,6 @@ class Device
   key :locale, String
   key :development, Boolean
   
-  auto_increment!
   timestamps!
 
 end

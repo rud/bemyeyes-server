@@ -1,30 +1,33 @@
 require 'rest_client'
 require 'shoulda'
 require 'yaml'
+require 'aescrypt'
+require 'bcrypt'
+require 'base64'
 
 describe "Rest api" do
   before(:each) do
     config = YAML.load_file('config/config.yml')
     @username = config['authentication']['username']
     @password = config['authentication']['password']
+    @security_salt = config["security_salt"]
   end
-  describe "User api" do 
-    before(:each) do
-      config = YAML.load_file('config/config.yml')
-      @username = config['authentication']['username']
-      @password = config['authentication']['password']
-    end
-    
-    it "Should return a user" do
-      response = RestClient::Request.new(
-        :method => :get,
-        :url => "http://stagingapi.bemyeyes.org/users/1",
-        :user => @username,
-        :password => @password,
-        :headers => { :accept => :json,
-          :content_type => :json }
-          ).execute 
-      response.code.should eq(200)
-    end
+ describe "smoketest" do
+      it "can get the logs" do
+          url = "http://#{@username}:#{@password}@localhost:9292/log"
+          response = RestClient.get url 
+          response.code.should eq(200)
+      end
   end
+ describe "create user" do
+     it "can create a user" do
+
+         password = AESCrypt.encrypt('Password1', @security_salt)
+         url = "http://#{@username}:#{@password}@localhost:9292/users/"
+         response = RestClient.post url, {'first_name' =>'first_name', 
+             'last_name'=>'last_name', 'email'=> 'someone@example.com', 
+             'role'=> 'helper', 'password'=> password }.to_json
+         response.code.should eq(200)
+     end
+ end
 end

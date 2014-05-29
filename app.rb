@@ -60,7 +60,7 @@ class App < Sinatra::Base
     cron_job.start_jobs
   end
 
-  before  { TheLogger.log.info(request.path_info)}
+  before  { TheLogger.log.info(request.request_method + " " + request.path_info)}
 
   # Protect anything but the root
   before /^\/.+/ do

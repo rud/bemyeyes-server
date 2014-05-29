@@ -146,7 +146,7 @@ class App < Sinatra::Base
 
     get '/helper_points_sum/:user_id' do
       retval = OpenStruct.new
-      helper = helper_from_id(params[:user_id].to_i)
+      helper = helper_from_id(params[:user_id])
       if(helper.helper_points.count == 0)
         retval.sum = 0
         return retval.marshal_dump.to_json

@@ -45,8 +45,11 @@ describe "Rest api" do
          response = RestClient.get url, {:accept => :json}
          response.code.should eq(200)
 
-         jsn = JSON.parse response.body
-         puts jsn
+         url = "#{@servername_with_credentials}/users/helper_points_sum/" + id
+         response = RestClient.get url, {:accept => :json}
+         response.code.should eq(200)
+
+
      end
 
  end

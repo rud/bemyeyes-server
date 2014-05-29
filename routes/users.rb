@@ -157,7 +157,7 @@ class App < Sinatra::Base
    
     # Update a user
     put '/:user_id' do
-      user = user_from_id(params[:user_id].to_i)
+      user = user_from_id(params[:user_id])
       begin
         body_params = JSON.parse(request.body.read)
         JSON::Validator.validate!(User::SCHEMA, body_params)

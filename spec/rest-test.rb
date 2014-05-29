@@ -31,7 +31,7 @@ describe "Rest api" do
 
  describe "helper points" do
      it "can get helper points" do
-          email =  "user_#{(Time.now.to_f*100000).to_s}@example.com" 
+         email =  "user_#{(Time.now.to_f*100000).to_s}@example.com" 
          password = AESCrypt.encrypt('Password1', @security_salt)
          createUser_url = "#{@servername_with_credentials}/users/"
          response = RestClient.post createUser_url, {'first_name' =>'first_name', 
@@ -48,11 +48,31 @@ describe "Rest api" do
          url = "#{@servername_with_credentials}/users/helper_points_sum/" + id
          response = RestClient.get url, {:accept => :json}
          response.code.should eq(200)
-
-
      end
 
  end
+
+ describe "update user" do
+    it "can update a user after creation" do
+         email =  "user_#{(Time.now.to_f*100000).to_s}@example.com" 
+         password = AESCrypt.encrypt('Password1', @security_salt)
+         createUser_url = "#{@servername_with_credentials}/users/"
+         response = RestClient.post createUser_url, {'first_name' =>'first_name', 
+             'last_name'=>'last_name', 'email'=> email, 
+             'role'=> 'helper', 'password'=> password }.to_json
+
+         jsn = JSON.parse response.body
+         id = jsn['id']
+
+         url = "#{@servername_with_credentials}/users/" + id
+         response = RestClient.put url, {'first_name' =>'my first_name', 
+             'last_name'=>'last_name', 'email'=> email, 
+             'role'=> 'helper', 'password'=> password }.to_json
+
+         response.code.should eq(200)
+    end 
+ end
+
  describe "create user" do
      it "can create a user and get it" do
          email =  "user_#{(Time.now.to_f*100000).to_s}@example.com" 

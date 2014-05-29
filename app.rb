@@ -29,7 +29,10 @@ class App < Sinatra::Base
   # Do any configurations
   configure do
     set :environment, :development
-    set :show_exceptions, false
+    set :dump_errors, false
+    set :raise_errors, true
+    set :show_exceptions, true
+    enable :logging
     set :app_file, __FILE__
     set :config, YAML.load_file('config/config.yml') rescue nil || {}
     set :scheduler, Rufus::Scheduler.new
@@ -57,10 +60,13 @@ class App < Sinatra::Base
     cron_job.start_jobs
   end
 
+  before  { TheLogger.log.info(request.path_info)}
+
   # Protect anything but the root
   before /^\/.+/ do
     protected!
   end
+
   before do
     content_type 'application/json'
   end
@@ -79,6 +85,7 @@ class App < Sinatra::Base
     status 500
 
     e = env["sinatra.error"]
+    TheLogger.log.error(e)
     return { "result" => "error", "message" => e.message }.to_json
   end
 

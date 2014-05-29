@@ -73,6 +73,24 @@ describe "Rest api" do
     end 
  end
 
+ describe "snooze" do
+    it "can create user and then snooze" do
+         email =  "user_#{(Time.now.to_f*100000).to_s}@example.com" 
+         password = AESCrypt.encrypt('Password1', @security_salt)
+         createUser_url = "#{@servername_with_credentials}/users/"
+         response = RestClient.post createUser_url, {'first_name' =>'first_name', 
+             'last_name'=>'last_name', 'email'=> email, 
+             'role'=> 'helper', 'password'=> password }.to_json
+
+         jsn = JSON.parse response.body
+         id = jsn['id']
+
+         url = "#{@servername_with_credentials}/users/"+id + "/snooze/1h"
+         response = RestClient.put url, {}.to_json
+         response.code.should eq(200)
+
+    end 
+ end
  describe "create user" do
      it "can create a user and get it" do
          email =  "user_#{(Time.now.to_f*100000).to_s}@example.com" 

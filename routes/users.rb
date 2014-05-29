@@ -172,7 +172,7 @@ class App < Sinatra::Base
     put '/:user_id/snooze/:period' do
       puts params[:period]
       raise Sinatra::NotFound unless params[:period].match /^(1h|3h|1d|3d|1w|stop)$/
-      user = user_from_id(params[:user_id].to_i)
+      user = user_from_id(params[:user_id])
       #Stores it in UTC, perhaps change it using timezone info later on.
       current_time = Time.now.utc
       #TODO refactor this case...

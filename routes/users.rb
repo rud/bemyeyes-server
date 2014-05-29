@@ -135,7 +135,7 @@ class App < Sinatra::Base
     #days param
     get '/helper_points/:user_id' do
       days = params[:days]|| 30
-      helper = helper_from_id(params[:user_id].to_i)
+      helper = helper_from_id(params[:user_id])
 
       days = days.to_i
 

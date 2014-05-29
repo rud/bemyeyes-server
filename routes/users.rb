@@ -37,7 +37,7 @@ class App < Sinatra::Base
         give_error(400, ERROR_USER_EMAIL_ALREADY_REGISTERED, "The e-mail is already registered.").to_json if e.message.match /email/i
       end
 
-      return user_from_id(user._id)
+      return user_from_id(user._id).to_json
     end
     
     # Logout, thereby deleting the token
@@ -129,7 +129,7 @@ class App < Sinatra::Base
     get '/:user_id' do
       content_type 'application/json'
     
-      return user_from_id(params[:user_id].to_i).to_json
+      return user_from_id(params[:user_id]).to_json
     end
 
     #days param
@@ -201,7 +201,6 @@ class App < Sinatra::Base
     if user.nil?
       give_error(400, ERROR_USER_NOT_FOUND, "No user found.").to_json
     end
-    
     return user
   end
 

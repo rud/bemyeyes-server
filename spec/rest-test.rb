@@ -29,6 +29,25 @@ describe "Rest api" do
       end
   end
  describe "create user" do
+     it "can create a user and get it" do
+         email =  "user_#{(Time.now.to_f*100000).to_s}@example.com" 
+         password = AESCrypt.encrypt('Password1', @security_salt)
+         createUser_url = "#{@servername_with_credentials}/users/"
+         response = RestClient.post createUser_url, {'first_name' =>'first_name', 
+             'last_name'=>'last_name', 'email'=> email, 
+             'role'=> 'helper', 'password'=> password }.to_json
+
+         jsn = JSON.parse response.body
+         id = jsn['id']
+
+         getUser_url = "#{@servername_with_credentials}/users/" + id
+         response = RestClient.get getUser_url, {:accept => :json}
+         response.code.should eq(200)
+
+         jsn = JSON.parse response.body
+         jsn['first_name'].should eq('first_name')
+     end
+
      it "can create a user" do
          email =  "user_#{(Time.now.to_f*100000).to_s}@example.com" 
          password = AESCrypt.encrypt('Password1', @security_salt)

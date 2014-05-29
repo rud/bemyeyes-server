@@ -5,6 +5,9 @@ require 'aescrypt'
 require 'bcrypt'
 require 'base64'
 
+#I know there is a lot of duplication in this file, it shall soon be removed
+#hope to not find this comment in years form now
+
 describe "Rest api" do
   before(:each) do
     config = YAML.load_file('config/config.yml')

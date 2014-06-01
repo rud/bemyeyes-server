@@ -16,6 +16,7 @@ gem 'rspec-mocks'
 gem 'factory_girl'
 gem 'rspec'
 gem 'shoulda'
+gem 'rake'
 
 gem 'rest-client'
 gem 'newrelic_rpm'

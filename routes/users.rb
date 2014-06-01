@@ -151,7 +151,7 @@ class App < Sinatra::Base
         retval.sum = 0
         return retval.marshal_dump.to_json
       end
-      etval.sum = helper.helper_points.sum.point
+      retval.sum = helper.helper_points.sum.point
       return retval.marshal_dump.to_json
     end
    

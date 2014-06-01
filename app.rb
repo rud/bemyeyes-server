@@ -28,8 +28,11 @@ class App < Sinatra::Base
   
   # Do any configurations
   configure do
-    set :environment, ENV['RACK_ENV'].to_sym
-    set :show_exceptions, false
+    set :environment, :development
+    set :dump_errors, false
+    set :raise_errors, true
+    set :show_exceptions, true
+    enable :logging
     set :app_file, __FILE__
     set :config, YAML.load_file('config/config.yml') rescue nil || {}
     set :scheduler, Rufus::Scheduler.new
@@ -38,7 +41,7 @@ class App < Sinatra::Base
     TheLogger.log.formatter = proc { |severity, datetime, progname, msg| "[#{severity}] #{datetime.strftime('%Y-%m-%d %H:%M:%S')} : #{msg}\n" }
     
     opentok_config = settings.config['opentok']
-    OpenTokSDK = OpenTok::OpenTokSDK.new opentok_config['api_key'], opentok_config['api_secret']
+    OpenTokSDK = OpenTok::OpenTok.new opentok_config['api_key'], opentok_config['api_secret']
     
     ua_config = settings.config['urbanairship']
     ua_prod_config = ua_config['production']
@@ -57,10 +60,13 @@ class App < Sinatra::Base
     cron_job.start_jobs
   end
 
+  before  { TheLogger.log.info(request.request_method + " " + request.path_info)}
+
   # Protect anything but the root
   before /^\/.+/ do
     protected!
   end
+
   before do
     content_type 'application/json'
   end
@@ -79,6 +85,7 @@ class App < Sinatra::Base
     status 500
 
     e = env["sinatra.error"]
+    TheLogger.log.error(e)
     return { "result" => "error", "message" => e.message }.to_json
   end
 

@@ -67,12 +67,16 @@ class App < Sinatra::Base
       return { "success" => true }.to_json
     end
     
-    # Login, thereby creating an ew token
+    # Login, thereby creating an new token
     post '/login' do
       begin
         body_params = JSON.parse(request.body.read)
+        device_token = body_params["device_token"]
+        if !device_token && device_token.length == 0
+          raise Exception("device_token must be present")
+        end       
       rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        give_error(400, ERROR_INVALID_BODY, "The body is not valid. " + e.message).to_json
       end
       
       secure_password = body_params["password"]

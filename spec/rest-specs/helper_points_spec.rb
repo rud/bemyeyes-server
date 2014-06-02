@@ -30,6 +30,6 @@ describe "helper points" do
      jsn = JSON.parse response.body
      sum = jsn['sum']
 
-     sum.should eq(0)
+     sum.should eq(50)
    end
  end

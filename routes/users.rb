@@ -14,10 +14,12 @@ class App < Sinatra::Base
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
+      is_helper_creation = false
       user = case body_params["role"].downcase
                when "blind"
                  Blind.new
                when "helper"
+                 is_helper_creation = true
                  Helper.new
                else
                  give_error(400, ERROR_UNDEFINED_ROLE, "Undefined role.").to_json
@@ -32,6 +34,14 @@ class App < Sinatra::Base
       end
       begin
         user.save!
+        if is_helper_creation
+            helper = Helper.first(:_id => user._id)
+            p '.............................'
+            p helper
+            point = HelperPoint.signup
+            helper.helper_points.push point
+            helper.save
+        end 
       rescue Exception => e
         puts e.message
         give_error(400, ERROR_USER_EMAIL_ALREADY_REGISTERED, "The e-mail is already registered.").to_json if e.message.match /email/i

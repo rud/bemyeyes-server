@@ -37,7 +37,7 @@ class App < Sinatra::Base
         give_error(400, ERROR_USER_EMAIL_ALREADY_REGISTERED, "The e-mail is already registered.").to_json if e.message.match /email/i
       end
 
-      return user_from_id(user._id)
+      return user_from_id(user._id).to_json
     end
     
     # Logout, thereby deleting the token
@@ -129,13 +129,13 @@ class App < Sinatra::Base
     get '/:user_id' do
       content_type 'application/json'
     
-      return user_from_id(params[:user_id].to_i).to_json
+      return user_from_id(params[:user_id]).to_json
     end
 
     #days param
     get '/helper_points/:user_id' do
       days = params[:days]|| 30
-      helper = helper_from_id(params[:user_id].to_i)
+      helper = helper_from_id(params[:user_id])
 
       days = days.to_i
 
@@ -146,18 +146,18 @@ class App < Sinatra::Base
 
     get '/helper_points_sum/:user_id' do
       retval = OpenStruct.new
-      helper = helper_from_id(params[:user_id].to_i)
+      helper = helper_from_id(params[:user_id])
       if(helper.helper_points.count == 0)
         retval.sum = 0
         return retval.marshal_dump.to_json
       end
-      etval.sum = helper.helper_points.sum.point
+      retval.sum = helper.helper_points.sum.point
       return retval.marshal_dump.to_json
     end
    
     # Update a user
     put '/:user_id' do
-      user = user_from_id(params[:user_id].to_i)
+      user = user_from_id(params[:user_id])
       begin
         body_params = JSON.parse(request.body.read)
         JSON::Validator.validate!(User::SCHEMA, body_params)
@@ -172,7 +172,7 @@ class App < Sinatra::Base
     put '/:user_id/snooze/:period' do
       puts params[:period]
       raise Sinatra::NotFound unless params[:period].match /^(1h|3h|1d|3d|1w|stop)$/
-      user = user_from_id(params[:user_id].to_i)
+      user = user_from_id(params[:user_id])
       #Stores it in UTC, perhaps change it using timezone info later on.
       current_time = Time.now.utc
       #TODO refactor this case...
@@ -201,7 +201,6 @@ class App < Sinatra::Base
     if user.nil?
       give_error(400, ERROR_USER_NOT_FOUND, "No user found.").to_json
     end
-    
     return user
   end
 

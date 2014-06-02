@@ -16,8 +16,10 @@ group :development do
   gem 'factory_girl'
   gem 'rspec'
   gem 'shoulda'
+  gem 'rest-client'
+  gem "rack-test", require: "rack/test"
 end
-gem 'rest-client'
-gem 'newrelic_rpm'
+
 gem 'rake'
-gem "rack-test", require: "rack/test"
+
+gem 'newrelic_rpm'

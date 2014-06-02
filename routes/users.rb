@@ -36,8 +36,6 @@ class App < Sinatra::Base
         user.save!
         if is_helper_creation
             helper = Helper.first(:_id => user._id)
-            p '.............................'
-            p helper
             point = HelperPoint.signup
             helper.helper_points.push point
             helper.save

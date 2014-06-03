@@ -72,9 +72,14 @@ class App < Sinatra::Base
       begin
         body_params = JSON.parse(request.body.read)
         device_token = body_params["device_token"]
-        if !device_token && device_token.length == 0
-          raise Exception("device_token must be present")
-        end       
+        if device_token.nil? or device_token.length == 0
+          raise "device_token must be present"
+        end
+
+        device = Device.first(:device_token => device_token)
+        if device.nil?
+            raise "device not found"
+        end
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid. " + e.message).to_json
       end
@@ -115,8 +120,11 @@ class App < Sinatra::Base
       token = Token.new
       token.valid_time = 365.days
       user.tokens.push(token)
+      user.devices.push(device)
       token.save!
 
+      device.token = token
+      device.save!
       return { "token" => JSON.parse(token.to_json), "user" => JSON.parse(token.user.to_json) }.to_json
     end
     

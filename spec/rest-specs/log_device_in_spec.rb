@@ -63,9 +63,6 @@ describe "log device in" do
         user.devices.select{|d| d.device_token == token}.length.should be(1)
     end
 
-    it "can log user out with token, device belongs to no-one" do
-    end
-
     it "can log user out with token, device is logged out" do
         create_user
         device_token = register_device

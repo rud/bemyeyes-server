@@ -15,7 +15,6 @@ describe "log device in" do
 
     it "can create a device without user token" do  
         url = "#{@servername_with_credentials}/devices/register"
-        puts url
         response = RestClient.post url, {'token' =>'token_repr', 
                                          'device_token'=>'device_token', 'device_name'=> 'device_name', 
                                          'model'=> 'model', 'system_version' => 'system_version', 

@@ -61,8 +61,11 @@ class App < Sinatra::Base
       if !token.valid?
         give_error(400, ERROR_USER_TOKEN_EXPIRED, "Token has expired.").to_json
       end
-      
-      token.delete
+      begin
+        token.delete
+      rescue Exception => e
+        give_error(400, ERROR_INVALID_BODY, e.message)
+      end
       
       return { "success" => true }.to_json
     end
@@ -121,10 +124,10 @@ class App < Sinatra::Base
       token.valid_time = 365.days
       user.tokens.push(token)
       user.devices.push(device)
-      token.save!
 
       device.token = token
       device.save!
+      token.save!
       return { "token" => JSON.parse(token.to_json), "user" => JSON.parse(token.user.to_json) }.to_json
     end
     

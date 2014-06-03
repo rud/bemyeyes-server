@@ -67,6 +67,21 @@ describe "log device in" do
     end
 
     it "can log user out with token, device is logged out" do
+        create_user
+        device_token = register_device
+        #log user in
+        loginUser_url = "#{@servername_with_credentials}/users/login"
+        response = RestClient.post loginUser_url, 
+        {'email' => @email, 'password'=> @password, 'device_token' => device_token}.to_json
+        jsn = JSON.parse(response.to_s)
+        token = jsn["token"]["token"]
+
+        logoutUser_url  = "#{@servername_with_credentials}/users/logout"
+        response = RestClient.put logoutUser_url, {'token'=> token}.to_json
+ 
+        device = Device.first(:device_token => device_token)
+        device.is_logged_in.should be(false)
+
     end
 
     it "can log user out with token and token is deleted" do

@@ -4,7 +4,7 @@ class Device
   belongs_to :user, :class_name => "User"
 
   key :device_token, String, :required => true
-  key:token, Token
+  one :token
   key :device_name, String
   key :model, String
   key :system_version, String

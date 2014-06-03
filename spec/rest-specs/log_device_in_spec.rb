@@ -12,15 +12,19 @@ require_relative '../integration_spec_helper'
 
 describe "log device in" do
     include_context "rest-context"
-
-    it "can create a device without user token" do  
+    def register_device
         url = "#{@servername_with_credentials}/devices/register"
         response = RestClient.post url, {'token' =>'token_repr', 
-                                         'device_token'=>'device_token', 'device_name'=> 'device_name', 
-                                         'model'=> 'model', 'system_version' => 'system_version', 
-                                         'app_version' => 'app_version', 'app_bundle_version' => 'app_bundle_version',
-                                         'locale'=> 'locale', 'development' => 'development'}.to_json
+                    'device_token'=>'device_token', 'device_name'=> 'device_name', 
+                    'model'=> 'model', 'system_version' => 'system_version', 
+                    'app_version' => 'app_version', 'app_bundle_version' => 'app_bundle_version',
+                    'locale'=> 'locale', 'development' => 'development'}.to_json
         response.code.should eq(200)
+        json = JSON.parse(response.body)
+        json["token"]
+    end
+    it "can create a device without user token" do  
+        register_device
     end
 
     it "cannot log user in without device token" do 
@@ -31,14 +35,17 @@ describe "log device in" do
         expect{RestClient.post loginUser_url, 
         {'email' => @email, 'password'=> @password}.to_json}
         .to raise_error(RestClient::BadRequest)
-        
-       
-
-    end 
-
-    it "can log a user in with a device token" do
     end
 
+    it "can log a user in with a device token, device is logged" do
+    end
+
+    it "can log a user in with a device token, device belongs to user" do
+    end
+
+
+    it "can log user out with token, device belongs to noone" do
+    end
 
     it "can log user out with token and token is deleted" do
         #create user

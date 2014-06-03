@@ -25,7 +25,7 @@ class App < Sinatra::Base
       
       Urbanairship.register_device(device_token, :alias => device_name, :tags => [ model, system_version, "v" + app_version, "v" + app_bundle_version, locale ])
       
-      return { "success" => true }.to_json
+      return { "success" => true, "token" => device_token }.to_json
     end
   
   end # End namespace /devices

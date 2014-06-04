@@ -4,6 +4,7 @@ class Device
   belongs_to :user, :class_name => "User"
 
   key :device_token, String, :required => true
+  one :token
   key :device_name, String
   key :model, String
   key :system_version, String
@@ -13,5 +14,7 @@ class Device
   key :development, Boolean
   
   timestamps!
-
+  def is_logged_in
+    !token.nil?
+  end
 end

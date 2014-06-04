@@ -3,6 +3,7 @@ class Token
 
   key :user_id, ObjectId
   belongs_to :user, :class_name => "User"
+  belongs_to :device, :class_name => "Device"
   
 
   key :token, String, :unique => true

@@ -21,14 +21,11 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
       
-      token = token_from_representation(token_repr)
-      user = token.user
-      
-      register_device_for_user(token.user, device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
+      register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
       
       Urbanairship.register_device(device_token, :alias => device_name, :tags => [ model, system_version, "v" + app_version, "v" + app_bundle_version, locale ])
       
-      return { "success" => true }.to_json
+      return { "success" => true, "token" => device_token }.to_json
     end
   
   end # End namespace /devices
@@ -44,7 +41,7 @@ class App < Sinatra::Base
   end
   
   # Register a device for a user
-  def register_device_for_user(user, device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
+  def register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
     device = Device.first(:device_token => device_token)
 
     unless device.nil?
@@ -53,7 +50,6 @@ class App < Sinatra::Base
 
     # Create new device if it does not already exist
     device = Device.new
-    user.devices.push(device)
     
     # Update information
     device.device_token = device_token

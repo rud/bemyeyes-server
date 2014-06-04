@@ -61,18 +61,30 @@ class App < Sinatra::Base
       if !token.valid?
         give_error(400, ERROR_USER_TOKEN_EXPIRED, "Token has expired.").to_json
       end
-      
-      token.delete
+      begin
+        token.delete
+      rescue Exception => e
+        give_error(400, ERROR_INVALID_BODY, e.message)
+      end
       
       return { "success" => true }.to_json
     end
     
-    # Login, thereby creating an ew token
+    # Login, thereby creating an new token
     post '/login' do
       begin
         body_params = JSON.parse(request.body.read)
+        device_token = body_params["device_token"]
+        if device_token.nil? or device_token.length == 0
+          raise "device_token must be present"
+        end
+
+        device = Device.first(:device_token => device_token)
+        if device.nil?
+            raise "device not found"
+        end
       rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        give_error(400, ERROR_INVALID_BODY, "The body is not valid. " + e.message).to_json
       end
       
       secure_password = body_params["password"]
@@ -111,8 +123,11 @@ class App < Sinatra::Base
       token = Token.new
       token.valid_time = 365.days
       user.tokens.push(token)
-      token.save!
+      user.devices.push(device)
 
+      device.token = token
+      device.save!
+      token.save!
       return { "token" => JSON.parse(token.to_json), "user" => JSON.parse(token.user.to_json) }.to_json
     end
     

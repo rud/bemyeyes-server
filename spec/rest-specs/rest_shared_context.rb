@@ -1,5 +1,5 @@
 shared_context "rest-context" do
- before(:each) do
+  before(:each) do
     config = YAML.load_file('config/config.yml')
     @username = config['authentication']['username']
     @password = config['authentication']['password']
@@ -12,13 +12,35 @@ shared_context "rest-context" do
   end
 
   def create_user
-  	createUser_url = "#{@servername_with_credentials}/users/"
-  	 response = RestClient.post createUser_url, {'first_name' =>'first_name', 
-         'last_name'=>'last_name', 'email'=> @email, 
-         'role'=> 'helper', 'password'=> @password }.to_json
+    createUser_url = "#{@servername_with_credentials}/users/"
+    response = RestClient.post createUser_url, {'first_name' =>'first_name', 
+                                                'last_name'=>'last_name', 'email'=> @email, 
+                                                'role'=> 'helper', 'password'=> @password }.to_json
 
-         jsn = JSON.parse response.body
-         id = jsn['id']
-         return id
+    jsn = JSON.parse response.body
+    id = jsn['id']
+    return id
   end
+
+  def log_user_in
+    #log user in
+    loginUser_url = "#{@servername_with_credentials}/users/login"
+    response = RestClient.post loginUser_url, {'email' => @email, 'password'=> @password, 'device_token' => 'device_token'}.to_json
+    jsn = JSON.parse(response.to_s)
+    token = jsn["token"]["token"]
+    token
+  end
+
+  def register_device
+    url = "#{@servername_with_credentials}/devices/register"
+    response = RestClient.post url, {'token' =>'token_repr', 
+                                     'device_token'=>'device_token', 'device_name'=> 'device_name', 
+                                     'model'=> 'model', 'system_version' => 'system_version', 
+                                     'app_version' => 'app_version', 'app_bundle_version' => 'app_bundle_version',
+                                     'locale'=> 'locale', 'development' => 'development'}.to_json
+    response.code.should eq(200)
+    json = JSON.parse(response.body)
+    json["token"]
+  end
+
 end

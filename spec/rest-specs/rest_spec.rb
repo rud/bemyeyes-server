@@ -53,17 +53,12 @@ describe "Rest api" do
        it "can create user,log in and log out" do
          #create user
          create_user
-         #log user in
-         loginUser_url = "#{@servername_with_credentials}/users/login"
-         response = RestClient.post loginUser_url, {'email' => @email, 'password'=> @password, 'device_token' => 'device_token'}.to_json
-         jsn = JSON.parse(response.to_s)
-         token = jsn["token"]["token"]
-
+         token = log_user_in
          #log user out
          logoutUser_url  = "#{@servername_with_credentials}/users/logout"
          response = RestClient.put logoutUser_url, {'token'=> token}.to_json
 
          response.code.should eq(200)
      end
- end
+end
 end

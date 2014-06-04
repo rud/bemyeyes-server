@@ -3,8 +3,15 @@ class App < Sinatra::Base
 
   # Begin devices namespace
   namespace '/abuse' do
-    def is_blank_string?(theStr)
-      theStr.nil? or theStr.length == 0
+    def check_and_raise_if_blank_string(theStr, name)
+      if theStr.nil? or theStr.length == 0
+        raise "#{name} can not be empty or nil "
+      end 
+    end
+
+    def is_logged_in(token)
+      token = Token.first(:token => token)
+      !token.nil?
     end
 
     # Register device
@@ -14,8 +21,15 @@ class App < Sinatra::Base
         token_repr = body_params["token"]
         helper_request_id = body_params["helper_request_id"]
         reason = body_params["reason"]
+        check_and_raise_if_blank_string token_repr, "token"
+        check_and_raise_if_blank_string helper_request_id, "helper_request_id"
+        check_and_raise_if_blank_string reason, "reason"
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid. " + e.message).to_json
+      end
+
+      if !is_logged_in token_repr
+        give_error(401, ERROR_NOT_AUTHORIZED, "Blind person should be logged in").to_json
       end
       begin
         helper_request = HelperRequest.first(:id => helper_request_id)

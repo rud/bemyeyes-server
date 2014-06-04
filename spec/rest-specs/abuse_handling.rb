@@ -43,6 +43,26 @@ end
     .to raise_error(RestClient::BadRequest)
   end
 
+  it "will not accept a abuse report if blind is  not logged in " do
+   register_device
+    create_user
+    token = log_user_in
+
+    #we could add a helper and all to the request, but for this test we don't need it
+    request = create_request token
+    helper_request = HelperRequest.new
+    request = request
+    helper_request.save!
+    
+    #log user out
+    logoutUser_url  = "#{@servername_with_credentials}/users/logout"
+    RestClient.put logoutUser_url, {'token'=> token}.to_json
+
+
+    expect{report_abuse token, helper_request.id}
+    .to raise_error(RestClient::Unauthorized)
+  end
+
   it "will let blind report abuse" do
     register_device
     create_user

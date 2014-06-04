@@ -18,6 +18,8 @@ group :development do
   gem 'shoulda'
   gem 'rest-client'
   gem "rack-test", require: "rack/test"
+  gem 'guard'
+  gem 'guard-rspec'
 end
 
 gem 'rake'

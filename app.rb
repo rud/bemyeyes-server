@@ -54,7 +54,12 @@ class App < Sinatra::Base
     db_config = settings.config['database']
     MongoMapper.connection = Mongo::Connection.new(db_config['host'])
     MongoMapper.database = db_config['name']
-    MongoMapper.connection[db_config['name']].authenticate(db_config['username'], db_config['password'])
+    if db_config.has_key? 'username'
+      MongoMapper.connection[db_config['name']].authenticate(db_config['username'], db_config['password'])
+    else
+     MongoMapper.connection[db_config['name']]
+    end
+  
     
     cron_job = CronJobs.new(Helper.new, RequestsHelper.new, Rufus::Scheduler.new, WaitingRequests.new, HelperPointChecker.new)
     cron_job.start_jobs

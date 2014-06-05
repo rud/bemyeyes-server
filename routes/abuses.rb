@@ -6,12 +6,17 @@ class App < Sinatra::Base
     def check_and_raise_if_blank_string(theStr, name)
       if theStr.nil? or theStr.length == 0
         raise "#{name} can not be empty or nil "
-      end 
+      end
     end
 
     def is_logged_in(token)
       token = Token.first(:token => token)
       !token.nil?
+    end
+
+    def get_reporter_role(token)
+      token = Token.first(:token => token)
+      token.user.role
     end
 
     # Register device
@@ -36,6 +41,7 @@ class App < Sinatra::Base
         abuse_report = AbuseReport.new
         abuse_report.helper_request = helper_request
         abuse_report.reason = reason
+        abuse_report.reporter = get_reporter_role token_repr
         abuse_report.save!
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "Unable to create abuse report" + e.message).to_json

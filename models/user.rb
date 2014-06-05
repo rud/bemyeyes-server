@@ -31,6 +31,7 @@ class User
   key :role, String, :required => true
   key :available_from, Time
   key :snooze_period, String
+  key :blocked, Boolean, :default => false
 
   timestamps!
   

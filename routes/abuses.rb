@@ -13,13 +13,11 @@ class App < Sinatra::Base
       token = Token.first(:token => token)
       !token.nil?
     end
-
     def get_reporter_role(token)
       token = Token.first(:token => token)
       token.user.role
     end
 
-    # Register device
     post '/report' do
       begin
         body_params = JSON.parse(request.body.read)
@@ -37,14 +35,16 @@ class App < Sinatra::Base
         give_error(401, ERROR_NOT_AUTHORIZED, "Reporter should be logged in").to_json
       end
       begin
+        reporter = get_reporter_role token_repr
         request = Request.first(:id => request_id)
         abuse_report = AbuseReport.new
         abuse_report.request = request
         abuse_report.reason = reason
-        abuse_report.reporter = get_reporter_role token_repr
+        abuse_report.reporter = reporter
         abuse_report.blind = request.blind
         abuse_report.helper = request.helper
         abuse_report.save!
+
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "Unable to create abuse report" + e.message).to_json
       end

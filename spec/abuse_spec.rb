@@ -27,6 +27,43 @@ describe "Helper" do
     request
   end
 
+  def create_abuse_report(blind, helper)
+    abuse_report = AbuseReport.new
+    abuse_report.reason = 'we are testing'
+    abuse_report.reporter = 'blind'
+    abuse_report.blind = blind
+    abuse_report.helper = helper
+    abuse_report.save!
+
+    abusive_request = create_request
+    abusive_request.blind = blind
+    abusive_request.helper = helper
+    abusive_request.abuse_report = abuse_report
+    abusive_request.save!
+
+    abuse_report.request = abusive_request
+    abuse_report.save!
+  end
+
+  it "will block user after three reports" do
+    helper = build(:helper)
+    helper.save
+
+    token = Token.new
+    token.user = helper
+    token.valid_time = 365.days
+    token.save!
+
+    blind = build(:blind)
+    blind.save
+
+    create_abuse_report blind, helper
+    create_abuse_report blind, helper
+    create_abuse_report blind, helper
+
+    helper.blocked.should eq(true)
+    end
+
   it "will not let a blind meet a helper from an abusive request" do
     helper = build(:helper)
     helper.save

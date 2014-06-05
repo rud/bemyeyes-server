@@ -34,7 +34,7 @@ class App < Sinatra::Base
       end
 
       if !is_logged_in token_repr
-        give_error(401, ERROR_NOT_AUTHORIZED, "Blind person should be logged in").to_json
+        give_error(401, ERROR_NOT_AUTHORIZED, "Reporter should be logged in").to_json
       end
       begin
         request = Request.first(:id => request_id)

@@ -14,17 +14,6 @@ require_relative '../integration_spec_helper'
 
 describe "log device in" do
     include_context "rest-context"
-    def register_device
-        url = "#{@servername_with_credentials}/devices/register"
-        response = RestClient.post url, {'token' =>'token_repr', 
-                    'device_token'=>'device_token', 'device_name'=> 'device_name', 
-                    'model'=> 'model', 'system_version' => 'system_version', 
-                    'app_version' => 'app_version', 'app_bundle_version' => 'app_bundle_version',
-                    'locale'=> 'locale', 'development' => 'development'}.to_json
-        response.code.should eq(200)
-        json = JSON.parse(response.body)
-        json["token"]
-    end
     it "can create a device without user token" do  
         register_device
     end

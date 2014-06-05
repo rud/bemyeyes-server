@@ -42,6 +42,8 @@ class App < Sinatra::Base
         abuse_report.request = request
         abuse_report.reason = reason
         abuse_report.reporter = get_reporter_role token_repr
+        abuse_report.blind = request.blind
+        abuse_report.helper = request.helper
         abuse_report.save!
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "Unable to create abuse report" + e.message).to_json

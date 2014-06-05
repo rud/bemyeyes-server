@@ -13,6 +13,8 @@ describe "Helper" do
   before(:each) do
     Helper.destroy_all
     Token.destroy_all
+    Request.destroy_all
+    AbuseReport.destroy_all
   end
 
   def create_request
@@ -40,6 +42,8 @@ describe "Helper" do
     abuse_report = AbuseReport.new
     abuse_report.reason = 'we are testing'
     abuse_report.reporter = 'blind'
+    abuse_report.blind = blind
+    abuse_report.helper = helper
     abuse_report.save!
 
     abusive_request = create_request
@@ -47,6 +51,9 @@ describe "Helper" do
     abusive_request.helper = helper
     abusive_request.abuse_report = abuse_report
     abusive_request.save!
+
+    abuse_report.request = abusive_request
+    abuse_report.save!
 
     new_request = create_request
     new_request.blind = blind

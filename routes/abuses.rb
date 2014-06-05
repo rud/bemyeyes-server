@@ -24,10 +24,10 @@ class App < Sinatra::Base
       begin
         body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
-        helper_request_id = body_params["helper_request_id"]
+        request_id = body_params["request_id"]
         reason = body_params["reason"]
         check_and_raise_if_blank_string token_repr, "token"
-        check_and_raise_if_blank_string helper_request_id, "helper_request_id"
+        check_and_raise_if_blank_string request_id, "request_id"
         check_and_raise_if_blank_string reason, "reason"
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid. " + e.message).to_json
@@ -37,9 +37,9 @@ class App < Sinatra::Base
         give_error(401, ERROR_NOT_AUTHORIZED, "Blind person should be logged in").to_json
       end
       begin
-        helper_request = HelperRequest.first(:id => helper_request_id)
+        request = Request.first(:id => request_id)
         abuse_report = AbuseReport.new
-        abuse_report.helper_request = helper_request
+        abuse_report.request = request
         abuse_report.reason = reason
         abuse_report.reporter = get_reporter_role token_repr
         abuse_report.save!

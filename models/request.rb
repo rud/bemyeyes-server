@@ -5,6 +5,7 @@ class Request
   belongs_to :blind, :class_name => "Blind"
   belongs_to :helper, :class_name => "Helper"
   many :helper_request, :foreign_key => :request_id, :class_name => "HelperRequest"
+  one :abuse_report, :foreign_key => :abuse_report_id, :class_name => "AbuseReport"
   key :short_id, String
   key :session_id, String, :required => true
   key :token, String, :required => true

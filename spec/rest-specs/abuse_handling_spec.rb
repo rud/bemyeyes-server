@@ -22,13 +22,12 @@ describe "abuse handling" do
     request.save!
     request
   end
-  #include token and helper_request id
   include_context "rest-context"
 
-def report_abuse(token, helper_request_id)
+def report_abuse(token, request_id)
     url = "#{@servername_with_credentials}/abuse/report"
     response = RestClient.post url, 
-      {'token' =>token, 'helper_request_id'=>helper_request_id, 'reason'=> 'abusive stuff'}.to_json
+      {'token' =>token, 'request_id'=>request_id, 'reason'=> 'abusive stuff'}.to_json
 
     response.code.should eq(200)
 end
@@ -50,16 +49,13 @@ end
 
     #we could add a helper and all to the request, but for this test we don't need it
     request = create_request token
-    helper_request = HelperRequest.new
-    request = request
-    helper_request.save!
     
     #log user out
     logoutUser_url  = "#{@servername_with_credentials}/users/logout"
     RestClient.put logoutUser_url, {'token'=> token}.to_json
 
 
-    expect{report_abuse token, helper_request.id}
+    expect{report_abuse token, request.id}
     .to raise_error(RestClient::Unauthorized)
   end
 
@@ -70,10 +66,7 @@ end
 
     #we could add a helper and all to the request, but for this test we don't need it
     request = create_request token
-    helper_request = HelperRequest.new
-    request = request
-    helper_request.save!
-    report_abuse token, helper_request.id
+    report_abuse token, request.id
    AbuseReport.count.should eq(1)
   end
 end 

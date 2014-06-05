@@ -18,7 +18,7 @@ describe "Helper" do
   end
 
   def create_request
-   request = Request.new
+    request = Request.new
     request.session_id = "session_id"
     request.token = "token"
     request.answered = true
@@ -62,7 +62,7 @@ describe "Helper" do
     create_abuse_report blind, helper
 
     helper.blocked.should eq(true)
-    end
+  end
 
   it "will not let a blind meet a helper from an abusive request" do
     helper = build(:helper)

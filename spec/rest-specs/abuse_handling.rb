@@ -43,7 +43,7 @@ end
     .to raise_error(RestClient::BadRequest)
   end
 
-  it "will not accept a abuse report if blind is  not logged in " do
+  it "will not accept a abuse report if reporter is  not logged in " do
    register_device
     create_user
     token = log_user_in
@@ -63,7 +63,7 @@ end
     .to raise_error(RestClient::Unauthorized)
   end
 
-  it "will let blind report abuse" do
+  it "will let user report abuse" do
     register_device
     create_user
     token = log_user_in

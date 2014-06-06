@@ -29,8 +29,10 @@ class App < Sinatra::Base
   # Do any configurations
   configure do
     set :environment, :development
-    enable :logging, :dump_errors
+    set :dump_errors, false
     set :raise_errors, true
+    set :show_exceptions, true
+    enable :logging
     set :app_file, __FILE__
     set :config, YAML.load_file('config/config.yml') rescue nil || {}
     set :scheduler, Rufus::Scheduler.new

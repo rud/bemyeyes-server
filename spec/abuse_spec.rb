@@ -1,5 +1,3 @@
-require 'mongo_mapper'
-
 require_relative './factories'
 require_relative '../models/init'
 require_relative './integration_spec_helper'

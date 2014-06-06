@@ -4,7 +4,7 @@ require 'yaml'
 require 'aescrypt'
 require 'bcrypt'
 require 'base64'
-require_relative '../../spec/rest-specs/rest_shared_context'
+require_relative './rest_shared_context'
 
 describe "Rest api" do
     include_context "rest-context"

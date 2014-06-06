@@ -4,10 +4,10 @@ require 'yaml'
 require 'aescrypt'
 require 'bcrypt'
 require 'base64'
-require_relative '../../app'
-require_relative '../../spec/rest-specs/rest_shared_context'
-require_relative '../../models/token'
-require_relative '../integration_spec_helper'
+require_relative '../app'
+require_relative './rest_shared_context'
+require_relative '../models/token'
+require_relative '../spec/integration_spec_helper'
 
 describe "abuse handling" do
   def create_request(token_repr)

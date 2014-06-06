@@ -174,10 +174,10 @@ class App < Sinatra::Base
         retval.sum = 0
         return retval.marshal_dump.to_json
       end
-      retval.sum = helper.helper_points.sum.point
+      retval.sum = helper.helper_points.inject{|sum,x| sum + x.point }
       return retval.marshal_dump.to_json
     end
-   
+
     # Update a user
     put '/:user_id' do
       user = user_from_id(params[:user_id])

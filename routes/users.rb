@@ -174,7 +174,7 @@ class App < Sinatra::Base
         retval.sum = 0
         return retval.marshal_dump.to_json
       end
-      retval.sum = helper.helper_points.inject{|sum,x| sum + x.point }
+      retval.sum = helper.helper_points.inject(0){|sum,x| sum + x.point }
       return retval.marshal_dump.to_json
     end
 

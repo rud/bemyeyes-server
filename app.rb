@@ -23,9 +23,9 @@ require_relative 'helpers/helper_point_checker'
 
 class App < Sinatra::Base
   register Sinatra::ConfigFile
-  
+
   config_file 'config/config.yml'
-  
+
   # Do any configurations
   configure do
     set :environment, :development
@@ -68,11 +68,11 @@ class App < Sinatra::Base
   before  { TheLogger.log.info(request.request_method + " " + request.path_info)}
 
   # Protect anything but the root
-  before /^\/.+/ do
+  before /^(?!\/reset-password)\/.+$/ do
     protected!
   end
 
-  before do
+  before /^(?!\/reset-password)\/.+$/ do
     content_type 'application/json'
   end
   

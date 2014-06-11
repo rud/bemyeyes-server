@@ -38,7 +38,7 @@ shared_context "rest-context" do
                                      'model'=> 'model', 'system_version' => 'system_version', 
                                      'app_version' => 'app_version', 'app_bundle_version' => 'app_bundle_version',
                                      'locale'=> 'locale', 'development' => 'development'}.to_json
-    response.code.should eq(200)
+    expect(code).to eq(200)
     json = JSON.parse(response.body)
     json["token"]
   end

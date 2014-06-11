@@ -4,7 +4,7 @@ class App < Sinatra::Base
   # Begin devices namespace
   namespace '/reset-password' do
     get '/' do
-      erb :index
+      erb :reset_password
     end
 
     post '/' do

@@ -3,4 +3,4 @@ require_relative 'users'
 require_relative 'devices'
 require_relative 'abuses'
 require_relative 'reset_passwords'
-
+require_relative 'auth'

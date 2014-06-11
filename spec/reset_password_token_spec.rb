@@ -23,7 +23,5 @@ describe "Reset Password Token" do
     token = ResetPasswordToken.create
     token.user = helper
     token.save!
-
   end
-
 end

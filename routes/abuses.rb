@@ -1,7 +1,6 @@
 class App < Sinatra::Base
   register Sinatra::Namespace
 
-  # Begin devices namespace
   namespace '/abuse' do
     def check_and_raise_if_blank_string(theStr, name)
       if theStr.nil? or theStr.length == 0

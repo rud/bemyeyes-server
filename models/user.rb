@@ -20,6 +20,7 @@ class User
 
   many :tokens, :foreign_key => :user_id, :class_name => "Token"
   many :devices, :foreign_key => :user_id, :class_name => "Device"
+  one :reset_password_token, :foreign_key => :reset_password_token_id, :class_name => "ResetPasswordToken"  
   
   key :password_hash, String
   key :password_salt, String

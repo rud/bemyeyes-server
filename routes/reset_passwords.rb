@@ -8,8 +8,7 @@ class App < Sinatra::Base
     end
 
     post '/' do
-      @error = "yes we did it"
-      @success = "yes we did it"
+      @success = "Password Changed!"
 
       erb :password_changed
     end

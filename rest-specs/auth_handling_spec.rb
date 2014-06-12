@@ -11,14 +11,12 @@ require_relative '../spec/integration_spec_helper'
 
 describe "auth" do
   include_context "rest-context"
-
   it "can start a reset password flow" do 
     register_device
     id = create_user
     user = User.first(:_id => id)
 
     url = "#{@servername_with_credentials}/auth/reset-password"
-    p url
-     RestClient.post url, {:email => user.email}.to_json
+    RestClient.post url, {:email => user.email}.to_json
   end
 end 

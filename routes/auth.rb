@@ -15,7 +15,7 @@ class App < Sinatra::Base
   end
 
   namespace '/auth' do
-    post '/reset-password' do
+    post '/request-reset-password' do
       begin
         body_params = JSON.parse(request.body.read)
         email = body_params["email"]

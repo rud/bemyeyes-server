@@ -16,7 +16,7 @@ describe "auth" do
     id = create_user
     user = User.first(:_id => id)
 
-    url = "#{@servername_with_credentials}/auth/reset-password"
+    url = "#{@servername_with_credentials}/auth/request-reset-password"
     RestClient.post url, {:email => user.email}.to_json
   end
 end 

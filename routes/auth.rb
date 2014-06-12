@@ -15,7 +15,7 @@ class App < Sinatra::Base
 
         mandrill_config = settings.config['mandrill']
         mail_service = MailService.new mandrill_config
-        reset_password_mail_message = ResetPasswordMailMessage.new(request.base_url, token.token, "klaus@hebsgaard.dk", "Klaus Hebsgaard")
+        reset_password_mail_message = ResetPasswordMailMessage.new(request.base_url, token.token, user.email, "#{user.first_name} #{user.last_name}")
         mail_service.send_mail reset_password_mail_message
         rescue Exception => e
           give_error(400, ERROR_INVALID_BODY, "Unable to create reset password token " + e.message).to_json

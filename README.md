@@ -62,4 +62,3 @@ https://gist.github.com/jnx/1256593
 Install Passenger
 http://www.modrails.com/documentation/Users%20guide%20Apache.html#install_on_debian_ubuntu
 gem install passenger
-

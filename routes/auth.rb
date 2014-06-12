@@ -1,4 +1,5 @@
 require_relative '../helpers/mail_service'
+require_relative '../helpers/mail_messages/reset_password_mail_message'
 class App < Sinatra::Base
   register Sinatra::Namespace
   def create_reset_password_token user

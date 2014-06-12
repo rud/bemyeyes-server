@@ -36,7 +36,7 @@ class User
 
   timestamps!
   
-  before_create :encrypt_password
+  before_save :encrypt_password
   before_create :set_unique_id
 
   # dynamic scopes

@@ -1,3 +1,5 @@
+require_relative '../helpers/reset_password'
+
 class App < Sinatra::Base
   register Sinatra::Namespace
 
@@ -13,19 +15,17 @@ class App < Sinatra::Base
     end
 
     post '/' do
+      reset_password_service = ResetPasswordService.new TheLogger
       token = params[:token]
-      token = ResetPasswordToken.first({:token => token})
-      if token.nil?
-        @error = "User not found"
-        return
+      input_password = params['inputPassword']
+      success, message = reset_password_service.reset_password token, input_password
+
+      if success
+        @success = message
+      else
+        @error = message
       end
 
-      input_password = params['inputPassword']
-      token.user.password = input_password
-      token.delete
-
-      @success = "Password Changed!"
-      TheLogger.log.info( "Password changed for user with id #{token.user._id}")
       erb :password_changed
     end
   end

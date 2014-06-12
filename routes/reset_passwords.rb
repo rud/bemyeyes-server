@@ -1,5 +1,3 @@
-require_relative '../helpers/mail_service'
-
 class App < Sinatra::Base
   register Sinatra::Namespace
 
@@ -16,6 +14,16 @@ class App < Sinatra::Base
 
     post '/' do
       token = params[:token]
+      token = ResetPasswordToken.first({:token => token})
+      if token.nil?
+        @error = "User not found"
+        return
+      end
+
+      input_password = params['inputPassword']
+      token.user.password = input_password
+      token.delete
+
       @success = "Password Changed!"
       erb :password_changed
     end

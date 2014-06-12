@@ -18,7 +18,7 @@ class App < Sinatra::Base
         reset_password_mail_message = ResetPasswordMailMessage.new(request.base_url, token.token, "klaus@hebsgaard.dk", "Klaus Hebsgaard")
         mail_service.send_mail reset_password_mail_message
         rescue Exception => e
-          give_error(400, ERROR_INVALID_BODY, "Unable to create reset password token" + e.message).to_json
+          give_error(400, ERROR_INVALID_BODY, "Unable to create reset password token " + e.message).to_json
       end
     end
   end

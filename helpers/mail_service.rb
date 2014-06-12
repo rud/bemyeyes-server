@@ -1,4 +1,5 @@
 require 'mandrill'
+require_relative './thelogger_module'
 
 class ResetPasswordMailMessage
   def initialize(base_url, token, receiver_email, receiver_name)
@@ -15,25 +16,24 @@ end
 class MailService 
   def initialize config
     @mandrill_api_key = config['api_key']
+    @from_email = config['from_email']
+    @from_name = config['from_name']
+    @reply_to = config['reply_to']
   end
 
   def send_mail mail_message
-    begin
       mandrill = Mandrill::API.new @mandrill_api_key
       message = {"html"=>mail_message.html_body,
        "subject"=>mail_message.subject,
-       "from_email"=>"info@bemyeyes.org",
-       "from_name"=>"Be My Eyes",
+       "from_email"=> @from_email,
+       "from_name"=> @from_name,
        "to"=>
        [{"email"=>mail_message.receiver_email,
         "name"=>mail_message.receiver_name,
         "type"=>"to"}],
-        "headers"=>{"Reply-To"=>"info@bemyeyes.org"},
+        "headers"=>{"Reply-To"=>@reply_to},
       }
       result = mandrill.messages.send message
       puts result
-    rescue Mandrill::Error => e
-      TheLogger.error.log "A mandrill error occurred: #{e.class} - #{e.message}"
-    end
   end
 end

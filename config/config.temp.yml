@@ -36,3 +36,10 @@ security_salt: ''
 
 # URL to redirect to when visiting root
 redirect_root: 'http://bemyeyes.org'
+
+
+mandrill:
+  api_key: ''
+  from_email: ''
+  from_name: ''
+  reply_to: ''

@@ -25,6 +25,10 @@ class App < Sinatra::Base
         if user.nil?
           give_error(400, ERROR_INVALID_BODY, "User Not found")
         end
+
+        unless user.user_id.nil?
+          give_error(400, ERROR_INVALID_BODY, "cannot reset password for external user")
+        end
         token = create_reset_password_token user 
         mail_service = create_mail_service settings
         

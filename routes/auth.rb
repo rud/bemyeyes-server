@@ -21,6 +21,10 @@ class App < Sinatra::Base
         body_params = JSON.parse(request.body.read)
         email = body_params["email"]
         user = User.first({:email => email})
+
+        if user.nil?
+          give_error(400, ERROR_INVALID_BODY, "User Not found")
+        end
         token = create_reset_password_token user 
         mail_service = create_mail_service settings
         

@@ -29,6 +29,7 @@ class Request
                "session_id" => self.session_id,
                "token" => self.token
              },
+             "id" => self._id,
              "short_id" => self.short_id,
              "ratings" => {
                "blind" => self.blind_rating,

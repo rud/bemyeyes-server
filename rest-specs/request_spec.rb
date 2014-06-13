@@ -26,5 +26,7 @@ describe "Request" do
     response = RestClient.post logoutUser_url, {'token'=> token}.to_json
 
     expect(response.code).to eq(200)
+    jsn = JSON.parse(response.to_s)
+    expect(jsn["id"]).to_not eq(nil) 
    end
 end 

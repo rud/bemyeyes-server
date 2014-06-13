@@ -19,11 +19,11 @@ class App < Sinatra::Base
       user = token.user
 
       begin
-        session_properties = { OpenTok::SessionPropertyConstants::P2P_PREFERENCE => "disabled" }
-        session_id = OpenTokSDK.create_session(NIL, session_properties)
-        token = OpenTokSDK.generateToken :session_id => session_id
+        session = OpenTokSDK.create_session()
+        session_id = session.session_id
+        token = OpenTokSDK.generate_token session_id
       rescue Exception => e
-        give_error(500, ERROR_REQUEST_SESSION_NOT_CREATED, "The session could not be created.")
+        give_error(500, ERROR_REQUEST_SESSION_NOT_CREATED, "The session could not be created. " + e.message)
       end
 
       # Store request in database

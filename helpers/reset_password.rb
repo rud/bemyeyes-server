@@ -9,10 +9,9 @@ class ResetPasswordService
     end
 
     user = token.user
-    user.update_attributes({ "password" => password })
+    user.password = password
     user.save!
     token.delete
-
 
     @logger.log.info( "Password changed for user with id #{token.user._id}")
     return true, "Password Changed!"

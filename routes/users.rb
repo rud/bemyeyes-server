@@ -62,7 +62,7 @@ class App < Sinatra::Base
         give_error(400, ERROR_USER_TOKEN_EXPIRED, "Token has expired.").to_json
       end
       begin
-        token.delete
+          token.delete
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, e.message)
       end
@@ -95,7 +95,7 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "Missing password or user ID.").to_json
       end
       
-      # We need either an e-mail to login
+      # We need an e-mail to login
       if body_params['email'].nil?
         give_error(400, ERROR_INVALID_BODY, "Missing e-mail.").to_json
       end
@@ -126,6 +126,7 @@ class App < Sinatra::Base
       user.devices.push(device)
 
       device.token = token
+      token.device = device
       device.save!
       token.save!
       return { "token" => JSON.parse(token.to_json), "user" => JSON.parse(token.user.to_json) }.to_json

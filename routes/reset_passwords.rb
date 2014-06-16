@@ -18,7 +18,6 @@ class App < Sinatra::Base
       reset_password_service = ResetPasswordService.new TheLogger
       token = params[:token]
       input_password = params[:inputPassword]
-      TheLogger.log.info 'password from ui: ' + input_password
       success, message = reset_password_service.reset_password token, input_password
 
       if success

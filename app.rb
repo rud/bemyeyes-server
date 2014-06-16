@@ -72,7 +72,7 @@ class App < Sinatra::Base
     protected!
   end
 
-  before /^(?!\/reset-password)\/.+$/ do
+  before /^(?!\/((reset-password)|(log)))\/.+$/ do
     content_type 'application/json'
   end
   
@@ -81,8 +81,8 @@ class App < Sinatra::Base
     redirect settings.config['redirect_root']
   end
   
-  get '/log' do
-    File.read("log/app.log").gsub!(/\[/,"<br/>[")
+  get '/log/' do
+    File.read("log/app.log").gsub!(/\[/,"<br/>[").gsub("[INFO]", "<span style='color:green'>[INFO]</span>").gsub("[ERROR]", "<span style='color:red'>[ERROR]</span>")
   end  
   # Handle errors
   error do

@@ -50,6 +50,7 @@ class App < Sinatra::Base
     Urbanairship.application_secret = ua_config['is_production'] ? ua_prod_config['app_secret'] : ua_dev_config['app_secret']
     Urbanairship.master_secret = ua_config['is_production'] ? ua_prod_config['master_secret'] : ua_dev_config['master_secret']
     Urbanairship.request_timeout = 5 # default
+    Urbanairship.logger = TheLogger.log
 
     db_config = settings.config['database']
     MongoMapper.connection = Mongo::Connection.new(db_config['host'])

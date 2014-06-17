@@ -30,4 +30,17 @@ end
     # Send notification
     Urbanairship.push(notification)
   end
+
+  def check_request (request, number_of_helpers)
+    helper = Helper.new
+    helpers = helper.available(request, number_of_helpers)
+    device_tokens = helpers.collect { |u| u.devices.collect { |d| d.device_token } }.flatten
+    @request_helper.send_notifications request, device_tokens
+    @request_helper.set_sent_helper helpers, request
+  end
+
+  def check_requests number_of_helpers
+    requests = @waiting_requests.get_waiting_requests_from_lasts_2_minutes
+    requests.each { |request| check_request request number_of_helpers }
+  end
 end

@@ -34,18 +34,9 @@ class App < Sinatra::Base
       request.blind = user
       request.answered = false
       request.save!
-      #TODO set all this in helper method since it's reused in the cronjob...
-      #1. Find helpers
-      helper = Helper.new
-      helpers = helper.available(request, 10)
-      #2. Find device tokens
-      tokens = helpers.collect { |u| u.devices.collect { |d| d.device_token } }.flatten
-      #3. Send notification
+     
       requests_helper = RequestsHelper.new
-      requests_helper.send_notifications request, tokens
-      #4. Set notified helpers as contacted for this request.
-      requests_helper.set_sent_helper helpers, request
-    
+      requests_helper.check_requests 10    
       return request.to_json
     end
 

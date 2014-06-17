@@ -24,23 +24,11 @@ class CronJobs
 
   def start_jobs
     @job ||= @scheduler.every('20s') do
-      check_requests
+      @request_helper.check_requests 200
     end
 
     @point_job ||= @scheduler.every('1d') do
       @helper_point_checker.check_helper_points
     end
-  end
-
-  def check_request (request)
-    helpers = helper.available(request, 200)
-    device_tokens = helpers.collect { |u| u.devices.collect { |d| d.device_token } }.flatten
-    @request_helper.send_notifications request, device_tokens
-    @request_helper.set_sent_helper helpers, request
-  end
-
-  def check_requests
-    requests = @waiting_requests.get_waiting_requests_from_lasts_2_minutes
-    requests.each { |request| check_request request }
   end
 end

@@ -17,7 +17,7 @@ describe "smoketest" do
         response.should include("<title>Be My Eyes - crowdsourced help for the blind</title>")
     end
     it "can get the logs" do
-        url = "#{@servername_with_credentials}/log"
+        url = "#{@servername_with_credentials}/log/"
         response = RestClient.get url 
         response.code.should eq(200)
     end

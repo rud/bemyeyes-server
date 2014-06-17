@@ -2,8 +2,8 @@ require_relative './thelogger_module'
 
 class RequestsHelper
 
-def initialize
-end
+  def initialize
+  end
   #Avoids resending push notification to an already notified user.
   def set_sent_helper helpers, request
     helpers.each do |helper|
@@ -16,17 +16,17 @@ end
     user = request.blind
     notification_args_name = user.to_s
     notification = {
-        :device_tokens => device_tokens,
-        :aps => {
-            :alert => {
-                :"loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_MESSAGE",
-                :"loc-args" => [ notification_args_name ],
-                :"action-loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_ACTION",
-                :short_id => request.short_id,
-            },
-            :sound => "default"
+      :device_tokens => device_tokens,
+      :aps => {
+        :alert => {
+          :"loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_MESSAGE",
+          :"loc-args" => [ notification_args_name ],
+          :"action-loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_ACTION",
+          :short_id => request.short_id,
+          },
+          :sound => "default"
         }
-    }
+      }
     # Send notification
     Urbanairship.push(notification)
   end

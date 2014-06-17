@@ -29,8 +29,5 @@ end
     }
     # Send notification
     Urbanairship.push(notification)
-    device_tokens.each do |token|
-      TheLogger.log.info("sending request to token device " + token)
-    end
   end
 end

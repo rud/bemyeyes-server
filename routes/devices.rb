@@ -40,7 +40,6 @@ class App < Sinatra::Base
     return token
   end
   
-  # Register a device for a user
   def register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
     device = Device.first(:device_token => device_token)
 

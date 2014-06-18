@@ -1,6 +1,7 @@
 require_relative './thelogger_module'
 require_relative './notifications/iphone_notifier'
 require_relative './notifications/notification_handler'
+require_relative './waiting_requests'
 
 class RequestsHelper
   def initialize(ua_config, logger)
@@ -23,6 +24,7 @@ class RequestsHelper
   end
 
   def check_requests(number_of_helpers)
+    @waiting_requests = WaitingRequests.new
     requests = @waiting_requests.get_waiting_requests_from_lasts_2_minutes
     requests.each { |request| check_request request number_of_helpers }
   end

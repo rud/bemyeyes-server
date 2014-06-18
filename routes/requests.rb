@@ -35,7 +35,9 @@ class App < Sinatra::Base
       request.answered = false
       request.save!
 
-      requests_helper.check_requests 10
+      ua_config = settings.config['urbanairship']
+      @requests_helper = RequestsHelper.new ua_config, TheLogger
+      @requests_helper.check_requests 10
       return request.to_json
     end
 

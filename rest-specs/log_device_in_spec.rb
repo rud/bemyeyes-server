@@ -14,16 +14,16 @@ require_relative '../spec/integration_spec_helper'
 
 describe "log device in" do
     include_context "rest-context"
-    it "can create a device without user token" do  
+    it "can create a device without user token" do
         register_device
     end
 
-    it "cannot log user in without device token" do 
+    it "cannot log user in without device token" do
         #create user
         create_user
         #log user in
         loginUser_url = "#{@servername_with_credentials}/users/login"
-        expect{RestClient.post loginUser_url, 
+        expect{RestClient.post loginUser_url,
         {'email' => @email, 'password'=> @password}.to_json}
         .to raise_error(RestClient::BadRequest)
     end
@@ -33,9 +33,9 @@ describe "log device in" do
         token = register_device
         #log user in
         loginUser_url = "#{@servername_with_credentials}/users/login"
-        RestClient.post loginUser_url, 
+        RestClient.post loginUser_url,
         {'email' => @email, 'password'=> @password, 'device_token' => 'device_token'}.to_json
- 
+
         device = Device.first(:device_token => token)
         device.is_logged_in.should be(true)
     end
@@ -45,9 +45,9 @@ describe "log device in" do
         token = register_device
         #log user in
         loginUser_url = "#{@servername_with_credentials}/users/login"
-        RestClient.post loginUser_url, 
+        RestClient.post loginUser_url,
         {'email' => @email, 'password'=> @password, 'device_token' => 'device_token'}.to_json
- 
+
         user = User.first(:email => @email)
         user.devices.select{|d| d.device_token == token}.length.should be(1)
     end
@@ -57,24 +57,23 @@ describe "log device in" do
         register_device
         token = log_user_in
         token = Token.first(:token => token)
-         p token
         expect(token.device_id).to_not eq(nil)
     end
 
- 
+
     it "can log user out with token, device is logged out" do
         create_user
         device_token = register_device
         #log user in
         loginUser_url = "#{@servername_with_credentials}/users/login"
-        response = RestClient.post loginUser_url, 
+        response = RestClient.post loginUser_url,
         {'email' => @email, 'password'=> @password, 'device_token' => device_token}.to_json
         jsn = JSON.parse(response.to_s)
         token = jsn["token"]["token"]
 
         logoutUser_url  = "#{@servername_with_credentials}/users/logout"
         response = RestClient.put logoutUser_url, {'token'=> token}.to_json
- 
+
         device = Device.first(:device_token => device_token)
         device.is_logged_in.should be(false)
 
@@ -85,7 +84,7 @@ describe "log device in" do
         create_user
         #log user in
         loginUser_url = "#{@servername_with_credentials}/users/login"
-        response = RestClient.post loginUser_url, 
+        response = RestClient.post loginUser_url,
         {'email' => @email, 'password'=> @password, 'device_token' => 'device_token'}.to_json
         jsn = JSON.parse(response.to_s)
         token = jsn["token"]["token"]

@@ -7,14 +7,14 @@ shared_context "rest-context" do
     @servername = "http://localhost:9292"
     @servername_with_credentials = "http://#{@username}:#{@password}@localhost:9292"
 
-    @email =  "user_#{(Time.now.to_f*100000).to_s}@example.com" 
+    @email =  "user_#{(Time.now.to_f*100000).to_s}@example.com"
     @password = AESCrypt.encrypt('Password1', @security_salt)
   end
 
   def create_user
     createUser_url = "#{@servername_with_credentials}/users/"
-    response = RestClient.post createUser_url, {'first_name' =>'first_name', 
-                                                'last_name'=>'last_name', 'email'=> @email, 
+    response = RestClient.post createUser_url, {'first_name' =>'first_name',
+                                                'last_name'=>'last_name', 'email'=> @email,
                                                 'role'=> 'helper', 'password'=> @password }.to_json
 
     jsn = JSON.parse response.body
@@ -33,9 +33,9 @@ shared_context "rest-context" do
 
   def register_device
     url = "#{@servername_with_credentials}/devices/register"
-    response = RestClient.post url, {'token' =>'token_repr', 
-                                     'device_token'=>'device_token', 'device_name'=> 'device_name', 
-                                     'model'=> 'model', 'system_version' => 'system_version', 
+    response = RestClient.post url, {'token' =>'token_repr',
+                                     'device_token'=>'device_token', 'device_name'=> 'device_name',
+                                     'model'=> 'model', 'system_version' => 'system_version',
                                      'app_version' => 'app_version', 'app_bundle_version' => 'app_bundle_version',
                                      'locale'=> 'locale', 'development' => 'development'}.to_json
     expect(response.code).to eq(200)

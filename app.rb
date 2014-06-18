@@ -29,7 +29,7 @@ class App < Sinatra::Base
   # Do any configurations
   configure do
     set :environment, :development
-    set :dump_errors, false
+    set :dump_errors, true
     set :raise_errors, true
     set :show_exceptions, true
     enable :logging
@@ -53,8 +53,8 @@ class App < Sinatra::Base
     end
 
     ua_config = settings.config['urbanairship']
-    requests_helper = RequestsHelper.new ua_config, TheLogger
-    cron_job = CronJobs.new(Helper.new, requests_helper, Rufus::Scheduler.new, WaitingRequests.new, HelperPointChecker.new)
+    @requests_helper = RequestsHelper.new ua_config, TheLogger
+    cron_job = CronJobs.new(Helper.new, @requests_helper, Rufus::Scheduler.new, WaitingRequests.new, HelperPointChecker.new)
     cron_job.start_jobs
   end
 
@@ -84,6 +84,7 @@ class App < Sinatra::Base
 
     e = env["sinatra.error"]
     TheLogger.log.error(e)
+    TheLogger.log.error("testing")
     return { "result" => "error", "message" => e.message }.to_json
   end
 
@@ -94,7 +95,6 @@ class App < Sinatra::Base
     @auth.provided? and @auth.basic? and @auth.credentials and @auth.credentials == [auth_config['username'], auth_config['password']]
   end
 
-  # Require authentication
   def protected!
     return if authorized?
     content_type :json

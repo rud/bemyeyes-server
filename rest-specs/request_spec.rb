@@ -13,6 +13,9 @@ describe "Request" do
   include_context "rest-context"
 
   before(:each) do
+    User.destroy_all
+    Token.destroy_all
+    Blind.destroy_all
   end
 
   it "can create a request" do
@@ -20,13 +23,13 @@ describe "Request" do
    create_user
    token = log_user_in
 
-    
+
     #log user out
     logoutUser_url  = "#{@servername_with_credentials}/requests"
     response = RestClient.post logoutUser_url, {'token'=> token}.to_json
 
     expect(response.code).to eq(200)
     jsn = JSON.parse(response.to_s)
-    expect(jsn["id"]).to_not eq(nil) 
+    expect(jsn["id"]).to_not eq(nil)
    end
-end 
+end

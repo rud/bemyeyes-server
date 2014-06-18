@@ -20,6 +20,7 @@ end
 describe Request do
 before do
 	IntegrationSpecHelper.InitializeMongo()
+    
     @sut = build(:request)
     @sut.save
   end

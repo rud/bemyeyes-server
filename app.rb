@@ -36,21 +36,12 @@ class App < Sinatra::Base
     set :app_file, __FILE__
     set :config, YAML.load_file('config/config.yml') rescue nil || {}
     set :scheduler, Rufus::Scheduler.new
-    
+
     TheLogger.log.level = Logger::DEBUG  # could be DEBUG, ERROR, FATAL, INFO, UNKNOWN, WARN
     TheLogger.log.formatter = proc { |severity, datetime, progname, msg| "[#{severity}] #{datetime.strftime('%Y-%m-%d %H:%M:%S')} : #{msg}\n" }
-    
+
     opentok_config = settings.config['opentok']
     OpenTokSDK = OpenTok::OpenTok.new opentok_config['api_key'], opentok_config['api_secret']
-    
-    ua_config = settings.config['urbanairship']
-    ua_prod_config = ua_config['production']
-    ua_dev_config = ua_config['development']
-    Urbanairship.application_key = ua_config['is_production'] ? ua_prod_config['app_key'] : ua_dev_config['app_key']
-    Urbanairship.application_secret = ua_config['is_production'] ? ua_prod_config['app_secret'] : ua_dev_config['app_secret']
-    Urbanairship.master_secret = ua_config['is_production'] ? ua_prod_config['master_secret'] : ua_dev_config['master_secret']
-    Urbanairship.request_timeout = 5 # default
-    Urbanairship.logger = TheLogger.log
 
     db_config = settings.config['database']
     MongoMapper.connection = Mongo::Connection.new(db_config['host'])
@@ -60,9 +51,10 @@ class App < Sinatra::Base
     else
      MongoMapper.connection[db_config['name']]
     end
-  
-    
-    cron_job = CronJobs.new(Helper.new, RequestsHelper.new, Rufus::Scheduler.new, WaitingRequests.new, HelperPointChecker.new)
+
+    ua_config = settings.config['urbanairship']
+    requests_helper = RequestsHelper.new ua_config, TheLogger
+    cron_job = CronJobs.new(Helper.new, requests_helper, Rufus::Scheduler.new, WaitingRequests.new, HelperPointChecker.new)
     cron_job.start_jobs
   end
 
@@ -76,15 +68,15 @@ class App < Sinatra::Base
   before /^(?!\/((reset-password)|(log)))\/.+$/ do
     content_type 'application/json'
   end
-  
+
   # Root route
   get '/?' do
     redirect settings.config['redirect_root']
   end
-  
+
   get '/log/' do
     File.read("log/app.log").gsub!(/\[/,"<br/>[").gsub("[INFO]", "<span style='color:green'>[INFO]</span>").gsub("[ERROR]", "<span style='color:red'>[ERROR]</span>")
-  end  
+  end
   # Handle errors
   error do
     content_type :json
@@ -109,11 +101,11 @@ class App < Sinatra::Base
     headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
     halt 401, create_error_hash(ERROR_NOT_AUTHORIZED, "Not authorized.").to_json
   end
-  
+
   # 404 not found
   not_found do
     content_type :json
     give_error(404, ERROR_RESOURCE_NOT_FOUND, "Resource not found.").to_json
   end
-  
+
 end

@@ -34,9 +34,8 @@ class App < Sinatra::Base
       request.blind = user
       request.answered = false
       request.save!
-     
-      requests_helper = RequestsHelper.new
-      requests_helper.check_requests 10    
+
+      requests_helper.check_requests 10
       return request.to_json
     end
 
@@ -128,12 +127,12 @@ class App < Sinatra::Base
       # Update request
       request.stopped = true
       request.save!
-      
+
       #update helper with points for call
-      point = HelperPoint.finish_helping_request 
+      point = HelperPoint.finish_helping_request
       request.helper.helper_points.push point
       request.helper.save
-      
+
       return request.to_json
     end
 

@@ -19,6 +19,9 @@ module IphoneNotifier
       }
     # Send notification
     Urbanairship.push(notification)
+     device_tokens.each do |token|
+       TheLogger.log.info("sending request to token device " + token)
+     end
   end
 
   def setup_urban_airship(ua_config, logger)

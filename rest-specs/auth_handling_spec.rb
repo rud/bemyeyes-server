@@ -1,13 +1,4 @@
-require 'rest_client'
-require 'shoulda'
-require 'yaml'
-require 'aescrypt'
-require 'bcrypt'
-require 'base64'
-require_relative '../app'
 require_relative './rest_shared_context'
-require_relative '../models/init'
-require_relative '../spec/integration_spec_helper'
 
 describe "auth" do
   include_context "rest-context"

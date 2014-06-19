@@ -1,9 +1,3 @@
-require 'rest_client'
-require 'shoulda'
-require 'yaml'
-require 'aescrypt'
-require 'bcrypt'
-require 'base64'
 require_relative './rest_shared_context'
 
 describe "helper points" do

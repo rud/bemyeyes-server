@@ -1,3 +1,19 @@
+require 'rest_client'
+require 'shoulda'
+require 'yaml'
+require 'aescrypt'
+require 'bcrypt'
+require 'base64'
+require 'rest_client'
+require 'shoulda'
+require 'yaml'
+require 'aescrypt'
+require 'bcrypt'
+require 'base64'
+require_relative '../app'
+require_relative '../models/init'
+require_relative '../spec/integration_spec_helper'
+
 shared_context "rest-context" do
   before(:each) do
     config = YAML.load_file('config/config.yml')

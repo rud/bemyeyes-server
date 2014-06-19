@@ -11,31 +11,34 @@ class Helper < User
 
   #TODO to be improved with snooze functionality
   def available request=nil, limit=5
-    request_id = request.present? ? request.id : nil
-    contacted_helpers = HelperRequest
-    .where(:request_id => request_id)
-    .fields(:helper_id)
-    .all
-    .collect(&:helper_id)
-
-    logged_in_users = Token
-    .where(:expiry_time.gt => Time.now)
-    .fields(:user_id)
-    .all
-    .collect(&:user_id)
-
-    abusive_helpers = AbuseReport
-      .where(:blind_id => request.blind.id)
+    begin
+      request_id = request.present? ? request.id : nil
+      contacted_helpers = HelperRequest
+      .where(:request_id => request_id)
       .fields(:helper_id)
       .all
       .collect(&:helper_id)
 
+      logged_in_users = Token
+      .where(:expiry_time.gt => Time.now)
+      .fields(:user_id)
+      .all
+      .collect(&:user_id)
+
+      abusive_helpers = AbuseReport
+      .where(:blind_id => request.blind_id)
+      .fields(:helper_id)
+      .all
+      .collect(&:helper_id)
+    rescue Exception => e
+      TheLogger.log.error e.message
+    end
     Helper.where(:id.nin => contacted_helpers,
-                 :id.nin => abusive_helpers,
-                 :id.in => logged_in_users,
-                 "$or" => [
-                     {:available_from => nil},
-                     {:available_from.lt => Time.now.utc}
-                 ]).all.sample(limit)
+     :id.nin => abusive_helpers,
+     :id.in => logged_in_users,
+     "$or" => [
+       {:available_from => nil},
+       {:available_from.lt => Time.now.utc}
+       ]).all.sample(limit)
   end
 end

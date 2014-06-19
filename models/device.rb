@@ -11,7 +11,7 @@ class Device
   key :app_version, String
   key :app_bundle_version, String
   key :locale, String
-  key :development, Boolean
+  key :development, Boolean, :default => false
   
   timestamps!
   def is_logged_in

@@ -5,6 +5,7 @@ class NotificationHandler
   end
 
   def handle_notifications(devices, request)
+    TheLogger.log.error devices.flatten
     devices_not_handled = devices.reject {|device| not include_device? device}
     devices_to_handle = devices.reject {|device| include_device? device}
     

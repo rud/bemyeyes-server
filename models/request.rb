@@ -9,10 +9,10 @@ class Request
   key :short_id, String
   key :session_id, String, :required => true
   key :token, String, :required => true
-  key :answered, Boolean
+  key :answered, Boolean, :default => false 
   key :blind_rating, Integer
   key :helper_rating, Integer
-  key :stopped, Boolean
+  key :stopped, Boolean, :default => false 
 
   timestamps!
 

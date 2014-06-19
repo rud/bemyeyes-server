@@ -18,14 +18,13 @@ class RequestsHelper
   def check_request (request, number_of_helpers)
     helper = Helper.new
     helpers = helper.available(request, number_of_helpers)
-    devices = helpers.collect { |u| u.devices.collect }
-
+    devices = helpers.collect { |u| u.devices }.flatten
     @notification_queue.handle_notifications devices, request
   end
 
   def check_requests(number_of_helpers)
     @waiting_requests = WaitingRequests.new
     requests = @waiting_requests.get_waiting_requests_from_lasts_2_minutes
-    requests.each { |request| check_request request number_of_helpers }
+    requests.each { |request| check_request(request, number_of_helpers) }
   end
 end

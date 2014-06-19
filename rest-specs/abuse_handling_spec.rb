@@ -1,5 +1,4 @@
 require 'rest_client'
-require 'shoulda'
 require 'yaml'
 require 'aescrypt'
 require 'bcrypt'
@@ -29,7 +28,7 @@ def report_abuse(token, request_id)
     response = RestClient.post url, 
       {'token' =>token, 'request_id'=>request_id, 'reason'=> 'abusive stuff'}.to_json
 
-    response.code.should eq(200)
+    expect(response.code).to eq(200)
 end
 
   before(:each) do
@@ -67,6 +66,6 @@ end
     #we could add a helper and all to the request, but for this test we don't need it
     request = create_request token
     report_abuse token, request.id
-   AbuseReport.count.should eq(1)
+   expect(AbuseReport.count).to eq(1)
   end
 end 

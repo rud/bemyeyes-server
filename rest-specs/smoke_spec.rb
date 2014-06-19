@@ -14,11 +14,11 @@ describe "smoketest" do
         response = RestClient.get url
 
         #ok so this is not the most elegant way of testing the redirect - but its ok for now
-        response.should include("<title>Be My Eyes - crowdsourced help for the blind</title>")
+        expect(response).to include("<title>Be My Eyes - crowdsourced help for the blind</title>")
     end
     it "can get the logs" do
         url = "#{@servername_with_credentials}/log/"
         response = RestClient.get url 
-        response.code.should eq(200)
+        expect(response.code).to eq(200)
     end
 end

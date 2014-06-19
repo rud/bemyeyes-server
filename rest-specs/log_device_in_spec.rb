@@ -1,5 +1,4 @@
 require 'rest_client'
-require 'shoulda'
 require 'yaml'
 require 'aescrypt'
 require 'bcrypt'
@@ -37,7 +36,7 @@ describe "log device in" do
         {'email' => @email, 'password'=> @password, 'device_token' => 'device_token'}.to_json
 
         device = Device.first(:device_token => token)
-        device.is_logged_in.should be(true)
+        expect(device.is_logged_in).to be(true)
     end
 
     it "can log a user in with a device token, device belongs to user" do
@@ -49,7 +48,7 @@ describe "log device in" do
         {'email' => @email, 'password'=> @password, 'device_token' => 'device_token'}.to_json
 
         user = User.first(:email => @email)
-        user.devices.select{|d| d.device_token == token}.length.should be(1)
+        expect(user.devices.select{|d| d.device_token == token}.length).to be(1)
     end
 
     it "can log a user in with a device token, token belongs to device" do
@@ -75,7 +74,7 @@ describe "log device in" do
         response = RestClient.put logoutUser_url, {'token'=> token}.to_json
 
         device = Device.first(:device_token => device_token)
-        device.is_logged_in.should be(false)
+        expect(device.is_logged_in).to be(false)
 
     end
 
@@ -93,6 +92,6 @@ describe "log device in" do
         logoutUser_url  = "#{@servername_with_credentials}/users/logout"
         response = RestClient.put logoutUser_url, {'token'=> token}.to_json
 
-        Token.all(:token => token).count.should eq(0)
+        expect(Token.all(:token => token).count).to eq(0)
     end
 end

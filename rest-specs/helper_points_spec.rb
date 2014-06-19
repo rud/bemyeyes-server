@@ -21,15 +21,15 @@ describe "helper points" do
 
      url = "#{@servername_with_credentials}/users/helper_points/" + id
      response = RestClient.get url, {:accept => :json}
-     response.code.should eq(200)
+     expect(response.code).to eq(200)
 
      url = "#{@servername_with_credentials}/users/helper_points_sum/" + id
      response = RestClient.get url, {:accept => :json}
-     response.code.should eq(200)
+     expect(response.code).to eq(200)
 
      jsn = JSON.parse response.body
      sum = jsn['sum']
 
-     sum.should eq(50)
+     expect(sum).to eq(50)
    end
  end

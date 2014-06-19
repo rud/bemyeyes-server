@@ -1,13 +1,4 @@
-require 'mongo_mapper'
-require 'factory_girl'
-
-require_relative './factories'
-require_relative '../helpers/helper_point_checker'
-require_relative '../models/helper_request'
-require_relative '../models/request'
-require_relative '../models/helper_points'
-require_relative '../models/helper'
-require_relative './integration_spec_helper'
+require_relative './init'
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods

@@ -1,9 +1,5 @@
-require 'active_support'
-require 'active_support/core_ext'
+require_relative './init'
 
-require_relative './factories'
-require_relative '../models/init'
-require_relative './integration_spec_helper'
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 end

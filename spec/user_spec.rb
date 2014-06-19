@@ -1,25 +1,10 @@
-require 'mongo_mapper'
-require 'shoulda'
-require 'factory_girl'
-require 'rack/test'
-require 'bundler'
+require_relative './init'
 
-require_relative '../app'
-require_relative './factories'
-require_relative './integration_spec_helper'
-require_relative '../models/device'
-require_relative '../models/token'
-require_relative '../models/user'
-require_relative '../models/blind'
-require_relative '../models/helper'
-
-# rspec
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 end
 
 describe Blind do
-  include Rack::Test::Methods
 
   before do
     IntegrationSpecHelper.InitializeMongo()

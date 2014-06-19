@@ -1,10 +1,4 @@
-require 'active_support'
-require 'active_support/core_ext'
-
-require_relative './factories'
-require_relative '../helpers/reset_password'
-require_relative '../models/init'
-require_relative './integration_spec_helper'
+require_relative './init'
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods

@@ -21,6 +21,7 @@ group :development do
   gem "rack-test", require: "rack/test"
   gem 'guard'
   gem 'guard-rspec'
+  gem 'rspec-autotest'
 end
 
 gem 'rake'

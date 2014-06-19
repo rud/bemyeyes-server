@@ -62,7 +62,7 @@ describe "Helper" do
     create_abuse_report blind, helper
     create_abuse_report blind, helper
 
-    helper.blocked.should eq(true)
+    expect(helper.blocked).to eq(true)
   end
 
   it "will not let a blind meet a helper from an abusive request" do
@@ -98,6 +98,6 @@ describe "Helper" do
     new_request.save!
 
     helpers = helper.available new_request, 2000
-    helpers.should_not include(helper)
+    expect(helpers).to_not include(helper)
   end
 end

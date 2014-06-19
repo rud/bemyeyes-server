@@ -29,6 +29,6 @@ describe Blind do
   end
 
  describe "can create user" do
-    it {  @sut.first_name.should eq("Blind") }
+    it {  expect(@sut.first_name).to eq("Blind") }
   end
 end

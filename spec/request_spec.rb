@@ -26,6 +26,6 @@ before do
   end
 
  describe "can create Request" do
-    it {@sut.answered.should eq(false) }
+    it { expect(@sut.answered).to eq(false) }
   end
 end

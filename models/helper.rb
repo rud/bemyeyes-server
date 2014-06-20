@@ -4,8 +4,16 @@ class Helper < User
   key :role, String
   
   before_create :set_role
+  after_create :set_points
 
-  def set_role()
+  def set_points() 
+   if role == "helper"
+    point = HelperPoint.signup
+    self.helper_points.push point
+  end 
+end
+
+def set_role()
     self.role = "helper"
   end
 

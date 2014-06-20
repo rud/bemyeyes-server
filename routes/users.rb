@@ -3,7 +3,7 @@ class App < Sinatra::Base
 
   # Begin users namespace
   namespace '/users' do
-  
+    
     # Create new user
     post '/?' do
       begin
@@ -14,40 +14,33 @@ class App < Sinatra::Base
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
-      is_helper_creation = false
       user = case body_params["role"].downcase
-               when "blind"
-                 Blind.new
-               when "helper"
-                 is_helper_creation = true
-                 Helper.new
-               else
-                 give_error(400, ERROR_UNDEFINED_ROLE, "Undefined role.").to_json
-      end
-      if !body_params['password'].nil?
-        password = decrypted_password(body_params['password'])
-        user.update_attributes body_params.merge({ "password" => password })
-      elsif !body_params['user_id'].nil?
-        user.update_attributes body_params.merge({ "user_id" => body_params['user_id'] })
-      else
-        give_error(400, ERROR_INVALID_BODY, "Missing parameter 'user_id' for registering a Facebook user or parameter 'password' for registering a regular user.").to_json
-      end
-      begin
-        user.save!
-        if is_helper_creation
-            helper = Helper.first(:_id => user._id)
-            point = HelperPoint.signup
-            helper.helper_points.push point
-            helper.save
-        end 
-      rescue Exception => e
-        puts e.message
-        give_error(400, ERROR_USER_EMAIL_ALREADY_REGISTERED, "The e-mail is already registered.").to_json if e.message.match /email/i
-      end
-
-      return user_from_id(user._id).to_json
+      when "blind"
+       Blind.new
+     when "helper"
+       Helper.new
+     else
+       give_error(400, ERROR_UNDEFINED_ROLE, "Undefined role.").to_json
+     end
+     if !body_params['password'].nil?
+      password = decrypted_password(body_params['password'])
+      user.update_attributes body_params.merge({ "password" => password })
+    elsif !body_params['user_id'].nil?
+      user.update_attributes body_params.merge({ "user_id" => body_params['user_id'] })
+      user.is_external_user = true
+    else
+      give_error(400, ERROR_INVALID_BODY, "Missing parameter 'user_id' for registering a Facebook user or parameter 'password' for registering a regular user.").to_json
     end
-    
+    begin
+      user.save!
+    rescue Exception => e
+      puts e.message
+      give_error(400, ERROR_USER_EMAIL_ALREADY_REGISTERED, "The e-mail is already registered.").to_json if e.message.match /email/i
+    end
+
+    return user_from_id(user._id).to_json
+  end
+  
     # Logout, thereby deleting the token
     put '/logout' do
       begin

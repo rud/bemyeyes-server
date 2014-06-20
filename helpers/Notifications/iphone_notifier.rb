@@ -42,7 +42,7 @@ class IphoneProductionNotifier < NotificationHandler
   end
 
   def include_device? device
-    not device.development
+    not device.development and device.system_version =~ /iPhone.*/
   end
 
 end
@@ -55,6 +55,6 @@ class IphoneDevelopmentNotifier < NotificationHandler
   end
 
   def include_device? device
-    device.development
+    device.development and device.system_version =~ /iPhone.*/
   end
 end

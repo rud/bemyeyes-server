@@ -22,6 +22,7 @@ module IphoneNotifier
      device_tokens.each do |token|
        TheLogger.log.info("sending request to token device " + token)
      end
+     TheLogger.log.info "Push notification handled by: " + self.class.to_s
   end
 
   def setup_urban_airship(ua_config, logger)

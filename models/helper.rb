@@ -18,9 +18,6 @@ class Helper < User
       .fields(:helper_id)
       .all
       .collect(&:helper_id)
-      TheLogger.log.error 'contacted helpers'
-      TheLogger.log.error contacted_helpers 
-
 
       logged_in_users = Token
       .where(:expiry_time.gt => Time.now)

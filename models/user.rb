@@ -33,7 +33,7 @@ class User
   key :available_from, Time
   key :snooze_period, String
   key :blocked, Boolean, :default => false
-
+  key :is_external_user, Boolean, :default => false
   timestamps!
   
   before_save :encrypt_password

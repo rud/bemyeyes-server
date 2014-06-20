@@ -3,7 +3,7 @@ class App < Sinatra::Base
 
   # Begin users namespace
   namespace '/users' do
-    
+
     # Create new user
     post '/?' do
       begin
@@ -40,7 +40,7 @@ class App < Sinatra::Base
 
     return user_from_id(user._id).to_json
   end
-  
+
     # Logout, thereby deleting the token
     put '/logout' do
       begin
@@ -62,12 +62,9 @@ class App < Sinatra::Base
       
       return { "success" => true }.to_json
     end
-    
-    # Login, thereby creating an new token
-    post '/login' do
-      begin
-        body_params = JSON.parse(request.body.read)
-        device_token = body_params["device_token"]
+   
+   def get_device body_params
+     device_token = body_params["device_token"]
         if device_token.nil? or device_token.length == 0
           raise "device_token must be present"
         end
@@ -76,6 +73,13 @@ class App < Sinatra::Base
         if device.nil?
             raise "device not found"
         end
+        device
+   end 
+    # Login, thereby creating an new token
+    post '/login' do
+      begin
+        body_params = JSON.parse(request.body.read)
+        device = get_device body_params
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid. " + e.message).to_json
       end

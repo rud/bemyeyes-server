@@ -29,7 +29,7 @@ describe HelperPointChecker do
      @sut.check_helper_points
      
      count = HelperPoint.count() 
-     expect(count).to be(0)
+     expect(count).to be(1)
    end
 
    it "5 high fives in one week - 10 points" do 
@@ -43,7 +43,7 @@ describe HelperPointChecker do
     @sut.check_helper_points
     
     count = HelperPoint.all(:user_id => helper.id).count
-    expect(count).to eq(1)
+    expect(count).to eq(2)
   end
 
   it "5 high fives in one week - then one more high five - 10 points" do 
@@ -61,7 +61,7 @@ describe HelperPointChecker do
 
   
   count = HelperPoint.all(:user_id => helper.id).count
-  expect(count).to eq(1)
+  expect(count).to eq(2)
 end
 
 it "4 high fives in a week - 0 points" do
@@ -75,7 +75,7 @@ it "4 high fives in a week - 0 points" do
   @sut.check_helper_points
   
   count = HelperPoint.all(:user_id => helper.id).count
-  expect(count).to eq(0)
+  expect(count).to eq(1)
 end
 end
 

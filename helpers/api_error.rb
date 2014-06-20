@@ -1,3 +1,5 @@
+#encoding: utf-8
+
 # Give an error
 def give_error(status_code, code, message)
   backtrace = Thread.current.backtrace.join("\n")

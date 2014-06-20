@@ -36,6 +36,7 @@ class App < Sinatra::Base
     set :app_file, __FILE__
     set :config, YAML.load_file('config/config.yml') rescue nil || {}
     set :scheduler, Rufus::Scheduler.new
+    Encoding.default_external = 'UTF-8'
 
     TheLogger.log.level = Logger::DEBUG  # could be DEBUG, ERROR, FATAL, INFO, UNKNOWN, WARN
     TheLogger.log.formatter = proc { |severity, datetime, progname, msg| "[#{severity}] #{datetime.strftime('%Y-%m-%d %H:%M:%S')} : #{msg}\n" }

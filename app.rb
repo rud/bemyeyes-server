@@ -20,7 +20,7 @@ require_relative 'helpers/thelogger_module'
 require_relative 'helpers/waiting_requests'
 require_relative 'helpers/date_helper'
 require_relative 'helpers/helper_point_checker'
-
+I18n.config.enforce_available_locales=false
 class App < Sinatra::Base
   register Sinatra::ConfigFile
 

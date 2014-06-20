@@ -2,6 +2,7 @@ require_relative './init'
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
+  
 end
 describe HelperPointChecker do  
   before do

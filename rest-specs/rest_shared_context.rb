@@ -14,6 +14,8 @@ require_relative '../app'
 require_relative '../models/init'
 require_relative '../spec/integration_spec_helper'
 
+I18n.config.enforce_available_locales=false
+
 shared_context "rest-context" do
   before(:each) do
     config = YAML.load_file('config/config.yml')

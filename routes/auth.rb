@@ -22,12 +22,12 @@ class App < Sinatra::Base
         email = body_params["email"]
         user = User.first({:email => email})
 
+         if user.nil?
+          give_error(400, ERROR_USER_NOT_FOUND, "User Not found")
+        end
+        
         if user.is_external_user
           give_error(400, ERROR_NOT_PERMITTED, "external users can not have their passwords reset")
-        end
-
-        if user.nil?
-          give_error(400, ERROR_USER_NOT_FOUND, "User Not found")
         end
 
         token = create_reset_password_token user 

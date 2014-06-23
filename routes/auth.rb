@@ -15,16 +15,15 @@ class App < Sinatra::Base
     MailService.new mandrill_config
   end
 
+  def user
+    @user ||= User.first({:email => @email}) || give_error(400, ERROR_USER_NOT_FOUND, "User Not found")
+  end
+
   namespace '/auth' do
     post '/request-reset-password' do
       begin
         body_params = JSON.parse(request.body.read)
-        email = body_params["email"]
-        user = User.first({:email => email})
-
-         if user.nil?
-          give_error(400, ERROR_USER_NOT_FOUND, "User Not found")
-        end
+        @email = body_params["email"]
         
         if user.is_external_user
           give_error(400, ERROR_NOT_PERMITTED, "external users can not have their passwords reset")

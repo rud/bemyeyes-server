@@ -102,7 +102,6 @@ class App < Sinatra::Base
 
     e = env["sinatra.error"]
     TheLogger.log.error(e)
-    TheLogger.log.error("testing")
     return { "result" => "error", "message" => e.message }.to_json
   end
 

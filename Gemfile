@@ -12,6 +12,8 @@ gem 'rufus-scheduler'
 gem "activesupport"
 gem 'bson_ext'
 gem 'mandrill-api'
+gem 'tzinfo'
+gem 'tzinfo-data'
 group :development do
   gem 'rspec-mocks'
   gem 'factory_girl'
@@ -22,6 +24,7 @@ group :development do
   gem 'guard'
   gem 'guard-rspec'
   gem 'rspec-autotest'
+  gem 'timecop'
 end
 
 gem 'rake'

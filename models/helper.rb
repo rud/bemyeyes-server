@@ -14,8 +14,8 @@ class Helper < User
 end
 
 def set_role()
-    self.role = "helper"
-  end
+  self.role = "helper"
+end
 
   #TODO to be improved with snooze functionality
   def available request=nil, limit=5
@@ -38,6 +38,7 @@ def set_role()
       .fields(:helper_id)
       .all
       .collect(&:helper_id)
+
     rescue Exception => e
       TheLogger.log.error e.message
     end

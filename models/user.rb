@@ -18,7 +18,7 @@ class User
       }
   }
 
-  many :tokens, :foreign_key => :user_id, :class_name => "Token"
+  many :tokens, :foreign_key => :user_id, :class_name => "Token", :dependent => :destroy
   many :devices, :foreign_key => :user_id, :class_name => "Device"
   one :reset_password_token, :foreign_key => :reset_password_token_id, :class_name => "ResetPasswordToken"  
   

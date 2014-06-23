@@ -25,6 +25,12 @@ class App < Sinatra::Base
   register Sinatra::ConfigFile
 
   config_file 'config/config.yml'
+  #logging according to: http://spin.atomicobject.com/2013/11/12/production-logging-sinatra/
+  ::Logger.class_eval { alias :write :'<<' }
+  access_log = ::File.join(::File.dirname(::File.expand_path(__FILE__)),'log','access.log')
+  access_logger = ::Logger.new(access_log, 'daily')
+  error_logger = ::File.new(::File.join(::File.dirname(::File.expand_path(__FILE__)),'log','error.log'),"a+")
+  error_logger.sync = true
 
   # Do any configurations
   configure do
@@ -40,6 +46,8 @@ class App < Sinatra::Base
 
     TheLogger.log.level = Logger::DEBUG  # could be DEBUG, ERROR, FATAL, INFO, UNKNOWN, WARN
     TheLogger.log.formatter = proc { |severity, datetime, progname, msg| "[#{severity}] #{datetime.strftime('%Y-%m-%d %H:%M:%S')} : #{msg}\n" }
+
+    use ::Rack::CommonLogger, access_logger
 
     opentok_config = settings.config['opentok']
     OpenTokSDK = OpenTok::OpenTok.new opentok_config['api_key'], opentok_config['api_secret']
@@ -58,8 +66,11 @@ class App < Sinatra::Base
     cron_job = CronJobs.new(Helper.new, @requests_helper, Rufus::Scheduler.new, WaitingRequests.new, HelperPointChecker.new)
     cron_job.start_jobs
   end
+  error_log = ::File.new("log/error.log","a+")
 
-  before  { TheLogger.log.info(request.request_method + " " + request.path_info)}
+  before  do
+    env["rack.errors"] = error_log
+  end
 
   # Protect anything but the root
   before /^(?!\/reset-password)\/.+$/ do
@@ -76,7 +87,13 @@ class App < Sinatra::Base
   end
 
   get '/log/' do
-    File.read("log/app.log").gsub!(/\[/,"<br/>[").gsub("[INFO]", "<span style='color:green'>[INFO]</span>").gsub("[ERROR]", "<span style='color:red'>[ERROR]</span>")
+    log_file = params[:file] || "app"
+    log_file = "log/#{log_file}.log"
+
+    if !File.exists? log_file
+      log_file = "log/app.log"
+    end
+    File.read(log_file).gsub!(/\[/,"<br/>[").gsub("[INFO]", "<span style='color:green'>[INFO]</span>").gsub("[ERROR]", "<span style='color:red'>[ERROR]</span>")
   end
   # Handle errors
   error do

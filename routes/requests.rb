@@ -5,10 +5,18 @@ class App < Sinatra::Base
   # Begin requests namespace
   namespace '/requests' do
 
+  before do
+    next unless request.post? || request.put?
+      @body_params = JSON.parse(request.body.read)
+  end
+
+  def body_params
+    @body_params
+  end
+
     # Create new request
     post '/?' do
       begin
-        body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
         TheLogger.log.info("request post, token " + token_repr )
       rescue Exception => e
@@ -50,7 +58,6 @@ class App < Sinatra::Base
     # Answer a request
     put '/:short_id/answer' do
       begin
-        body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
 
         TheLogger.log.info("answer request, token  " + token_repr )
@@ -83,7 +90,6 @@ class App < Sinatra::Base
     # A helper can cancel his own answer. This should only be done if the session has not already started.
     put '/:short_id/answer/cancel' do
       begin
-        body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
@@ -110,7 +116,6 @@ class App < Sinatra::Base
     # The blind or a helper can disconnect from a started session thereby stopping the session.
     put '/:short_id/disconnect' do
       begin
-        body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
@@ -141,7 +146,6 @@ class App < Sinatra::Base
     # Rate a request
     put '/:short_id/rate' do
       begin
-        body_params = JSON.parse(request.body.read)
         rating = body_params["rating"]
         token_repr = body_params["token"]
       rescue Exception => e

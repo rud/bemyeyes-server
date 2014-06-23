@@ -4,16 +4,28 @@ class App < Sinatra::Base
   # Begin users namespace
   namespace '/users' do
 
-    # Create new user
-    post '/?' do
-      begin
-        body_params = JSON.parse(request.body.read)
+  before do
+    next unless request.post? || request.put?
+      @body_params = JSON.parse(request.body.read)
+  end
+
+  def body_params
+    @body_params
+  end
+
+  def validate_body_for_create_user
+    begin
         required_fields = {"required" => ["email", "first_name", "last_name", "role"]}
         schema = User::SCHEMA.merge(required_fields)
         JSON::Validator.validate!(schema, body_params)
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
+  end
+
+    # Create new user
+    post '/?' do
+      validate_body_for_create_user
       user = case body_params["role"].downcase
       when "blind"
        Blind.new
@@ -34,7 +46,6 @@ class App < Sinatra::Base
     begin
       user.save!
     rescue Exception => e
-      puts e.message
       give_error(400, ERROR_USER_EMAIL_ALREADY_REGISTERED, "The e-mail is already registered.").to_json if e.message.match /email/i
     end
 
@@ -44,7 +55,6 @@ class App < Sinatra::Base
     # Logout, thereby deleting the token
     put '/logout' do
       begin
-        body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
@@ -63,7 +73,7 @@ class App < Sinatra::Base
       return { "success" => true }.to_json
     end
    
-   def get_device body_params
+   def get_device
      device_token = body_params["device_token"]
         if device_token.nil? or device_token.length == 0
           raise "device_token must be present"
@@ -78,8 +88,7 @@ class App < Sinatra::Base
     # Login, thereby creating an new token
     post '/login' do
       begin
-        body_params = JSON.parse(request.body.read)
-        device = get_device body_params
+        device = get_device
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid. " + e.message).to_json
       end
@@ -132,7 +141,6 @@ class App < Sinatra::Base
     # Login with a token
     put '/login/token' do
       begin
-        body_params = JSON.parse(request.body.read)
         token_repr = body_params["token"]
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
@@ -180,7 +188,6 @@ class App < Sinatra::Base
     put '/:user_id' do
       user = user_from_id(params[:user_id])
       begin
-        body_params = JSON.parse(request.body.read)
         JSON::Validator.validate!(User::SCHEMA, body_params)
         user.update_attributes!(body_params)
       rescue Exception => e

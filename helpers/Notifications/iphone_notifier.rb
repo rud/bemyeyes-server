@@ -14,7 +14,7 @@ module IphoneNotifier
           :"action-loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_ACTION",
           :short_id => request.short_id,
           },
-          :sound => "default"
+          :sound => "call.aiff"
         }
       }
     # Send notification

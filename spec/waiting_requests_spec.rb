@@ -9,6 +9,7 @@ describe WaitingRequests do
 	IntegrationSpecHelper.InitializeMongo()
   end
 	before(:each) do
+    User.destroy_all
 		@sut = WaitingRequests.new
 		Request.destroy_all
 		request = build(:request)

@@ -1,4 +1,5 @@
 require_relative  './notification_handler'
+require 'urbanairship'
 
 module IphoneNotifier
   def send_notifications request, device_tokens

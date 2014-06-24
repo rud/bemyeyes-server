@@ -56,7 +56,8 @@ class User
   #this is a scope
   def self.awake_users
     now = Time.now.utc
-    now_in_seconds_since_midnight = time_to_seconds_since_midnight now
+    now_in_seconds_since_midnight = time_to_seconds_since_midnight now, 0
+    p now_in_seconds_since_midnight
     where(:wake_up_in_seconds_since_midnight.lte => now_in_seconds_since_midnight, :go_to_sleep_in_seconds_since_midnight.gte => now_in_seconds_since_midnight)
   end
 
@@ -113,11 +114,11 @@ class User
   def convert_times_to_utc
      wake_up_time = Time.parse(wake_up)
      go_to_sleep_time = Time.parse(go_to_sleep)
-     self.wake_up_in_seconds_since_midnight = time_to_seconds_since_midnight wake_up_time
-     self.go_to_sleep_in_seconds_since_midnight = time_to_seconds_since_midnight go_to_sleep_time
+     self.wake_up_in_seconds_since_midnight = User.time_to_seconds_since_midnight wake_up_time, utc_offset
+     self.go_to_sleep_in_seconds_since_midnight = User.time_to_seconds_since_midnight go_to_sleep_time, utc_offset
   end
 
-  def time_to_seconds_since_midnight time
+  def self.time_to_seconds_since_midnight time, utc_offset
     hour_in_utc = time.hour + utc_offset
     hour_in_utc * 3600 + time.min * 60
   end

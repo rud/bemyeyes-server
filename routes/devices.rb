@@ -8,7 +8,6 @@ class App < Sinatra::Base
     post '/register' do
       begin
         body_params = JSON.parse(request.body.read)
-        token_repr = body_params["token"]
         device_token = body_params["device_token"]
         device_name = body_params["device_name"]
         model = body_params["model"]
@@ -30,21 +29,11 @@ class App < Sinatra::Base
   
   end # End namespace /devices
   
-  # Find token by representation of the token
-  def token_from_representation(repr)
-    token = Token.first(:token => repr)
-    if token.nil?
-      give_error(400, ERROR_USER_TOKEN_NOT_FOUND, "Token not found.").to_json
-    end
-    
-    return token
-  end
-  
   def register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
     device = Device.first(:device_token => device_token)
 
     unless device.nil?
-      device.token.destroy
+      device.token.destroy unless device.token.nil?
       device.destroy
     end
 

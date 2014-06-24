@@ -44,6 +44,7 @@ class App < Sinatra::Base
     device = Device.first(:device_token => device_token)
 
     unless device.nil?
+      device.token.destroy
       device.destroy
     end
 

@@ -1,4 +1,5 @@
 require_relative './init'
+require 'timecop'
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods

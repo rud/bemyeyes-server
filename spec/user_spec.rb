@@ -26,6 +26,7 @@ describe User do
 
     it "can change the timezone" do
       @sut.utc_offset = 7
+      @sut.wake_up = "07:00"
       @sut.save!
 
       expect(@sut.wake_up_in_seconds_since_midnight).to eq(0)

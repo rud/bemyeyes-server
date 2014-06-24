@@ -42,9 +42,8 @@ class App < Sinatra::Base
   
   def register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
     device = Device.first(:device_token => device_token)
-    user_id = nil
+
     unless device.nil?
-      user_id = device.user_id
       device.destroy
     end
 
@@ -60,7 +59,7 @@ class App < Sinatra::Base
     device.app_bundle_version = app_bundle_version
     device.locale = locale
     device.development = development
-    device.user_id = user_id unless user_id == nil
+    
     device.save!
   end
 

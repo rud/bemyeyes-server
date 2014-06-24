@@ -25,7 +25,7 @@ describe User do
     end
 
     it "can change the timezone" do
-      @sut.utc_offset = -7
+      @sut.utc_offset = 7
       @sut.save!
 
       expect(@sut.wake_up_in_seconds_since_midnight).to eq(0)
@@ -48,10 +48,46 @@ describe User do
         awake_users = User.awake_users
         expect(awake_users.count).to eq(0)
       end
-   
+
     end
 
-     it "awake user returned as awake" do
+    it "one awake one asleep, only awake is choosen" do
+      @sut.utc_offset = 0
+      @sut.go_to_sleep = "22:00"
+      @sut.save!
+
+      awake = build(:helper)
+      awake.utc_offset = 0
+      awake.go_to_sleep = "23:30"
+      awake.save!
+
+      Timecop.travel(Time.gm(2000,"jan",1,23,15,1) ) do
+        awake_users = User.awake_users
+        expect(awake_users.count).to eq(1)
+      end
+    end
+
+    it "user in another timezone, called in the afternoon" do
+      @sut.utc_offset = -4
+      @sut.go_to_sleep = "22:00"
+      @sut.save!
+      Timecop.travel(Time.gm(2000,"jan",1,20,15,1) ) do
+        awake_users = User.awake_users
+        expect(awake_users.count).to eq(1)
+      end
+    end
+
+    it "user in another timezone, not called in the night" do
+      @sut.utc_offset =  4
+      @sut.go_to_sleep = "22:00"
+      @sut.save!
+      Timecop.travel(Time.gm(2000,"jan",1,20,15,1) ) do
+        awake_users = User.awake_users
+        expect(awake_users.count).to eq(0)
+      end
+    end
+
+    it "awake user returned as awake" do
       @sut.utc_offset = 0
       @sut.go_to_sleep = "22:00"
       @sut.save!

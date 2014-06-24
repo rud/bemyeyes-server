@@ -58,5 +58,4 @@ class IphoneDevelopmentNotifier < NotificationHandler
   def include_device? device
     device.development and device.system_version =~ /iPhone.*/
   end
-  
 end

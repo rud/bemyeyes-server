@@ -26,6 +26,11 @@ module IphoneNotifier
      TheLogger.log.info "Push notification handled by: " + self.class.to_s
   end
 
+  def register_device(device_token, options = {})
+     Urbanairship.register_device(device_token, options)
+     TheLogger.log.info "Register device handled by: " + self.class.to_s
+  end
+
   def setup_urban_airship(ua_config, logger)
     Urbanairship.application_key =  ua_config['app_key']
     Urbanairship.application_secret = ua_config['app_secret']

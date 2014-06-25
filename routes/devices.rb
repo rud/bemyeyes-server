@@ -22,7 +22,9 @@ class App < Sinatra::Base
       
       register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
       
-      Urbanairship.register_device(device_token, :alias => device_name, :tags => [ model, system_version, "v" + app_version, "v" + app_bundle_version, locale ])
+      ua_config = settings.config['urbanairship']
+      requests_helper = RequestsHelper.new ua_config, TheLogger
+      requests_helper.register_device development, device_token, :alias => device_name, :tags => [ model, system_version, "v" + app_version, "v" + app_bundle_version, locale ]
       
       return { "success" => true, "token" => device_token }.to_json
     end

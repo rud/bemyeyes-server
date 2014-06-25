@@ -33,7 +33,6 @@ module IphoneNotifier
 
   def setup_urban_airship(ua_config, logger)
     Urbanairship.application_key =  ua_config['app_key']
-    logger.log.info "application_key: " + application_key + " registered by: " + self.class.to_s
     Urbanairship.application_secret = ua_config['app_secret']
     Urbanairship.master_secret = ua_config['master_secret']
     Urbanairship.request_timeout = 5 # default

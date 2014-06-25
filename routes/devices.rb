@@ -17,11 +17,11 @@ class App < Sinatra::Base
         locale = body_params["locale"]
         development = body_params["development"]
       rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        give_error(400, ERROR_INVALID_BODY, "The body is not valid. " + e.message).to_json
       end
       
       register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
-      
+
       ua_config = settings.config['urbanairship']
       requests_helper = RequestsHelper.new ua_config, TheLogger
       requests_helper.register_device development, device_token, :alias => device_name, :tags => [ model, system_version, "v" + app_version, "v" + app_bundle_version, locale ]

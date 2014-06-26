@@ -197,11 +197,15 @@ class App < Sinatra::Base
       return user
     end
 
+    def is_24_hour_string the_str
+      !the_str.nil? and /\d\d:\d\d/.match the_str
+    end
+
     put '/info/:user_id' do
       begin
         user = user_from_id(params[:user_id])
-        user.wake_up = body_params['wake_up'] unless body_params['wake_up'].nil? or not /\d\d:\d\d/.match body_params['wake_up']
-        user.go_to_sleep = body_params['go_to_sleep'] unless body_params['go_to_sleep'].nil?  or not /\d\d:\d\d/.match body_params['go_to_sleep']
+        user.wake_up = body_params['wake_up'] if is_24_hour_string body_params['wake_up']
+        user.go_to_sleep = body_params['go_to_sleep'] if is_24_hour_string body_params['go_to_sleep']
         user.utc_offset = body_params['utc_offset'] unless body_params['utc_offset'].nil? or not /-?\d{1,2}/.match body_params['utc_offset']
 
         user.save!

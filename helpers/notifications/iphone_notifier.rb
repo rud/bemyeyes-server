@@ -2,7 +2,17 @@ require_relative  './notification_handler'
 require 'urbanairship'
 
 module IphoneNotifier
+
+  def initialize_urbanairship
+     Urbanairship.application_key =  @ua_config['app_key']
+    Urbanairship.application_secret = @ua_config['app_secret']
+    Urbanairship.master_secret = @ua_config['master_secret']
+    Urbanairship.request_timeout = 5 # default
+    Urbanairship.logger = @logger.log
+  end
+
   def send_notifications request, device_tokens
+    initialize_urbanairship
     # Create notification
     user = request.blind
     notification_args_name = user.to_s
@@ -27,16 +37,14 @@ module IphoneNotifier
   end
 
   def register_device(device_token, options = {})
+    initialize_urbanairship
      Urbanairship.register_device(device_token, options)
      TheLogger.log.info "Register device handled by: " + self.class.to_s
   end
 
   def setup_urban_airship(ua_config, logger)
-    Urbanairship.application_key =  ua_config['app_key']
-    Urbanairship.application_secret = ua_config['app_secret']
-    Urbanairship.master_secret = ua_config['master_secret']
-    Urbanairship.request_timeout = 5 # default
-    Urbanairship.logger = logger.log
+    @ua_config = ua_config
+    @logger = logger
   end
 end
 

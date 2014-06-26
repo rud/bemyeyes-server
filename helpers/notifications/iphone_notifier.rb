@@ -1,7 +1,18 @@
 require_relative  './notification_handler'
+require 'urbanairship'
 
 module IphoneNotifier
+
+  def initialize_urbanairship
+    Urbanairship.application_key =  @ua_config['app_key']
+    Urbanairship.application_secret = @ua_config['app_secret']
+    Urbanairship.master_secret = @ua_config['master_secret']
+    Urbanairship.request_timeout = 5 # default
+    Urbanairship.logger = @logger.log
+  end
+
   def send_notifications request, device_tokens
+    initialize_urbanairship
     # Create notification
     user = request.blind
     notification_args_name = user.to_s
@@ -14,7 +25,7 @@ module IphoneNotifier
           :"action-loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_ACTION",
           :short_id => request.short_id,
           },
-          :sound => "default"
+          :sound => "call.aiff"
         }
       }
     # Send notification
@@ -25,12 +36,15 @@ module IphoneNotifier
      TheLogger.log.info "Push notification handled by: " + self.class.to_s
   end
 
-  def setup_urban_airship(ua_config, logger)
-    Urbanairship.application_key =  ua_config['app_key']
-    Urbanairship.application_secret = ua_config['app_secret']
-    Urbanairship.master_secret = ua_config['master_secret']
-    Urbanairship.request_timeout = 5 # default
-    Urbanairship.logger = logger.log
+  def register_device(device_token, options = {})
+    initialize_urbanairship
+     Urbanairship.register_device(device_token, options)
+     TheLogger.log.info "Register device handled by: " + self.class.to_s
+  end
+
+  def init(ua_config, logger)
+    @ua_config = ua_config
+    @logger = logger
   end
 end
 
@@ -38,7 +52,7 @@ class IphoneProductionNotifier < NotificationHandler
   include IphoneNotifier
 
   def initialize(ua_config, logger)
-    setup_urban_airship ua_config, logger
+    init ua_config, logger
   end
 
   def include_device? device
@@ -51,7 +65,7 @@ class IphoneDevelopmentNotifier < NotificationHandler
   include IphoneNotifier
 
   def initialize(ua_config, logger)
-    setup_urban_airship ua_config, logger
+    init ua_config, logger
   end
 
   def include_device? device

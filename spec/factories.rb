@@ -37,4 +37,9 @@ FactoryGirl.define do
     helper
     blind
   end
+  
+  factory :device, class: Device do
+    device_token "device_token"
+  end
+
 end

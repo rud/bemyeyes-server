@@ -55,7 +55,7 @@ shared_context "rest-context" do
                                      'device_token'=>'device_token', 'device_name'=> 'device_name',
                                      'model'=> 'model', 'system_version' => 'system_version',
                                      'app_version' => 'app_version', 'app_bundle_version' => 'app_bundle_version',
-                                     'locale'=> 'locale', 'development' => 'development'}.to_json
+                                     'locale'=> 'locale', 'development' => 'true'}.to_json
     expect(response.code).to eq(200)
     json = JSON.parse(response.body)
     json["token"]

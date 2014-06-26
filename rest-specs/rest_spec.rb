@@ -94,7 +94,7 @@ describe "Rest api" do
             expect(user.utc_offset).to eq(-10)
         end
 
-        it "wrong format for wake up and go to sleep, does not update" do
+        it "does not update if wrong format for wake up and go to sleep" do
 
           user = change_awake_info(  {'wake_up' =>'6:00', 'go_to_sleep' => '8:00'
             }.to_json)
@@ -103,7 +103,7 @@ describe "Rest api" do
              expect(user.go_to_sleep).to eq('22:00')
          end
 
-         it "wrong format for utc_offset, does not update" do
+         it "does not update if utc_offset is in the wrong format" do
           user = change_awake_info( {'utc_offset' =>'abc'
             }.to_json)
              #default values

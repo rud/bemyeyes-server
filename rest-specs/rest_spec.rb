@@ -57,11 +57,22 @@ describe "Rest api" do
     end
     describe 'time specific behaviour' do
         #need token to update
+        it "needs a valid token to change settings" do
+          id = create_user
+          token = log_user_in
+
+          invalid_token = '123'
+           url = "#{@servername_with_credentials}/users/info/"+ invalid_token
+          expect{RestClient.put url, {'wake_up' =>'10:00', 'go_to_sleep' => '20:00' 
+            }.to_json}
+          .to raise_error(RestClient::BadRequest)
+        end
+
         it "can update wake up and go to sleep" do
           id = create_user
           token = log_user_in
 
-          url = "#{@servername_with_credentials}/users/info/" + id
+          url = "#{@servername_with_credentials}/users/info/" + token
           response = RestClient.put url, {'wake_up' =>'10:00', 'go_to_sleep' => '20:00' 
             }.to_json
 
@@ -76,7 +87,7 @@ describe "Rest api" do
           id = create_user
           token = log_user_in
 
-          url = "#{@servername_with_credentials}/users/info/" + id
+          url = "#{@servername_with_credentials}/users/info/" + token
           response = RestClient.put url, {'utc_offset' =>'-10'
             }.to_json
 
@@ -90,7 +101,7 @@ describe "Rest api" do
           id = create_user
           token = log_user_in
 
-          url = "#{@servername_with_credentials}/users/info/" + id
+          url = "#{@servername_with_credentials}/users/info/" + token
           response = RestClient.put url, {'wake_up' =>'6:00', 'go_to_sleep' => '8:00'
             }.to_json
 
@@ -106,7 +117,7 @@ describe "Rest api" do
           id = create_user
           token = log_user_in
 
-          url = "#{@servername_with_credentials}/users/info/" + id
+          url = "#{@servername_with_credentials}/users/info/" + token
           response = RestClient.put url, {'utc_offset' =>'abc'
             }.to_json
 

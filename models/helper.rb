@@ -50,7 +50,7 @@ end
     Helper.where(:id.nin => contacted_helpers,
      :id.nin => abusive_helpers,
      :id.in => logged_in_users,
-     :id.in => awake_users,
+   #  :id.in => awake_users,
      "$or" => [
        {:available_from => nil},
        {:available_from.lt => Time.now.utc}

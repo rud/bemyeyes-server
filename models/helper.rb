@@ -39,12 +39,18 @@ end
       .all
       .collect(&:helper_id)
 
+      awake_users = User.awake_users
+      .fields(:user_id)
+      .all
+      .collect(&:user_id)
+
     rescue Exception => e
       TheLogger.log.error e.message
     end
     Helper.where(:id.nin => contacted_helpers,
      :id.nin => abusive_helpers,
      :id.in => logged_in_users,
+     :id.in => awake_users,
      "$or" => [
        {:available_from => nil},
        {:available_from.lt => Time.now.utc}

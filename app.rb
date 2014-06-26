@@ -93,7 +93,7 @@ class App < Sinatra::Base
     if !File.exists? log_file
       log_file = "log/app.log"
     end
-    File.read(log_file).gsub!(/\[/,"<br/>[").gsub("[INFO]", "<span style='color:green'>[INFO]</span>").gsub("[ERROR]", "<span style='color:red'>[ERROR]</span>")
+    File.read(log_file).gsub(/^/, '<br/>').gsub("[INFO]", "<span style='color:green'>[INFO]</span>").gsub("[ERROR]", "<span style='color:red'>[ERROR]</span>")
   end
   # Handle errors
   error do

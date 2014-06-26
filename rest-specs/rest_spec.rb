@@ -56,7 +56,18 @@ describe "Rest api" do
         end
     end
     describe 'time specific behaviour' do
-        #need token to update
+        def change_awake_info params
+             id = create_user
+          token = log_user_in
+
+          url = "#{@servername_with_credentials}/users/info/" + token
+          response = RestClient.put url, params
+          expect(response.code).to eq(200)
+
+          user = User.first(:_id => id)
+          user
+        end
+
         it "needs a valid token to change settings" do
           id = create_user
           token = log_user_in
@@ -69,61 +80,32 @@ describe "Rest api" do
         end
 
         it "can update wake up and go to sleep" do
-          id = create_user
-          token = log_user_in
-
-          url = "#{@servername_with_credentials}/users/info/" + token
-          response = RestClient.put url, {'wake_up' =>'10:00', 'go_to_sleep' => '20:00' 
-            }.to_json
-
-            expect(response.code).to eq(200)
-
-            user = User.first(:_id => id)
+            user = change_awake_info({'wake_up' =>'10:00', 'go_to_sleep' => '20:00' 
+            }.to_json)
+            
             expect(user.wake_up).to eq('10:00')
             expect(user.go_to_sleep).to eq('20:00')
         end
 
         it "can update utc_offset" do
-          id = create_user
-          token = log_user_in
+          user = change_awake_info( {'utc_offset' =>'-10'
+            }.to_json)
 
-          url = "#{@servername_with_credentials}/users/info/" + token
-          response = RestClient.put url, {'utc_offset' =>'-10'
-            }.to_json
-
-            expect(response.code).to eq(200)
-
-            user = User.first(:_id => id)
             expect(user.utc_offset).to eq(-10)
         end
 
         it "wrong format for wake up and go to sleep, does not update" do
-          id = create_user
-          token = log_user_in
 
-          url = "#{@servername_with_credentials}/users/info/" + token
-          response = RestClient.put url, {'wake_up' =>'6:00', 'go_to_sleep' => '8:00'
-            }.to_json
-
-            expect(response.code).to eq(200)
-
-            user = User.first(:_id => id)
+          user = change_awake_info(  {'wake_up' =>'6:00', 'go_to_sleep' => '8:00'
+            }.to_json)
              #default values
              expect(user.wake_up).to eq('07:00')
              expect(user.go_to_sleep).to eq('22:00')
          end
 
          it "wrong format for utc_offset, does not update" do
-          id = create_user
-          token = log_user_in
-
-          url = "#{@servername_with_credentials}/users/info/" + token
-          response = RestClient.put url, {'utc_offset' =>'abc'
-            }.to_json
-
-            expect(response.code).to eq(200)
-
-            user = User.first(:_id => id)
+          user = change_awake_info( {'utc_offset' =>'abc'
+            }.to_json)
              #default values
              expect(user.utc_offset).to eq(0)
          end

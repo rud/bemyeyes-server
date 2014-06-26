@@ -153,7 +153,7 @@ class App < Sinatra::Base
 
       return { "user" => JSON.parse(token.user.to_json) }.to_json
     end
-    
+
     # Get user by id
     get '/:user_id' do
       content_type 'application/json'
@@ -195,6 +195,19 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
       return user
+    end
+
+    put '/info/:user_id' do
+      begin
+        user = user_from_id(params[:user_id])
+        user.wake_up = body_params['wake_up'] unless body_params['wake_up'].nil? or not /\d\d:\d\d/.match body_params['wake_up']
+        user.go_to_sleep = body_params['go_to_sleep'] unless body_params['go_to_sleep'].nil?  or not /\d\d:\d\d/.match body_params['go_to_sleep']
+        user.utc_offset = body_params['utc_offset'] unless body_params['utc_offset'].nil? or not /-?\d{1,2}/.match body_params['utc_offset']
+
+        user.save!
+      rescue Exception => e
+        give_error(400, ERROR_INVALID_BODY, "The body is not valid. " + e.message).to_json
+      end
     end
 
     put '/:user_id/snooze/:period' do

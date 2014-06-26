@@ -39,12 +39,12 @@ describe "Rest api" do
             it "can create a user" do
                 url = "#{@servername_with_credentials}/users/"
                 response = RestClient.post url, {'first_name' =>'first_name', 
-                 'last_name'=>'last_name', 'email'=> @email, 
-                 'role'=> 'helper', 'password'=> @password }.to_json
-                 expect(response.code).to eq(200)
-             end
+                   'last_name'=>'last_name', 'email'=> @email, 
+                   'role'=> 'helper', 'password'=> @password }.to_json
+                   expect(response.code).to eq(200)
+               end
 
-             it "can create user,log in and log out" do
+               it "can create user,log in and log out" do
             #create user
             create_user
             token = log_user_in
@@ -98,11 +98,11 @@ describe "Rest api" do
 
             user = User.first(:_id => id)
              #default values
-            expect(user.wake_up).to eq('07:00')
-            expect(user.go_to_sleep).to eq('22:00')
-        end
+             expect(user.wake_up).to eq('07:00')
+             expect(user.go_to_sleep).to eq('22:00')
+         end
 
-        it "wrong format for utc_offset, does not update" do
+         it "wrong format for utc_offset, does not update" do
           id = create_user
           token = log_user_in
 
@@ -114,7 +114,7 @@ describe "Rest api" do
 
             user = User.first(:_id => id)
              #default values
-            expect(user.utc_offset).to eq(0)
-        end
-    end
-end
+             expect(user.utc_offset).to eq(0)
+         end
+     end
+ end

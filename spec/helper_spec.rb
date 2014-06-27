@@ -31,6 +31,25 @@ describe "Helper" do
 
       expect(helper.available(request).count).to eq(1)   
     end  
+
+    it "finds no available helpers when noone speaks blind persons languages" do
+       request = build(:request)
+
+      helper = request.helper
+      helper.languages = ['ab', 'aa']
+      helper.first_name = "non-english"
+      helper.save!
+
+      blind =request.blind
+      blind.languages = ['en', 'da']
+      blind.save!
+      
+      token = Token.new
+      token.valid_time = 365.days
+      helper.tokens.push(token)
+
+      expect(helper.available(request).count).to eq(0)   
+    end  
   end
 
   describe "languages" do

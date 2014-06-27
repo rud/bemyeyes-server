@@ -32,6 +32,7 @@ class User
   key :email, String, :required => true, :unique => true
   key :first_name, String, :required => true
   key :last_name, String, :required => true
+  #The iso 639-1 2 letter code
   key :languages, Array, :default => ["da","en"]
   key :user_id, Integer, :unique => true #, :required => true #Unique identifier from FB
   key :role, String, :required => true

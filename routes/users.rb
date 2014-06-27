@@ -90,7 +90,7 @@ class App < Sinatra::Base
       begin
         device = get_device
       rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid. " + e.message).to_json
+        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
       
       secure_password = body_params["password"]
@@ -211,7 +211,7 @@ class App < Sinatra::Base
 
         user.save!
       rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid. " + e.message).to_json
+        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
     end
 

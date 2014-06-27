@@ -27,7 +27,7 @@ class App < Sinatra::Base
         check_and_raise_if_blank_string request_id, "request_id"
         check_and_raise_if_blank_string reason, "reason"
       rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid. " + e.message).to_json
+        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
 
       if !is_logged_in token_repr
@@ -45,7 +45,7 @@ class App < Sinatra::Base
         abuse_report.save!
 
       rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "Unable to create abuse report" + e.message).to_json
+        give_error(400, ERROR_INVALID_BODY, "Unable to create abuse report").to_json
       end
     end
   end

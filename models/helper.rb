@@ -45,7 +45,7 @@ end
       .all
       .collect(&:user_id)
 
-      TheLogger.log.error "awake users: " + awake_users.to_s
+      TheLogger.log.info "awake users: " + awake_users.to_s
 
     rescue Exception => e
       TheLogger.log.error e.message

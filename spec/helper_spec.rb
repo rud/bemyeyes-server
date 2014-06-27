@@ -12,39 +12,62 @@ describe "Helper" do
     Request.destroy_all
   end
 
-  it "can create a Helper with two languages" do
-    helper = build(:helper)
-    helper.languages = ['ab', 'aa']
-    helper.save!
+  describe "available" do
+    it "can get available helpers with lanugage" do
+       request = build(:request)
+
+      helper = request.helper
+      helper.languages = ['ab', 'en']
+      helper.first_name = "non-english"
+      helper.save!
+
+      blind =request.blind
+      blind.languages = ['en', 'da']
+      blind.save!
+      
+      token = Token.new
+      token.valid_time = 365.days
+      helper.tokens.push(token)
+
+      expect(helper.available(request).count).to eq(1)   
+    end  
   end
 
-  it "finds no helpers when no speaks blind persons languages" do
-    request = build(:request)
+  describe "languages" do
+    it "can create a Helper with two languages" do
+      helper = build(:helper)
+      helper.languages = ['ab', 'aa']
+      helper.save!
+    end
 
-    helper = request.helper
-    helper.languages = ['ab', 'aa']
-    helper.first_name = "non-english"
-    helper.save!
+    it "finds no helpers when no speaks blind persons languages" do
+      request = build(:request)
 
-    blind =request.blind
-    blind.languages = ['en']
-    blind.save!
+      helper = request.helper
+      helper.languages = ['ab', 'aa']
+      helper.first_name = "non-english"
+      helper.save!
 
-    expect(Helper.helpers_who_speaks_blind_persons_language(request).count).to eq(0)
-  end
+      blind =request.blind
+      blind.languages = ['en']
+      blind.save!
 
-  it "finds a helpers when one language overlaps" do
-    request = build(:request)
+      expect(Helper.helpers_who_speaks_blind_persons_language(request).count).to eq(0)
+    end
 
-    helper = request.helper
-    helper.languages = ['ab', 'en']
-    helper.first_name = "non-english"
-    helper.save!
+    it "finds a helpers when one language overlaps" do
+      request = build(:request)
 
-    blind =request.blind
-    blind.languages = ['en', 'da']
-    blind.save!
+      helper = request.helper
+      helper.languages = ['ab', 'en']
+      helper.first_name = "non-english"
+      helper.save!
 
-    expect(Helper.helpers_who_speaks_blind_persons_language(request).count).to eq(1)
+      blind =request.blind
+      blind.languages = ['en', 'da']
+      blind.save!
+
+      expect(Helper.helpers_who_speaks_blind_persons_language(request).count).to eq(1)
+    end
   end
 end

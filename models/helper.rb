@@ -40,6 +40,7 @@ end
       .collect(&:helper_id)
 
       awake_users = User.awake_users
+      .where(:role=> 'helper')
       .fields(:user_id)
       .all
       .collect(&:user_id)

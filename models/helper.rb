@@ -19,6 +19,7 @@ end
 
 def self.helpers_who_speaks_blind_persons_language request
  languages_of_blind = request.blind.languages
+ TheLogger.log.error "languages_of_blind #{languages_of_blind}"
  Helper.where(:languages => {:$in => languages_of_blind})
 end
 
@@ -56,6 +57,7 @@ end
       .collect(&:user_id)
 
       TheLogger.log.info "awake users: " + awake_users.to_s
+      TheLogger.log.info "helpers who speaks the language of blind: " + helpers_who_speaks_blind_persons_language.to_s
 
     rescue Exception => e
       TheLogger.log.error e.message

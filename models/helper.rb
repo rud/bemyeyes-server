@@ -56,6 +56,7 @@ end
       .collect(&:user_id)
 
       TheLogger.log.info "awake users: " + awake_users.to_s
+      TheLogger.log.info "helpers who speaks the language of blind: " + helpers_who_speaks_blind_persons_language
 
     rescue Exception => e
       TheLogger.log.error e.message

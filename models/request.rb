@@ -39,6 +39,10 @@ class Request
            }.to_json
   end
 
+  def self.running_requests
+    Request.where(:stopped => false)
+  end
+
   private
   def create_short_id
     self.short_id = self._id

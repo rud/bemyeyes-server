@@ -56,6 +56,11 @@ end
       .all
       .collect(&:user_id)
 
+      Request.running_requests
+       .fields(:helper_id)
+      .all
+      .collect(&:helper_id)
+
       TheLogger.log.info "awake users: " + awake_users.to_s
       TheLogger.log.info "helpers who speaks the language of blind: " + helpers_who_speaks_blind_persons_language.to_s
 

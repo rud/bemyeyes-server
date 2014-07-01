@@ -17,6 +17,12 @@ def set_role()
   self.role = "helper"
 end
 
+def self.helpers_who_speaks_blind_persons_language request
+ languages_of_blind = request.blind.languages
+ TheLogger.log.error "languages_of_blind #{languages_of_blind}"
+ Helper.where(:languages => {:$in => languages_of_blind})
+end
+
   #TODO to be improved with snooze functionality
   def available request=nil, limit=5
     begin
@@ -45,7 +51,13 @@ end
       .all
       .collect(&:user_id)
 
+      helpers_who_speaks_blind_persons_language = Helper.helpers_who_speaks_blind_persons_language(request)
+      .fields(:user_id)
+      .all
+      .collect(&:user_id)
+
       TheLogger.log.info "awake users: " + awake_users.to_s
+      TheLogger.log.info "helpers who speaks the language of blind: " + helpers_who_speaks_blind_persons_language.to_s
 
     rescue Exception => e
       TheLogger.log.error e.message
@@ -54,6 +66,7 @@ end
      :id.nin => abusive_helpers,
      :id.in => logged_in_users,
      :user_id.in => awake_users,
+     :user_id.in => helpers_who_speaks_blind_persons_language,   
      "$or" => [
        {:available_from => nil},
        {:available_from.lt => Time.now.utc}

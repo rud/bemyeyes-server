@@ -28,8 +28,47 @@ class App < Sinatra::Base
       
       return { "success" => true, "token" => device_token }.to_json
     end
-  
+
+  post '/update' do
+      begin
+        body_params = JSON.parse(request.body.read)
+        device_token = body_params["device_token"]
+        device_name = body_params["device_name"]
+        model = body_params["model"]
+        system_version = body_params["system_version"]
+        app_version = body_params["app_version"]
+        app_bundle_version = body_params["app_bundle_version"]
+        locale = body_params["locale"]
+        development = body_params["development"]
+      rescue Exception => e
+        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+      end
+      
+      update_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
+
+      return { "success" => true, "token" => device_token }.to_json
+    end
   end # End namespace /devices
+  
+  def update_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
+    device = Device.first(:device_token => device_token)
+
+    if device.nil?
+      raise "The device does not exist, please register a device"
+    end
+    
+    # Update information
+    device.device_token = device_token
+    device.device_name = device_name
+    device.model = model
+    device.system_version = system_version
+    device.app_version = app_version
+    device.app_bundle_version = app_bundle_version
+    device.locale = locale
+    device.development = development
+    
+    device.save!
+  end
   
   def register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
     device = Device.first(:device_token => device_token)
@@ -54,5 +93,4 @@ class App < Sinatra::Base
     
     device.save!
   end
-
 end

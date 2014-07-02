@@ -13,7 +13,7 @@ describe "Request" do
 
   it "can create a request" do
    register_device
-   create_user
+   create_user 'blind'
    token = log_user_in
 
    create_request_url  = "#{@servername_with_credentials}/requests"
@@ -26,7 +26,7 @@ describe "Request" do
 
  it "create request and find it waiting" do
    register_device
-   create_user
+   create_user 'blind'
    token = log_user_in
    
    create_request_url  = "#{@servername_with_credentials}/requests"

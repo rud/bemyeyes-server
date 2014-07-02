@@ -3,7 +3,7 @@ class App < Sinatra::Base
 
   # Begin devices namespace
   namespace '/devices' do
-    
+
     # Register device
     post '/register' do
       begin
@@ -19,17 +19,17 @@ class App < Sinatra::Base
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
-      
+
       register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
 
       ua_config = settings.config['urbanairship']
       requests_helper = RequestsHelper.new ua_config, TheLogger
       requests_helper.register_device development, device_token, :alias => device_name, :tags => [ model, system_version, "v" + app_version, "v" + app_bundle_version, locale ]
-      
+
       return { "success" => true, "token" => device_token }.to_json
     end
 
-  post '/update' do
+    post '/update' do
       begin
         body_params = JSON.parse(request.body.read)
         device_token = body_params["device_token"]
@@ -43,20 +43,20 @@ class App < Sinatra::Base
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
-      
+
       update_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
 
       return { "success" => true, "token" => device_token }.to_json
     end
   end # End namespace /devices
-  
+
   def update_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
     device = Device.first(:device_token => device_token)
 
     if device.nil?
       raise "The device does not exist, please register a device"
     end
-    
+
     # Update information
     device.device_token = device_token
     device.device_name = device_name
@@ -66,10 +66,10 @@ class App < Sinatra::Base
     device.app_bundle_version = app_bundle_version
     device.locale = locale
     device.development = development
-    
+
     device.save!
   end
-  
+
   def register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
     device = Device.first(:device_token => device_token)
 
@@ -80,7 +80,7 @@ class App < Sinatra::Base
 
     # Create new device if it does not already exist
     device = Device.new
-    
+
     # Update information
     device.device_token = device_token
     device.device_name = device_name
@@ -90,7 +90,7 @@ class App < Sinatra::Base
     device.app_bundle_version = app_bundle_version
     device.locale = locale
     device.development = development
-    
+
     device.save!
   end
 end

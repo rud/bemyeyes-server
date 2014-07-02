@@ -2,9 +2,9 @@ require_relative './rest_shared_context'
 
 describe "device update" do
   include_context "rest-context"
-UPDATEDMODEL = 'update_model'
+  UPDATEDMODEL = 'update_model'
 
-def  update_device token
+  def  update_device token
     url = "#{@servername_with_credentials}/devices/update"
     response = RestClient.post url, {'token' =>token,
                                      'device_token'=>'device_token', 'device_name'=> 'device_name',
@@ -16,10 +16,10 @@ def  update_device token
     json["token"]
   end
   it "can update a device" do
-      create_user
-      token = register_device
-      update_device token
+    create_user
+    token = register_device
+    update_device token
 
-      expect(Device.where(:model => UPDATEDMODEL).count).to eq(1)
+    expect(Device.where(:model => UPDATEDMODEL).count).to eq(1)
   end
 end

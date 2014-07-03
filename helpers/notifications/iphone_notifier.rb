@@ -42,6 +42,17 @@ module IphoneNotifier
      TheLogger.log.info "Register device handled by: " + self.class.to_s
   end
 
+  def collect_feedback_on_inactive_devices
+    initialize_urbanairship
+    Urbanairship.feedback(24.hours.ago).each() do |feedback|
+        device_token = feedback.device_token
+        device = Device.first(:device_token => device_token)
+        device.inactive = true
+        device.save!
+        TheLogger.log.info "device inactive: #{device_token}"
+      end
+  end
+
   def init(ua_config, logger)
     @ua_config = ua_config
     @logger = logger
@@ -58,7 +69,6 @@ class IphoneProductionNotifier < NotificationHandler
   def include_device? device
     not device.development and device.system_version =~ /iPhone.*/
   end
-
 end
 
 class IphoneDevelopmentNotifier < NotificationHandler

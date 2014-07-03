@@ -21,6 +21,10 @@ class CronJobs
     return @point_job
   end
 
+  def ua_feedback_job
+    return @ua_feedback_job
+  end
+
 
   def start_jobs
     @job ||= @scheduler.every('20s') do
@@ -29,6 +33,11 @@ class CronJobs
 
     @point_job ||= @scheduler.every('1d') do
       @helper_point_checker.check_helper_points
+    end
+
+    @ua_feedback_job ||= @scheduler.every('1d') do
+      @request_helper.collect_feedback_on_inactive_devices
+      TheLogger.log.info 'gathered feedback for inactive devices'
     end
   end
 end

@@ -46,6 +46,12 @@ end
       .all
       .collect(&:helper_id)
 
+      blocked_users = User
+      .where(:blocked => true)
+      .fields(:user_id)
+      .all
+      .collect(&:user_id)
+
       awake_users = User.awake_users
       .where(:role=> 'helper')
       .fields(:user_id)
@@ -69,6 +75,7 @@ end
      :id.nin => abusive_helpers,
      :id.in => logged_in_users,
      :user_id.in => awake_users,
+     :user_id.nin => blocked_users,
      :user_id.in => helpers_who_speaks_blind_persons_language,  
      :user_id.nin => helpers_in_a_call, 
      "$or" => [

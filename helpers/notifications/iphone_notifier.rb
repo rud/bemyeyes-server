@@ -24,22 +24,35 @@ module IphoneNotifier
           :"loc-args" => [ notification_args_name ],
           :"action-loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_ACTION",
           :short_id => request.short_id,
-          },
-          :sound => "call.aiff"
-        }
+        },
+        :sound => "call.aiff"
       }
+    }
     # Send notification
     Urbanairship.push(notification)
-     device_tokens.each do |token|
-       TheLogger.log.info("sending request to token device " + token)
-     end
-     TheLogger.log.info "Push notification handled by: " + self.class.to_s
+    device_tokens.each do |token|
+      TheLogger.log.info("sending request to token device " + token)
+    end
+    TheLogger.log.info "Push notification handled by: " + self.class.to_s
   end
 
   def register_device(device_token, options = {})
     initialize_urbanairship
-     Urbanairship.register_device(device_token, options)
-     TheLogger.log.info "Register device handled by: " + self.class.to_s
+    Urbanairship.register_device(device_token, options)
+    TheLogger.log.info "Register device handled by: " + self.class.to_s
+  end
+
+  def collect_feedback_on_inactive_devices
+    initialize_urbanairship
+    Urbanairship.feedback(24.hours.ago).each() do |feedback|
+      device_token = feedback.device_token
+      device = Device.first(:device_token => device_token)
+      unless device.nil?
+        device.inactive = true
+        device.save!
+        TheLogger.log.info "device inactive: #{device_token}"
+      end
+    end
   end
 
   def init(ua_config, logger)
@@ -58,7 +71,6 @@ class IphoneProductionNotifier < NotificationHandler
   def include_device? device
     not device.development and device.system_version =~ /iPhone.*/
   end
-
 end
 
 class IphoneDevelopmentNotifier < NotificationHandler

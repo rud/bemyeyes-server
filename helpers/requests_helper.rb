@@ -4,6 +4,7 @@ require_relative './notifications/notification_handler'
 require_relative './waiting_requests'
 
 class RequestsHelper
+  attr_accessor :iphone_production_notifier, :iphone_development_notifier
   def initialize(ua_config, logger)
     ua_prod_config = ua_config['production']
     ua_dev_config = ua_config['development']
@@ -21,6 +22,12 @@ class RequestsHelper
     @iphone_production_notifier.register_device device_token, options
   end
 end
+
+def collect_feedback_on_inactive_devices
+  iphone_production_notifier.collect_feedback_on_inactive_devices
+  iphone_development_notifier.collect_feedback_on_inactive_devices
+end
+
 
 def check_request (request, number_of_helpers)
   helper = Helper.new

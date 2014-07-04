@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sinatra'
 require "sinatra/config_file"
 require 'sinatra/namespace'
+require 'newrelic_rpm'
 require 'opentok'
 require 'mongo_mapper'
 require 'json'

@@ -16,6 +16,7 @@ start mongo shell
             } )
 
 ##Start the server locally
+
 Copy config.yml to the config folder    
 Use the config.temp.yml as a template    
 ruby -S rackup -w config.ru

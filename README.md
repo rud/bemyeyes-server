@@ -3,7 +3,6 @@ BeMyEyes Server
 
 [![Code Climate](https://codeclimate.com/github/bemyeyes/bemyeyes-server.png)](https://codeclimate.com/github/bemyeyes/bemyeyes-server)
 
-
 ##Getting started
 gem install bundler  
 bundle install  

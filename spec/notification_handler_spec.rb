@@ -18,7 +18,7 @@ before do
   IntegrationSpecHelper.InitializeMongo()
 end
 
-it "filters devices" do
+it "filters out development devices" do
   device = build(:device)
   device.development = true
   device.save!
@@ -32,6 +32,29 @@ it "filters devices" do
   successor_double = double('successor')
   expect(successor_double).to receive(:handle_notifications) do |devices, request|
     expect(devices[0]).to eq(device)
+  end 
+  
+  logger_double = setup_logger
+  hash = Hash.new
+  sut = IphoneProductionNotifier.new hash, logger_double
+  sut.set_successor successor_double
+  sut.handle_notifications devices, request 
+end 
+
+it "filters out inactive devices" do
+  device = build(:device)
+  device.inactive = true
+  device.save!
+
+  devices = Array.new
+  devices << device
+  
+  request = build(:request)
+  request.save!
+  
+  successor_double = double('successor')
+  #should not be called since the only device existing is inactive
+  expect(successor_double).to_not receive(:handle_notifications) do |devices, request|
   end 
   
   logger_double = setup_logger

@@ -5,7 +5,7 @@ class NotificationHandler
   end
 
   def handle_notifications(devices, request)
-    active_devices = devices.select {|device| not device.inactive}
+    active_devices = devices.reject {|device| device.inactive}
     devices_not_handled = active_devices.reject {|device| include_device? device}
     devices_to_handle = active_devices.select {|device| include_device? device}
 

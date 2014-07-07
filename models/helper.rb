@@ -58,6 +58,12 @@ end
       .all
       .collect(&:user_id)
 
+      non_snoozing_users = User.non_snoozing_users
+      .where(:role=> 'helper')
+      .fields(:user_id)
+      .all
+      .collect(&:user_id)
+
       helpers_who_speaks_blind_persons_language = Helper.helpers_who_speaks_blind_persons_language(request)
       .fields(:user_id)
       .all
@@ -75,6 +81,7 @@ end
      :id.nin => abusive_helpers,
      :id.in => logged_in_users,
      :user_id.in => awake_users,
+     :user_id.in => non_snoozing_users,
      :user_id.nin => blocked_users,
      :user_id.in => helpers_who_speaks_blind_persons_language,  
      :user_id.nin => helpers_in_a_call, 

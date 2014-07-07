@@ -82,6 +82,15 @@ class User
     
     return nil
   end
+def snooze
+     if self.available_from && Time.now.utc < self.available_from
+       { "period" => self.snooze_period,
+         "until" => self.available_from
+       }
+     else
+       nil
+     end
+   end
 
   def password=(pwd)
     @password = pwd

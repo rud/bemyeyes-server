@@ -5,40 +5,40 @@ class App < Sinatra::Base
   # Begin requests namespace
   namespace '/requests' do
 
-  before do
-    next unless request.post? || request.put?
+    before do
+      next unless request.post? || request.put?
       @body_params = JSON.parse(request.body.read)
-  end
+    end
 
-  def body_params
-    @body_params
-  end
+    def body_params
+      @body_params
+    end
 
-  def token_repr
-    begin
+    def token_repr
+      begin
         token_repr = body_params["token"]
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
       token_repr
-  end
+    end
 
-  def rating
-     begin
+    def rating
+      begin
         rating = body_params["rating"]
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
-    rating
-  end
+      rating
+    end
 
-  def token
-    token_from_representation_with_validation(token_repr, true)
-  end
+    def token
+      token_from_representation_with_validation(token_repr, true)
+    end
 
-  def user
-    token.user
-  end
+    def user
+      token.user
+    end
 
 
     # Create new request
@@ -68,7 +68,7 @@ class App < Sinatra::Base
 
     # Get a request
     get '/:short_id' do
-        TheLogger.log.info("get request, shortId:  " + params[:short_id] )
+      TheLogger.log.info("get request, shortId:  " + params[:short_id] )
       return request_from_short_id(params[:short_id]).to_json
     end
 

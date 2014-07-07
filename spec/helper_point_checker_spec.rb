@@ -7,7 +7,6 @@ end
 describe HelperPointChecker do  
   before do
     IntegrationSpecHelper.InitializeMongo()
-    @sut = HelperPointChecker.new
   end
 
   before(:each) do
@@ -16,7 +15,7 @@ describe HelperPointChecker do
   end
   context "5 high fives " do
     it "No helper requests does nothing" do
-      @sut.check_helper_points
+     subject.check_helper_points
       
       count = HelperPoint.count() 
       expect(count).to be(0)
@@ -27,7 +26,7 @@ describe HelperPointChecker do
      create_high_five_for_helper(helper)
      
 
-     @sut.check_helper_points
+     subject.check_helper_points
      
      count = HelperPoint.count() 
      expect(count).to be(1)
@@ -41,7 +40,7 @@ describe HelperPointChecker do
       create_high_five_for_helper(helper)
     end
 
-    @sut.check_helper_points
+    subject.check_helper_points
     
     count = HelperPoint.all(:user_id => helper.id).count
     expect(count).to eq(2)
@@ -55,10 +54,10 @@ describe HelperPointChecker do
     create_high_five_for_helper(helper)
   end
 
-  @sut.check_helper_points
+  subject.check_helper_points
   create_high_five_for_helper(helper)
 
-  @sut.check_helper_points
+  subject.check_helper_points
 
   
   count = HelperPoint.all(:user_id => helper.id).count
@@ -73,7 +72,7 @@ it "4 high fives in a week - 0 points" do
     create_high_five_for_helper(helper)
   end
 
-  @sut.check_helper_points
+ subject.check_helper_points
   
   count = HelperPoint.all(:user_id => helper.id).count
   expect(count).to eq(1)

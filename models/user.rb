@@ -61,6 +61,10 @@ class User
     where(:wake_up_in_seconds_since_midnight.lte => now_in_seconds_since_midnight, :go_to_sleep_in_seconds_since_midnight.gte => now_in_seconds_since_midnight)
   end
 
+  def self.non_snoozing_users
+    where(:$or => [{:available_from.lte=> Time.now.utc}, {:available_from=>nil}] )
+  end
+
   def self.authenticate_using_email(email, password)
     user = User.first(:email => { :$regex => /#{Regexp.escape(email)}/i })
     if !user.nil?
@@ -81,16 +85,6 @@ class User
 
   def password=(pwd)
     @password = pwd
-  end
-
-  def snooze
-    if self.available_from && Time.now.utc < self.available_from
-      { "period" => self.snooze_period,
-        "until" => self.available_from
-      }
-    else
-      nil
-    end
   end
 
   def to_json()

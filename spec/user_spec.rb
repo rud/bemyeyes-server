@@ -19,6 +19,26 @@ describe User do
     it {  expect(@sut.first_name).to eq("Helper") }
   end
 
+  describe "snooze" do
+    it "does not return snoozing users" do
+      @sut.available_from =Time.now.utc + 1.hour
+      @sut.save!
+      expect(User.non_snoozing_users.count).to eq(0)
+    end  
+
+    it "returns non-snoozing users" do
+      @sut.available_from =Time.now.utc - 1.hour
+      @sut.save!
+      expect(User.non_snoozing_users.count).to eq(1)
+    end 
+
+    it "returns users where snooze was never set" do
+      @sut.available_from =nil
+      @sut.save!
+      expect(User.non_snoozing_users.count).to eq(1)
+    end   
+  end
+
   describe "awake times in different timezones" do
     it "sets default wake up time in utc" do
       expect(@sut.wake_up_in_seconds_since_midnight).to eq(DEFAULT_WAKE_UP_HOUR * 3600)

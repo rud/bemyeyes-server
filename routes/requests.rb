@@ -48,7 +48,7 @@ class App < Sinatra::Base
         session_id = session.session_id
         open_tok_token = OpenTokSDK.generate_token session_id
       rescue Exception => e
-        give_error(500, ERROR_REQUEST_SESSION_NOT_CREATED, "The session could not be created. " + e.message)
+        give_error(500, ERROR_REQUEST_SESSION_NOT_CREATED, "The session could not be created.")
       end
 
       # Store request in database
@@ -127,9 +127,11 @@ class App < Sinatra::Base
       request.save!
 
       #update helper with points for call
-      point = HelperPoint.finish_helping_request
-      request.helper.helper_points.push point
-      request.helper.save
+      if !request.helper.nil?
+        point = HelperPoint.finish_helping_request
+        request.helper.helper_points.push point
+        request.helper.save
+      end
 
       return request.to_json
     end

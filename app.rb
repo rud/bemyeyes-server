@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sinatra'
 require "sinatra/config_file"
 require 'sinatra/namespace'
+require 'newrelic_rpm'
 require 'opentok'
 require 'mongo_mapper'
 require 'json'
@@ -93,7 +94,7 @@ class App < Sinatra::Base
     if !File.exists? log_file
       log_file = "log/app.log"
     end
-    File.read(log_file).gsub!(/\[/,"<br/>[").gsub("[INFO]", "<span style='color:green'>[INFO]</span>").gsub("[ERROR]", "<span style='color:red'>[ERROR]</span>")
+    File.read(log_file).gsub(/^/, '<br/>').gsub("[INFO]", "<span style='color:green'>[INFO]</span>").gsub("[ERROR]", "<span style='color:red'>[ERROR]</span>")
   end
   # Handle errors
   error do
@@ -102,7 +103,6 @@ class App < Sinatra::Base
 
     e = env["sinatra.error"]
     TheLogger.log.error(e)
-    TheLogger.log.error("testing")
     return { "result" => "error", "message" => e.message }.to_json
   end
 

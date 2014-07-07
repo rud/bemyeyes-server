@@ -5,14 +5,19 @@ class NotificationHandler
   end
 
   def handle_notifications(devices, request)
-    devices_not_handled = devices.reject {|device| not include_device? device}
-    devices_to_handle = devices.reject {|device| include_device? device}
+    active_devices = devices.reject {|device| device.inactive}
+    devices_not_handled = active_devices.reject {|device| include_device? device}
+    devices_to_handle = active_devices.select {|device| include_device? device}
+
+    if devices_to_handle.count > 0
+
+      device_tokens = devices_to_handle.collect { |d| d.device_token }
+
+      send_notifications request, device_tokens
+
+      set_sent_helper devices_to_handle, request
+    end
     
-    device_tokens = devices_to_handle.collect { |d| d.device_token }
-    send_notifications request, device_tokens
-
-    set_sent_helper devices_to_handle, request
-
     if @successor and devices_not_handled.count > 0
       @successor.handle_notifications devices_not_handled, request
     end

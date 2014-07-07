@@ -10,22 +10,19 @@ class AbuseReport
   after_save :three_strikes_and_you_are_out
   def three_strikes_and_you_are_out
     if reporter == "blind"
-      if helper.nil?
-        return
-      end
-      no_of_abuses = AbuseReport.where(:helper_id => helper.id).count
-      if no_of_abuses == 3
-        helper.blocked = true
-      end
+      check(helper) { |helper| AbuseReport.where(:helper_id => helper.id).count}
     else
-      if blind.nil?
+      check(blind)  { |blind| AbuseReport.where(:blind_id => blind.id).count}
+    end
+  end
+
+  def check user
+    if user.nil?
         return
       end
-      no_of_abuses = AbuseReport.where(:blind_id => blind.id).count
+      no_of_abuses = yield user
       if no_of_abuses == 3
-        blind.blocked = true
+        user.blocked = true
       end
-    end
-
   end
 end

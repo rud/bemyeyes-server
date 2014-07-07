@@ -29,11 +29,11 @@ shared_context "rest-context" do
     @password = AESCrypt.encrypt('Password1', @security_salt)
   end
 
-  def create_user
+  def create_user role ="helper"
     createUser_url = "#{@servername_with_credentials}/users/"
     response = RestClient.post createUser_url, {'first_name' =>'first_name',
                                                 'last_name'=>'last_name', 'email'=> @email,
-                                                'role'=> 'helper', 'password'=> @password }.to_json
+                                                'role'=> role, 'password'=> @password }.to_json
 
     jsn = JSON.parse response.body
     id = jsn['id']
@@ -55,7 +55,7 @@ shared_context "rest-context" do
                                      'device_token'=>'device_token', 'device_name'=> 'device_name',
                                      'model'=> 'model', 'system_version' => 'system_version',
                                      'app_version' => 'app_version', 'app_bundle_version' => 'app_bundle_version',
-                                     'locale'=> 'locale', 'development' => 'development'}.to_json
+                                     'locale'=> 'locale', 'development' => 'true'}.to_json
     expect(response.code).to eq(200)
     json = JSON.parse(response.body)
     json["token"]

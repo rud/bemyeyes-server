@@ -43,8 +43,8 @@ class User
   key :utc_offset, Integer, :default => 2
   key :wake_up, String, :default => "07:00"
   key :go_to_sleep, String, :default => "22:00"
-  key :wake_up_in_seconds_since_midnight, Integer, :default => 18000
-  key :go_to_sleep_in_seconds_since_midnight, Integer, :default => 7200
+  key :wake_up_in_seconds_since_midnight, Integer, :default => 0
+  key :go_to_sleep_in_seconds_since_midnight, Integer, :default => 0
 
   timestamps!
   

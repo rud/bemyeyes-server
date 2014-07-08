@@ -21,7 +21,8 @@ describe User do
 
   describe "awake times in different timezones" do
     it "sets default wake up time in utc" do
-      expect(@sut.wake_up_in_seconds_since_midnight).to eq(DEFAULT_WAKE_UP_HOUR * 3600)
+      expected = DEFAULT_WAKE_UP_HOUR - 2 #withdraw the utc_offset
+      expect(@sut.wake_up_in_seconds_since_midnight).to eq(expected  * 3600)
     end
 
     it "can change the timezone" do
@@ -36,7 +37,7 @@ describe User do
       @sut.wake_up = "10:00"
       @sut.save!
 
-      expect(@sut.wake_up_in_seconds_since_midnight).to eq(10 * 3600)
+      expect(@sut.wake_up_in_seconds_since_midnight).to eq(8 * 3600)
     end
   end
 

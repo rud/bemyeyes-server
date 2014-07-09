@@ -70,12 +70,14 @@ TheLogger.log.info asleep_users
        .fields(:helper_id)
       .all
       .collect(&:helper_id)
-
+TheLogger.log.info "Helpers in a call:"
+TheLogger.log.info helpers_in_a_call
     rescue Exception => e
       TheLogger.log.error e.message
     end
 
-    Helper.where("$and" => [:id.nin => contacted_helpers,
+    Helper.where("$and" => [
+     :id.nin => contacted_helpers,
      :id.nin => abusive_helpers,
      :id.in => logged_in_users,
      :user_id.nin => asleep_users,

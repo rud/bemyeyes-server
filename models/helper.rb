@@ -75,12 +75,16 @@ TheLogger.log.info awake_users
       TheLogger.log.error e.message
     end
 
-    Helper.where(:id.nin => contacted_helpers,
+    Helper.where("$and" => [:id.nin => contacted_helpers,
      :id.nin => abusive_helpers,
      :id.in => logged_in_users,
      :user_id.in => awake_users,
      :user_id.nin => blocked_users,
-     :user_id.in => helpers_who_speaks_blind_persons_language,
-     :user_id.nin => helpers_in_a_call).all.sample(limit)
+     :user_id.in => helpers_who_speaks_blind_persons_language,  
+     :user_id.nin => helpers_in_a_call, 
+     "$or" => [
+       {:available_from => nil},
+       {:available_from.lt => Time.now.utc}
+       ]]).all.sample(limit)
   end
 end

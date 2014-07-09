@@ -70,8 +70,7 @@ TheLogger.log.info asleep_users
        .fields(:helper_id)
       .all
       .collect(&:helper_id)
-TheLogger.log.info "Helpers in a call:"
-TheLogger.log.info helpers_in_a_call
+
     rescue Exception => e
       TheLogger.log.error e.message
     end
@@ -80,13 +79,15 @@ TheLogger.log.info helpers_in_a_call
      :id.nin => contacted_helpers,
      :id.nin => abusive_helpers,
      :id.in => logged_in_users,
-     :user_id.nin => asleep_users,
+     
      :user_id.nin => blocked_users,
      :user_id.in => helpers_who_speaks_blind_persons_language,  
      :user_id.nin => helpers_in_a_call, 
      "$or" => [
        {:available_from => nil},
        {:available_from.lt => Time.now.utc}
-       ]).all.sample(limit)
+       ])
+    .where(:user_id.nin => asleep_users)
+    .all.sample(limit)
   end
 end

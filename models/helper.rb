@@ -52,14 +52,14 @@ end
       .all
       .collect(&:user_id)
 
-      awake_users = User.awake_users
+      asleep_users = User.asleep_users
       .where(:role=> 'helper')
       .fields(:user_id)
       .all
       .collect(&:user_id)
 
-TheLogger.log.info "Awake users:"
-TheLogger.log.info awake_users
+TheLogger.log.info "Asleep users:"
+TheLogger.log.info asleep_users
 
       helpers_who_speaks_blind_persons_language = Helper.helpers_who_speaks_blind_persons_language(request)
       .fields(:user_id)
@@ -78,7 +78,7 @@ TheLogger.log.info awake_users
     Helper.where("$and" => [:id.nin => contacted_helpers,
      :id.nin => abusive_helpers,
      :id.in => logged_in_users,
-     :user_id.in => awake_users,
+     :user_id.nin => asleep_users,
      :user_id.nin => blocked_users,
      :user_id.in => helpers_who_speaks_blind_persons_language,  
      :user_id.nin => helpers_in_a_call, 

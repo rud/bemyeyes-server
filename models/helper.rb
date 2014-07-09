@@ -20,7 +20,7 @@ end
 def self.helpers_who_speaks_blind_persons_language request
   raise 'no blind person in call' if request.blind.nil?
  languages_of_blind = request.blind.languages
- TheLogger.log.error "languages_of_blind #{languages_of_blind}"
+ TheLogger.log.info "languages_of_blind #{languages_of_blind}"
  Helper.where(:languages => {:$in => languages_of_blind})
 end
 

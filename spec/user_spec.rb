@@ -42,6 +42,27 @@ describe User do
   end
 
   describe "only returns awake users" do
+    it "does not wake up asleep helper in DK when blind from US needs help" do
+
+      parsedJson = JSON.parse( IO.read('./spec/user.json') )
+      @sut.update_attributes parsedJson
+      @sut.save!
+
+      request = build(:request)
+
+      request.helper.destroy
+      request.helper = @sut
+      request.save!
+
+      Timecop.freeze(Time.gm(2014,"jul",9,4,30) ) do
+        awake_users = User.awake_users
+        expect(awake_users.count).to eq(0)
+
+        available_helpers = request.helper.available request
+        expect(available_helpers.count).to eq(0)
+      end
+    end
+
     it "asleep user not returned as awake" do
       @sut.utc_offset = 0
       @sut.go_to_sleep = "22:00"

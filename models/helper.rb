@@ -77,17 +77,16 @@ TheLogger.log.info asleep_users
 
     Helper.where(
      :id.nin => contacted_helpers,
-     :id.nin => abusive_helpers,
-     :id.in => logged_in_users,
-     
-     :user_id.nin => blocked_users,
-     :user_id.in => helpers_who_speaks_blind_persons_language,  
-     :user_id.nin => helpers_in_a_call, 
      "$or" => [
        {:available_from => nil},
        {:available_from.lt => Time.now.utc}
        ])
     .where(:user_id.nin => asleep_users)
+    .where(:id.nin => abusive_helpers)
+    .where(:id.in => logged_in_users)
+    .where(:user_id.nin => blocked_users)
+    .where(:user_id.in => helpers_who_speaks_blind_persons_language)
+    .where(:user_id.nin => helpers_in_a_call)
     .all.sample(limit)
   end
 end

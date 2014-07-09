@@ -59,8 +59,6 @@ class User
     now = Time.now.utc
     now_in_seconds_since_midnight = time_to_seconds_since_midnight now, 0
 
-    TheLogger.log.info "now_in_seconds_since_midnight" 
-    TheLogger.log.info now_in_seconds_since_midnight
     where(:wake_up_in_seconds_since_midnight.lte => now_in_seconds_since_midnight, :go_to_sleep_in_seconds_since_midnight.gte => now_in_seconds_since_midnight)
   end
 

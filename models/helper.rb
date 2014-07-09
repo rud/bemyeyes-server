@@ -80,10 +80,6 @@ TheLogger.log.info awake_users
      :user_id.in => awake_users,
      :user_id.nin => blocked_users,
      :user_id.in => helpers_who_speaks_blind_persons_language,
-     :user_id.nin => helpers_in_a_call,
-     "$or" => [
-       {:available_from => nil},
-       {:available_from.lt => Time.now.utc}
-       ]).all.sample(limit)
+     :user_id.nin => helpers_in_a_call).all.sample(limit)
   end
 end

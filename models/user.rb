@@ -61,7 +61,7 @@ class User
 
     TheLogger.log.info "now_in_seconds_since_midnight" 
     TheLogger.log.info now_in_seconds_since_midnight
-    where(:wake_up_in_seconds_since_midnight.gte => now_in_seconds_since_midnight, :go_to_sleep_in_seconds_since_midnight.lte => now_in_seconds_since_midnight)
+    where(:go_to_sleep_in_seconds_since_midnight.lte => now_in_seconds_since_midnight)
   end
 
   def self.authenticate_using_email(email, password)

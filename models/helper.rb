@@ -76,7 +76,7 @@ TheLogger.log.info helpers_in_a_call
       TheLogger.log.error e.message
     end
 
-    Helper.where("$and" => [
+    Helper.where(
      :id.nin => contacted_helpers,
      :id.nin => abusive_helpers,
      :id.in => logged_in_users,
@@ -87,6 +87,6 @@ TheLogger.log.info helpers_in_a_call
      "$or" => [
        {:available_from => nil},
        {:available_from.lt => Time.now.utc}
-       ]]).all.sample(limit)
+       ]).all.sample(limit)
   end
 end

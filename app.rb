@@ -54,14 +54,13 @@ class App < Sinatra::Base
     OpenTokSDK = OpenTok::OpenTok.new opentok_config['api_key'], opentok_config['api_secret']
 
     db_config = settings.config['database']
-    MongoMapper.connection = Mongo::Connection.new(db_config['host'])
+    MongoMapper.connection = Mongo::Connection.new(db_config['host'], :logger => TheLogger.log)
     MongoMapper.database = db_config['name']
     if db_config.has_key? 'username'
       MongoMapper.connection[db_config['name']].authenticate(db_config['username'], db_config['password'])
     else
      MongoMapper.connection[db_config['name']]
     end
-
     ua_config = settings.config['urbanairship']
     @requests_helper = RequestsHelper.new ua_config, TheLogger
     cron_job = CronJobs.new(Helper.new, @requests_helper, Rufus::Scheduler.new, WaitingRequests.new, HelperPointChecker.new)

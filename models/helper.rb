@@ -74,6 +74,7 @@ TheLogger.log.info awake_users
     rescue Exception => e
       TheLogger.log.error e.message
     end
+
     Helper.where(:id.nin => contacted_helpers,
      :id.nin => abusive_helpers,
      :id.in => logged_in_users,

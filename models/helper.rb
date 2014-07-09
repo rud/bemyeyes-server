@@ -2,15 +2,15 @@ class Helper < User
   many :helper_request, :foreign_key => :helper_id, :class_name => "HelperRequest"
   many :helper_points, :foreign_key => :user_id, :class_name => "HelperPoint"
   key :role, String
-  
+
   before_create :set_role
   after_create :set_points
 
-  def set_points() 
+  def set_points()
    if role == "helper"
     point = HelperPoint.signup
     self.helper_points.push point
-  end 
+  end
 end
 
 def set_role()
@@ -58,6 +58,9 @@ end
       .all
       .collect(&:user_id)
 
+TheLogger.log.info "Awake users:"
+TheLogger.log.info awake_users
+
       helpers_who_speaks_blind_persons_language = Helper.helpers_who_speaks_blind_persons_language(request)
       .fields(:user_id)
       .all
@@ -76,8 +79,8 @@ end
      :id.in => logged_in_users,
      :user_id.in => awake_users,
      :user_id.nin => blocked_users,
-     :user_id.in => helpers_who_speaks_blind_persons_language,  
-     :user_id.nin => helpers_in_a_call, 
+     :user_id.in => helpers_who_speaks_blind_persons_language,
+     :user_id.nin => helpers_in_a_call,
      "$or" => [
        {:available_from => nil},
        {:available_from.lt => Time.now.utc}

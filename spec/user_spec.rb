@@ -55,8 +55,8 @@ describe User do
       request.save!
 
       Timecop.freeze(Time.gm(2014,"jul",9,4,30) ) do
-        awake_users = User.awake_users
-        expect(awake_users.count).to eq(0)
+        asleep_users = User.asleep_users
+        expect(asleep_users.count).to eq(0)
 
         available_helpers = request.helper.available request
         expect(available_helpers.count).to eq(0)
@@ -68,8 +68,8 @@ describe User do
       @sut.go_to_sleep = "22:00"
       @sut.save!
       Timecop.travel(Time.gm(2000,"jan",1,23,15,1) ) do
-        awake_users = User.awake_users
-        expect(awake_users.count).to eq(0)
+        awake_users = User.asleep_users
+        expect(awake_users.count).to eq(1)
       end
 
     end
@@ -85,8 +85,8 @@ describe User do
       awake.save!
 
       Timecop.travel(Time.gm(2000,"jan",1,23,15,1) ) do
-        awake_users = User.awake_users
-        expect(awake_users.count).to eq(1)
+        asleep_users = User.asleep_users
+        expect(asleep_users.count).to eq(1)
       end
     end
 
@@ -95,8 +95,8 @@ describe User do
       @sut.go_to_sleep = "22:00"
       @sut.save!
       Timecop.travel(Time.gm(2000,"jan",1,20,15,1) ) do
-        awake_users = User.awake_users
-        expect(awake_users.count).to eq(1)
+        asleep_users = User.asleep_users
+        expect(asleep_users.count).to eq(0)
       end
     end
 
@@ -105,8 +105,8 @@ describe User do
       @sut.go_to_sleep = "22:00"
       @sut.save!
       Timecop.travel(Time.gm(2000,"jan",1,20,15,1) ) do
-        awake_users = User.awake_users
-        expect(awake_users.count).to eq(0)
+        asleep_users = User.asleep_users
+        expect(asleep_users.count).to eq(1)
       end
     end
 
@@ -115,8 +115,8 @@ describe User do
       @sut.go_to_sleep = "22:00"
       @sut.save!
       Timecop.travel(Time.gm(2000,"jan",1,20,15,1) ) do
-        awake_users = User.awake_users
-        expect(awake_users.count).to eq(1)
+        asleep_users = User.asleep_users
+        expect(asleep_users.count).to eq(0)
       end
     end
   end

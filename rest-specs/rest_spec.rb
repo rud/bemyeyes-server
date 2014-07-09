@@ -4,29 +4,29 @@ describe "Rest api" do
     include_context "rest-context"
     describe "update user" do
         it "can update a user after creation" do
-            id = create_user 
+            id = create_user
             url = "#{@servername_with_credentials}/users/" + id
-            response = RestClient.put url, {'first_name' =>'my first_name', 
-                'last_name'=>'last_name', 'email'=> @email, 
+            response = RestClient.put url, {'first_name' =>'my first_name',
+                'last_name'=>'last_name', 'email'=> @email,
                 'role'=> 'helper', 'password'=> @password }.to_json
 
                 expect(response.code).to eq(200)
-            end 
+            end
         end
 
         describe "snooze" do
             it "can create user and then snooze" do
-                id = create_user 
+                id = create_user
 
                 url = "#{@servername_with_credentials}/users/"+id + "/snooze/1h"
                 response = RestClient.put url, {}.to_json
                 expect(response.code).to eq(200)
 
-            end 
+            end
         end
         describe "create user" do
             it "can create a user and get it" do
-                id = create_user 
+                id = create_user
 
                 getUser_url = "#{@servername_with_credentials}/users/" + id
                 response = RestClient.get getUser_url, {:accept => :json}
@@ -38,8 +38,8 @@ describe "Rest api" do
 
             it "can create a user" do
                 url = "#{@servername_with_credentials}/users/"
-                response = RestClient.post url, {'first_name' =>'first_name', 
-                   'last_name'=>'last_name', 'email'=> @email, 
+                response = RestClient.post url, {'first_name' =>'first_name',
+                   'last_name'=>'last_name', 'email'=> @email,
                    'role'=> 'helper', 'password'=> @password }.to_json
                    expect(response.code).to eq(200)
                end
@@ -74,15 +74,15 @@ describe "Rest api" do
 
           invalid_token = '123'
            url = "#{@servername_with_credentials}/users/info/"+ invalid_token
-          expect{RestClient.put url, {'wake_up' =>'10:00', 'go_to_sleep' => '20:00' 
+          expect{RestClient.put url, {'wake_up' =>'10:00', 'go_to_sleep' => '20:00'
             }.to_json}
           .to raise_error(RestClient::BadRequest)
         end
 
         it "can update wake up and go to sleep" do
-            user = change_awake_info({'wake_up' =>'10:00', 'go_to_sleep' => '20:00' 
+            user = change_awake_info({'wake_up' =>'10:00', 'go_to_sleep' => '20:00'
             }.to_json)
-            
+
             expect(user.wake_up).to eq('10:00')
             expect(user.go_to_sleep).to eq('20:00')
         end
@@ -107,7 +107,7 @@ describe "Rest api" do
           user = change_awake_info( {'utc_offset' =>'abc'
             }.to_json)
              #default values
-             expect(user.utc_offset).to eq(0)
+             expect(user.utc_offset).to eq(2)
          end
      end
  end

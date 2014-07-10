@@ -10,6 +10,7 @@ describe "helper points" do
      'last_name'=>'last_name', 'email'=> email, 
      'role'=> 'helper', 'password'=> password }.to_json
 
+puts response.body
      jsn = JSON.parse response.body
      id = jsn['id']
 

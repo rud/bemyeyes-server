@@ -100,7 +100,7 @@ class App < Sinatra::Base
       request = request_from_short_id(params[:short_id])
 
       if request.stopped?
-        give_error(400, ERROR_EQUEST_STOPPED, "The request has been stopped.").to_json
+        give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
       elsif request.helper._id != user._id
         give_error(400, ERROR_NOT_PERMITTED, "This action is not permitted for the user.").to_json
       end
@@ -126,7 +126,7 @@ class App < Sinatra::Base
       request = request_from_short_id(params[:short_id])
 
       if request.stopped?
-        give_error(400, ERROR_EQUEST_STOPPED, "The request has been stopped.").to_json
+        give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
       elsif request.blind._id != user._id && request.helper._id != user._id
         give_error(400, ERROR_NOT_PERMITTED, "This action is not permitted for the user.").to_json
       end

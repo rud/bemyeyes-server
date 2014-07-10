@@ -2,15 +2,15 @@ class Helper < User
   many :helper_request, :foreign_key => :helper_id, :class_name => "HelperRequest"
   many :helper_points, :foreign_key => :user_id, :class_name => "HelperPoint"
   key :role, String
-  
+
   before_create :set_role
   after_create :set_points
 
-  def set_points() 
+  def set_points()
    if role == "helper"
     point = HelperPoint.signup
     self.helper_points.push point
-  end 
+  end
 end
 
 def set_role()
@@ -20,7 +20,7 @@ end
 def self.helpers_who_speaks_blind_persons_language request
   raise 'no blind person in call' if request.blind.nil?
  languages_of_blind = request.blind.languages
- TheLogger.log.error "languages_of_blind #{languages_of_blind}"
+ TheLogger.log.info "languages_of_blind #{languages_of_blind}"
  Helper.where(:languages => {:$in => languages_of_blind})
 end
 
@@ -52,11 +52,14 @@ end
       .all
       .collect(&:user_id)
 
-      awake_users = User.awake_users
+      asleep_users = User.asleep_users
       .where(:role=> 'helper')
       .fields(:user_id)
       .all
       .collect(&:user_id)
+
+TheLogger.log.info "Asleep users:"
+TheLogger.log.info asleep_users
 
       helpers_who_speaks_blind_persons_language = Helper.helpers_who_speaks_blind_persons_language(request)
       .fields(:user_id)
@@ -71,16 +74,19 @@ end
     rescue Exception => e
       TheLogger.log.error e.message
     end
-    Helper.where(:id.nin => contacted_helpers,
-     :id.nin => abusive_helpers,
-     :id.in => logged_in_users,
-     :user_id.in => awake_users,
-     :user_id.nin => blocked_users,
-     :user_id.in => helpers_who_speaks_blind_persons_language,  
-     :user_id.nin => helpers_in_a_call, 
+
+    Helper.where(
+     :id.nin => contacted_helpers,
      "$or" => [
        {:available_from => nil},
        {:available_from.lt => Time.now.utc}
-       ]).all.sample(limit)
+       ])
+    .where(:user_id.nin => asleep_users)
+    .where(:id.nin => abusive_helpers)
+    .where(:id.in => logged_in_users)
+    .where(:user_id.nin => blocked_users)
+    .where(:user_id.in => helpers_who_speaks_blind_persons_language)
+    .where(:user_id.nin => helpers_in_a_call)
+    .all.sample(limit)
   end
 end

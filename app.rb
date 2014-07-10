@@ -61,7 +61,6 @@ class App < Sinatra::Base
     else
      MongoMapper.connection[db_config['name']]
     end
-
     ua_config = settings.config['urbanairship']
     @requests_helper = RequestsHelper.new ua_config, TheLogger
     cron_job = CronJobs.new(Helper.new, @requests_helper, Rufus::Scheduler.new, WaitingRequests.new, HelperPointChecker.new)

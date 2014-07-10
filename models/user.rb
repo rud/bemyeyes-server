@@ -40,7 +40,7 @@ class User
   key :snooze_period, String
   key :blocked, Boolean, :default => false
   key :is_external_user, Boolean, :default => false
-  key :utc_offset, Integer, :default => 0
+  key :utc_offset, Integer, :default => 2
   key :wake_up, String, :default => "07:00"
   key :go_to_sleep, String, :default => "22:00"
   key :wake_up_in_seconds_since_midnight, Integer, :default => 0
@@ -55,10 +55,15 @@ class User
   scope :by_languages,  lambda { |languages| where(:languages => { :$in => languages }) }
 
   #this is a scope
-  def self.awake_users
+  def self.asleep_users
     now = Time.now.utc
     now_in_seconds_since_midnight = time_to_seconds_since_midnight now, 0
-    where(:wake_up_in_seconds_since_midnight.lte => now_in_seconds_since_midnight, :go_to_sleep_in_seconds_since_midnight.gte => now_in_seconds_since_midnight)
+  
+      where(
+        "$or" => [
+        {:go_to_sleep_in_seconds_since_midnight.lte => now_in_seconds_since_midnight}, 
+        {:wake_up_in_seconds_since_midnight.gte => now_in_seconds_since_midnight}
+        ])
   end
 
   def self.authenticate_using_email(email, password)

@@ -58,14 +58,12 @@ class User
   def self.asleep_users
     now = Time.now.utc
     now_in_seconds_since_midnight = time_to_seconds_since_midnight now, 0
-    just_before_midnight = Time.parse("23:59")
-    TheLogger.log.info "now_in_seconds_since_midnight" 
-    TheLogger.log.info now_in_seconds_since_midnight
-    if now < just_before_midnight
-      where(:go_to_sleep_in_seconds_since_midnight.lte => now_in_seconds_since_midnight)
-    else
-      where(:wake_up_in_seconds_since_midnight.gte => now_in_seconds_since_midnight)
-    end
+  
+      where(
+        "$or" => [
+        {:go_to_sleep_in_seconds_since_midnight.lte => now_in_seconds_since_midnight}, 
+        {:wake_up_in_seconds_since_midnight.gte => now_in_seconds_since_midnight}
+        ])
   end
 
   def self.authenticate_using_email(email, password)

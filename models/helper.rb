@@ -23,10 +23,16 @@ def self.helpers_who_speaks_blind_persons_language request
  TheLogger.log.info "languages_of_blind #{languages_of_blind}"
  Helper.where(:languages => {:$in => languages_of_blind})
 end
+
 def waiting_requests
-  HelperRequest.where(:helper_id => _id)
-  #Request.where(:user_id => _id, :stopped => false, :answered  => false )
+  request_ids = HelperRequest
+  .where(:helper_id => _id)
+  .fields(:request_id)
+  .all
+  .collect(&:request_id)
+  Request.where(:_id => {:$in =>request_ids}, :stopped => false, :answered  => false )
 end
+
   #TODO to be improved with snooze functionality
   def available request=nil, limit=5
     begin

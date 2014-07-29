@@ -29,7 +29,7 @@ describe "Helper" do
       token.valid_time = 365.days
       helper.tokens.push(token)
 
-      expect(helper.available(request).count).to eq(0)   
+      expect(helper.available(request).count).to eq(1)   
     end  
 
     it "finds no available helpers when noone speaks blind persons languages" do

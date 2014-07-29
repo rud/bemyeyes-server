@@ -8,8 +8,8 @@ class App < Sinatra::Base
 
       if waiting_request.nil?
         give_error(400, ERROR_REQUEST_NOT_FOUND, "No requests found.").to_json
-      end
-      waiting_request.short_id.to_json
+      end§
+      return { "id" => waiting_request.short_id }.to_json
     end
 
     def helper_from_id(user_id)

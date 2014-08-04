@@ -4,6 +4,10 @@ describe "device update" do
   include_context "rest-context"
   UPDATEDMODEL = 'update_model'
 
+  before(:each) do
+    Device.destroy_all
+  end
+
   def  update_device token
     url = "#{@servername_with_credentials}/devices/update"
     response = RestClient.post url, {'token' =>token,

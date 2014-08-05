@@ -24,6 +24,7 @@ module IphoneNotifier
           :"loc-args" => [ notification_args_name ],
           :"action-loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_ACTION",
           :short_id => request.short_id,
+          :badge => 1,
         },
         :sound => "call.aiff"
       }

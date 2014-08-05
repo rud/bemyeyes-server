@@ -26,11 +26,11 @@ end
 
 def waiting_requests
   request_ids = HelperRequest
-  .where(:helper_id => _id)
+  .where(:helper_id => _id, :cancelled => false)
   .fields(:request_id)
   .all
   .collect(&:request_id)
-  Request.where(:_id => {:$in =>request_ids}, :stopped => false, :answered  => false )
+  Request.all(:_id => {:$in =>request_ids}, :stopped => false, :answered  => false)
 end
 
   #TODO to be improved with snooze functionality

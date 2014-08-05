@@ -6,4 +6,5 @@ class HelperRequest
 
   timestamps!
 
+  key :cancelled, Boolean, :default => false 
 end

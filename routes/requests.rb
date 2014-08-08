@@ -43,9 +43,8 @@ class App < Sinatra::Base
       request.answered = false
       request.save!
 
-      ua_config = settings.config['urbanairship']
-      @requests_helper = RequestsHelper.new ua_config, TheLogger
-      @requests_helper.check_requests 10
+      
+      requests_helper.check_requests 10
       return request.to_json
     end
 
@@ -82,7 +81,8 @@ class App < Sinatra::Base
         request.helper = user
         request.answered = true
         request.save!
-
+        
+        requests_helper.request_answered
         return request.to_json
       end
     end
@@ -176,8 +176,12 @@ class App < Sinatra::Base
         give_error(400, ERROR_REQUEST_NOT_ANSWERED, "The request has not been answered and can therefore not be rated.").to_json
       end
     end
-
   end # End namespace /request
+    
+    def requests_helper
+      ua_config = settings.config['urbanairship']
+      RequestsHelper.new ua_config, TheLogger
+    end
 
   # Find a request from a short ID
   def request_from_short_id(short_id)

@@ -115,6 +115,8 @@ class App < Sinatra::Base
       helper_request = HelperRequest.where(:request_id => request._id, :helper_id => helper_id).first
       helper_request.cancelled = true
       helper_request.save!
+      
+      requests_helper.request_answered   
 
       return request.to_json
     end

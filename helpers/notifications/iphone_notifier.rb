@@ -66,6 +66,12 @@ module IphoneNotifier
     TheLogger.log.info "Register device handled by: " + self.class.to_s
   end
 
+  def unregister_device(device_token, options = {})
+    initialize_urbanairship
+    Urbanairship.unregister_device(device_token, options)
+    TheLogger.log.info "UnRegister device handled by: " + self.class.to_s
+  end
+
   def collect_feedback_on_inactive_devices
     initialize_urbanairship
     Urbanairship.feedback(24.hours.ago).each() do |feedback|

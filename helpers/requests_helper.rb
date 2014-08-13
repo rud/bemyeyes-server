@@ -15,6 +15,15 @@ class RequestsHelper
     @iphone_production_notifier.set_successor @iphone_development_notifier
     @notification_queue = @iphone_production_notifier
   end
+
+  def unregister_device(development, device_token, options = {})
+    if development
+        @iphone_development_notifier.unregister_device device_token, options
+      else
+        @iphone_production_notifier.unregister_device device_token, options
+      end
+  end
+
   def register_device(development, device_token, options = {})
     if development
       @iphone_development_notifier.register_device device_token, options

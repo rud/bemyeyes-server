@@ -43,9 +43,8 @@ class App < Sinatra::Base
       request.answered = false
       request.save!
 
-      ua_config = settings.config['urbanairship']
-      @requests_helper = RequestsHelper.new ua_config, TheLogger
-      @requests_helper.check_requests 10
+      
+      requests_helper.check_requests 10
       return request.to_json
     end
 
@@ -82,7 +81,8 @@ class App < Sinatra::Base
         request.helper = user
         request.answered = true
         request.save!
-
+        
+        requests_helper.request_answered
         return request.to_json
       end
     end
@@ -94,21 +94,29 @@ class App < Sinatra::Base
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
-
       token = token_from_representation_with_validation(token_repr, true)
       user = token.user
       request = request_from_short_id(params[:short_id])
 
-      if request.stopped?
+      if request.helper.nil?
+       give_error(400, ERROR_USER_NOT_FOUND, "No helper attached to request - it cant be cancelled").to_json
+     end
+     if request.stopped?
         give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
       elsif request.helper._id != user._id
         give_error(400, ERROR_NOT_PERMITTED, "This action is not permitted for the user.").to_json
       end
-
       # Update request
+      helper_id = request.helper.id
       request.helper = nil
       request.answered = false
       request.save!
+
+      helper_request = HelperRequest.where(:request_id => request._id, :helper_id => helper_id).first
+      helper_request.cancelled = true
+      helper_request.save!
+      
+      requests_helper.request_answered   
 
       return request.to_json
     end
@@ -170,8 +178,12 @@ class App < Sinatra::Base
         give_error(400, ERROR_REQUEST_NOT_ANSWERED, "The request has not been answered and can therefore not be rated.").to_json
       end
     end
-
   end # End namespace /request
+    
+    def requests_helper
+      ua_config = settings.config['urbanairship']
+      RequestsHelper.new ua_config, TheLogger
+    end
 
   # Find a request from a short ID
   def request_from_short_id(short_id)

@@ -7,31 +7,31 @@ class Helper < User
   after_create :set_points
 
   def set_points()
-   if role == "helper"
-    point = HelperPoint.signup
-    self.helper_points.push point
+    if role == "helper"
+      point = HelperPoint.signup
+      self.helper_points.push point
+    end
   end
-end
 
-def set_role()
-  self.role = "helper"
-end
+  def set_role()
+    self.role = "helper"
+  end
 
-def self.helpers_who_speaks_blind_persons_language request
-  raise 'no blind person in call' if request.blind.nil?
- languages_of_blind = request.blind.languages
- TheLogger.log.info "languages_of_blind #{languages_of_blind}"
- Helper.where(:languages => {:$in => languages_of_blind})
-end
+  def self.helpers_who_speaks_blind_persons_language request
+    raise 'no blind person in call' if request.blind.nil?
+    languages_of_blind = request.blind.languages
+    TheLogger.log.info "languages_of_blind #{languages_of_blind}"
+    Helper.where(:languages => {:$in => languages_of_blind})
+  end
 
-def waiting_requests
-  request_ids = HelperRequest
-  .where(:helper_id => _id, :cancelled => false)
-  .fields(:request_id)
-  .all
-  .collect(&:request_id)
-  Request.all(:_id => {:$in =>request_ids}, :stopped => false, :answered  => false)
-end
+  def waiting_requests
+    request_ids = HelperRequest
+    .where(:helper_id => _id, :cancelled => false)
+    .fields(:request_id)
+    .all
+    .collect(&:request_id)
+    Request.all(:_id => {:$in =>request_ids}, :stopped => false, :answered  => false)
+  end
 
   #TODO to be improved with snooze functionality
   def available request=nil, limit=5
@@ -67,8 +67,8 @@ end
       .all
       .collect(&:user_id)
 
-TheLogger.log.info "Asleep users:"
-TheLogger.log.info asleep_users
+      TheLogger.log.info "Asleep users:"
+      TheLogger.log.info asleep_users
 
       helpers_who_speaks_blind_persons_language = Helper.helpers_who_speaks_blind_persons_language(request)
       .fields(:user_id)
@@ -76,7 +76,7 @@ TheLogger.log.info asleep_users
       .collect(&:user_id)
 
       helpers_in_a_call = Request.running_requests
-       .fields(:helper_id)
+      .fields(:helper_id)
       .all
       .collect(&:helper_id)
 
@@ -85,11 +85,11 @@ TheLogger.log.info asleep_users
     end
 
     Helper.where(
-     :id.nin => contacted_helpers,
-     "$or" => [
-       {:available_from => nil},
-       {:available_from.lt => Time.now.utc}
-       ])
+      :id.nin => contacted_helpers,
+      "$or" => [
+        {:available_from => nil},
+        {:available_from.lt => Time.now.utc}
+    ])
     .where(:user_id.nin => asleep_users)
     .where(:id.nin => abusive_helpers)
     .where(:id.in => logged_in_users)

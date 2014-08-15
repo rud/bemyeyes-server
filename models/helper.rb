@@ -1,6 +1,8 @@
 class Helper < User
   many :helper_request, :foreign_key => :helper_id, :class_name => "HelperRequest"
   many :helper_points, :foreign_key => :user_id, :class_name => "HelperPoint"
+  many :abuse_report, :foreign_key => :abuse_report_id, :class_name => "AbuseReport"
+  many :request, :foreign_key => :request_id, :class_name => "Request"
   key :role, String
 
   before_create :set_role

@@ -14,7 +14,7 @@ describe "Helper" do
 
   describe "available" do
     it "can get available helpers with lanugage" do
-       request = build(:request)
+      request = build(:request)
 
       helper = request.helper
       helper.languages = ['ab', 'en']
@@ -24,16 +24,16 @@ describe "Helper" do
       blind =request.blind
       blind.languages = ['en', 'da']
       blind.save!
-      
+
       token = Token.new
       token.valid_time = 365.days
       helper.tokens.push(token)
 
-      expect(helper.available(request).count).to eq(1)   
-    end  
+      expect(helper.available(request).count).to eq(1)
+    end
 
     it "finds no available helpers when noone speaks blind persons languages" do
-       request = build(:request)
+      request = build(:request)
 
       helper = request.helper
       helper.languages = ['ab', 'aa']
@@ -43,13 +43,13 @@ describe "Helper" do
       blind =request.blind
       blind.languages = ['en', 'da']
       blind.save!
-      
+
       token = Token.new
       token.valid_time = 365.days
       helper.tokens.push(token)
 
-      expect(helper.available(request).count).to eq(0)   
-    end  
+      expect(helper.available(request).count).to eq(0)
+    end
   end
 
   describe "languages" do

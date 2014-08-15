@@ -36,7 +36,7 @@ describe "Helpers" do
   end
 
   def get_waiting_request_id helper_id
-     waiting_requests_url  = "#{@servername_with_credentials}/helpers/waiting_request/#{helper_id}"
+    waiting_requests_url  = "#{@servername_with_credentials}/helpers/waiting_request/#{helper_id}"
     response = RestClient.get waiting_requests_url
 
     expect(response.code).to eq(200)

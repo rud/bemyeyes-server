@@ -10,7 +10,7 @@ module IphoneNotifier
     Urbanairship.request_timeout = 5 # default
     Urbanairship.logger = @logger.log
   end
-  
+
   def send_reset_notifications device_tokens
     initialize_urbanairship
     # Create notification

@@ -18,9 +18,9 @@ require_relative '../spec/factories'
 
 I18n.config.enforce_available_locales=false
 RSpec.configure do |config|
-    config.include FactoryGirl::Syntax::Methods
-  end
-  
+  config.include FactoryGirl::Syntax::Methods
+end
+
 shared_context "rest-context" do
   before(:each) do
     config = YAML.load_file('config/config.yml')

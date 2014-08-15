@@ -5,14 +5,14 @@ class App < Sinatra::Base
   # Begin requests namespace
   namespace '/requests' do
 
-  before do
-    next unless request.post? || request.put?
+    before do
+      next unless request.post? || request.put?
       @body_params = JSON.parse(request.body.read)
-  end
+    end
 
-  def body_params
-    @body_params
-  end
+    def body_params
+      @body_params
+    end
 
     # Create new request
     post '/?' do
@@ -43,14 +43,14 @@ class App < Sinatra::Base
       request.answered = false
       request.save!
 
-      
+
       requests_helper.check_requests 10
       return request.to_json
     end
 
     # Get a request
     get '/:short_id' do
-        TheLogger.log.info("get request, shortId:  " + params[:short_id] )
+      TheLogger.log.info("get request, shortId:  " + params[:short_id] )
       return request_from_short_id(params[:short_id]).to_json
     end
 
@@ -81,7 +81,7 @@ class App < Sinatra::Base
         request.helper = user
         request.answered = true
         request.save!
-        
+
         requests_helper.request_answered
         return request.to_json
       end
@@ -99,9 +99,9 @@ class App < Sinatra::Base
       request = request_from_short_id(params[:short_id])
 
       if request.helper.nil?
-       give_error(400, ERROR_USER_NOT_FOUND, "No helper attached to request - it cant be cancelled").to_json
-     end
-     if request.stopped?
+        give_error(400, ERROR_USER_NOT_FOUND, "No helper attached to request - it cant be cancelled").to_json
+      end
+      if request.stopped?
         give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
       elsif request.helper._id != user._id
         give_error(400, ERROR_NOT_PERMITTED, "This action is not permitted for the user.").to_json
@@ -115,8 +115,8 @@ class App < Sinatra::Base
       helper_request = HelperRequest.where(:request_id => request._id, :helper_id => helper_id).first
       helper_request.cancelled = true
       helper_request.save!
-      
-      requests_helper.request_answered   
+
+      requests_helper.request_answered
 
       return request.to_json
     end
@@ -179,11 +179,11 @@ class App < Sinatra::Base
       end
     end
   end # End namespace /request
-    
-    def requests_helper
-      ua_config = settings.config['urbanairship']
-      RequestsHelper.new ua_config, TheLogger
-    end
+
+  def requests_helper
+    ua_config = settings.config['urbanairship']
+    RequestsHelper.new ua_config, TheLogger
+  end
 
   # Find a request from a short ID
   def request_from_short_id(short_id)

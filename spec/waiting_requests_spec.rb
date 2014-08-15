@@ -5,19 +5,19 @@ RSpec.configure do |config|
 end
 
 describe WaitingRequests do
-	before do
-	IntegrationSpecHelper.InitializeMongo()
+  before do
+    IntegrationSpecHelper.InitializeMongo()
   end
-	before(:each) do
+  before(:each) do
     User.destroy_all
-		@sut = WaitingRequests.new
-		Request.destroy_all
-		request = build(:request)
+    @sut = WaitingRequests.new
+    Request.destroy_all
+    request = build(:request)
     request.save
-	end
+  end
 
-	it "sends requests" do
-		requests = @sut.get_waiting_requests_from_lasts_2_minutes
-		expect(requests.count).to eq(1)
-	end
+  it "sends requests" do
+    requests = @sut.get_waiting_requests_from_lasts_2_minutes
+    expect(requests.count).to eq(1)
+  end
 end

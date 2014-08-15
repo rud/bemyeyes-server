@@ -59,7 +59,7 @@ class App < Sinatra::Base
     if db_config.has_key? 'username'
       MongoMapper.connection[db_config['name']].authenticate(db_config['username'], db_config['password'])
     else
-     MongoMapper.connection[db_config['name']]
+      MongoMapper.connection[db_config['name']]
     end
     ua_config = settings.config['urbanairship']
     @requests_helper = RequestsHelper.new ua_config, TheLogger

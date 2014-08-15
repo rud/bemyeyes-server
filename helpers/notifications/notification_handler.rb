@@ -16,7 +16,7 @@ class NotificationHandler
 
       set_cancel_notification_sent helper_requests
     end
-    
+
     if @successor and devices_not_handled.count > 0
       @successor.handle_cancel_contifications devices, helper_requests
     end
@@ -34,14 +34,14 @@ class NotificationHandler
 
       set_sent_helper devices_to_handle, request
     end
-    
+
     if @successor and devices_not_handled.count > 0
       @successor.handle_notifications devices_not_handled, request
     end
   end
 
   private
-  
+
   def set_cancel_notification_sent helper_requests
     helper_requests.each do |helper_request|
       helper_request.cancel_notification_sent = true

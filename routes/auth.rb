@@ -24,14 +24,14 @@ class App < Sinatra::Base
       begin
         body_params = JSON.parse(request.body.read)
         @email = body_params["email"]
-        
+
         if user.is_external_user
           give_error(400, ERROR_NOT_PERMITTED, "external users can not have their passwords reset")
         end
 
-        token = create_reset_password_token user 
+        token = create_reset_password_token user
         mail_service = create_mail_service settings
-        
+
         reset_password_mail_message = ResetPasswordMailMessage.new(request.base_url, token.token, user.email, "#{user.first_name} #{user.last_name}")
         mail_service.send_mail reset_password_mail_message
       rescue Exception => e

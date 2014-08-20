@@ -102,17 +102,9 @@ class App < Sinatra::Base
       elsif request.helper._id != user._id
         give_error(400, ERROR_NOT_PERMITTED, "This action is not permitted for the user.").to_json
       end
-      # Update request
-      helper_id = request.helper.id
-      request.helper = nil
-      request.answered = false
-      request.save!
-
-      helper_request = HelperRequest.where(:request_id => request._id, :helper_id => helper_id).first
-      helper_request.cancelled = true
-      helper_request.save!
+    
       
-      EventBus.announce(:request_cancelled, request_id: request.id)
+      EventBus.announce(:request_cancelled, request_id: request.id, helper_id: user.id)
 
       return request.to_json
     end

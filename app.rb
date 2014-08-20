@@ -75,7 +75,9 @@ class App < Sinatra::Base
   requests_helper = RequestsHelper.new ua_config, TheLogger
   EventBus.subscribe(:request_answered, MarkRequestAnswered.new, :request_answered)
   EventBus.subscribe(:request_answered, requests_helper, :request_answered) 
-    
+  EventBus.subscribe(:request_cancelled, requests_helper, :request_answered) 
+  EventBus.subscribe(:request_cancelled, MarkHelperRequestCancelled.new, :helper_request_cancelled) 
+   EventBus.subscribe(:request_cancelled, MarkRequestNotAnsweredAnyway.new, :request_cancelled)  
 
   before  do
     env["rack.errors"] = error_log

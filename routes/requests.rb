@@ -77,12 +77,8 @@ class App < Sinatra::Base
       elsif request.stopped?
         give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
       else
-        # Update request
-        request.helper = user
-        request.answered = true
-        request.save!
+        EventBus.announce(:request_answered, request_id: request.id, helper:user)
         
-        requests_helper.request_answered
         return request.to_json
       end
     end
@@ -116,7 +112,7 @@ class App < Sinatra::Base
       helper_request.cancelled = true
       helper_request.save!
       
-      requests_helper.request_answered   
+      EventBus.announce(:request_cancelled, request_id: request.id)
 
       return request.to_json
     end

@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'event_bus'
 require 'sinatra'
 require "sinatra/config_file"
 require 'sinatra/namespace'
@@ -14,6 +15,7 @@ require 'rufus-scheduler'
 require_relative 'helpers/requests_helper'
 require_relative 'models/init'
 require_relative 'routes/init'
+require_relative 'event_handlers/init'
 require_relative 'helpers/error_codes'
 require_relative 'helpers/api_error'
 require_relative 'helpers/cron_jobs'
@@ -65,8 +67,15 @@ class App < Sinatra::Base
     @requests_helper = RequestsHelper.new ua_config, TheLogger
     cron_job = CronJobs.new(Helper.new, @requests_helper, Rufus::Scheduler.new, WaitingRequests.new, HelperPointChecker.new)
     cron_job.start_jobs
+    
   end
   error_log = ::File.new("log/error.log","a+")
+
+  ua_config = settings.config['urbanairship']
+  requests_helper = RequestsHelper.new ua_config, TheLogger
+  EventBus.subscribe(:request_answered, MarkRequestAnswered.new, :request_answered)
+  EventBus.subscribe(:request_answered, requests_helper, :request_answered) 
+    
 
   before  do
     env["rack.errors"] = error_log
@@ -124,5 +133,4 @@ class App < Sinatra::Base
     content_type :json
     give_error(404, ERROR_RESOURCE_NOT_FOUND, "Resource not found.").to_json
   end
-
 end

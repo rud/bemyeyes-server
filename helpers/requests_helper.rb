@@ -50,7 +50,7 @@ class RequestsHelper
     helper = Helper.new
     helpers = helper.available(request, number_of_helpers)
     devices = helpers.collect { |u| u.devices }.flatten
-    @notification_queue.handle_notifications devices, request
+    @notification_queue.handle_notifications devices, request  
   end
 
   def check_requests(number_of_helpers)

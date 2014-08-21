@@ -28,6 +28,28 @@ class App < Sinatra::Base
   register Sinatra::ConfigFile
 
   config_file 'config/config.yml'
+
+  def self.setup_event_bus
+     ua_config = settings.config['urbanairship']
+    requests_helper = RequestsHelper.new ua_config, TheLogger
+    EventBus.subscribe(:request_stopped, MarkRequestStopped.new, :request_stopped)
+    EventBus.subscribe(:request_stopped, AssignHelperPointsOnRequestStopped.new, :request_stopped)
+    EventBus.subscribe(:request_answered, MarkRequestAnswered.new, :request_answered)
+    EventBus.subscribe(:request_answered, requests_helper, :request_answered) 
+    EventBus.subscribe(:request_cancelled, requests_helper, :request_answered) 
+    EventBus.subscribe(:request_cancelled, MarkHelperRequestCancelled.new, :helper_request_cancelled) 
+    EventBus.subscribe(:request_cancelled, MarkRequestNotAnsweredAnyway.new, :request_cancelled)  
+    EventBus.subscribe(:helper_notified, MarkHelperNotified.new, :helper_notified) 
+    EventBus.subscribe(:helper_notified, AssignLastHelpRequest.new, :helper_notified) 
+  end
+  def self.ensure_indeces
+    Helper.ensure_index(:last_help_request)
+    HelperRequest.ensure_index(:request_id)
+    Token.ensure_index(:expiry_time)
+    AbuseReport.ensure_index(:blind_id)
+    User.ensure_index([[:wake_up_in_seconds_since_midnight, 1], [:go_to_sleep_in_seconds_since_midnight, 1], [:role, 1]])
+    Helper.ensure_index(:lanugages)
+  end
   #logging according to: http://spin.atomicobject.com/2013/11/12/production-logging-sinatra/
   ::Logger.class_eval { alias :write :'<<' }
   access_log = ::File.join(::File.dirname(::File.expand_path(__FILE__)),'log','access.log')
@@ -70,26 +92,8 @@ class App < Sinatra::Base
     
   end
   error_log = ::File.new("log/error.log","a+")
-
-  ua_config = settings.config['urbanairship']
-  requests_helper = RequestsHelper.new ua_config, TheLogger
-  EventBus.subscribe(:request_stopped, MarkRequestStopped.new, :request_stopped)
-  EventBus.subscribe(:request_stopped, AssignHelperPointsOnRequestStopped.new, :request_stopped)
-  EventBus.subscribe(:request_answered, MarkRequestAnswered.new, :request_answered)
-  EventBus.subscribe(:request_answered, requests_helper, :request_answered) 
-  EventBus.subscribe(:request_cancelled, requests_helper, :request_answered) 
-  EventBus.subscribe(:request_cancelled, MarkHelperRequestCancelled.new, :helper_request_cancelled) 
-  EventBus.subscribe(:request_cancelled, MarkRequestNotAnsweredAnyway.new, :request_cancelled)  
-  EventBus.subscribe(:helper_notified, MarkHelperNotified.new, :helper_notified) 
-  EventBus.subscribe(:helper_notified, AssignLastHelpRequest.new, :helper_notified) 
-
-  Helper.ensure_index(:last_help_request)
-  HelperRequest.ensure_index(:request_id)
-  Token.ensure_index(:expiry_time)
-  AbuseReport.ensure_index(:blind_id)
-  User.ensure_index([[:wake_up_in_seconds_since_midnight, 1], [:go_to_sleep_in_seconds_since_midnight, 1], [:role, 1]])
-  Helper.ensure_index(:lanugages)
-
+  setup_event_bus()
+  ensure_indeces()
 
   before  do
     env["rack.errors"] = error_log

@@ -83,6 +83,14 @@ class App < Sinatra::Base
   EventBus.subscribe(:helper_notified, MarkHelperNotified.new, :helper_notified) 
   EventBus.subscribe(:helper_notified, AssignLastHelpRequest.new, :helper_notified) 
 
+  Helper.ensure_index(:last_help_request)
+  HelperRequest.ensure_index(:request_id)
+  Token.ensure_index(:expiry_time)
+  AbuseReport.ensure_index(:blind_id)
+  User.ensure_index([[:wake_up_in_seconds_since_midnight, 1], [:go_to_sleep_in_seconds_since_midnight, 1], [:role, 1]])
+  Helper.ensure_index(:lanugages)
+
+
   before  do
     env["rack.errors"] = error_log
   end

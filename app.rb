@@ -44,6 +44,7 @@ class App < Sinatra::Base
     EventBus.subscribe(:request_cancelled, MarkRequestNotAnsweredAnyway.new, :request_cancelled)
     EventBus.subscribe(:helper_notified, MarkHelperNotified.new, :helper_notified)
     EventBus.subscribe(:helper_notified, AssignLastHelpRequest.new, :helper_notified)
+    EventBus.subscribe(:user_saved, AssignLanguageToUser.new, :user_saved)
   end
   def self.ensure_indeces
     Helper.ensure_index(:last_help_request)

@@ -35,6 +35,7 @@ class App < Sinatra::Base
       begin
         body_params = JSON.parse(request.body.read)
         device_token = body_params["device_token"]
+        new_device_token = body_params["new_device_token"]
         device_name = body_params["device_name"]
         model = body_params["model"]
         system_version = body_params["system_version"]
@@ -52,7 +53,7 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
 
-      update_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
+      update_device(device_token, new_device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
 
       unless inactive
         ua_config = settings.config['urbanairship']
@@ -64,15 +65,19 @@ class App < Sinatra::Base
     end
   end # End namespace /devices
 
-  def update_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
+  def update_device(device_token, new_device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
     device = Device.first(:device_token => device_token)
 
     if device.nil?
       raise "The device does not exist, please register a device"
     end
 
+    if new_device_token.nil? || new_device_token.to_s.strip.length == 0
+      new_device_token = device_token
+    end
+
     # Update information
-    device.device_token = device_token
+    device.device_token = new_device_token
     device.device_name = device_name
     device.model = model
     device.system_version = system_version

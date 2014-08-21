@@ -11,7 +11,7 @@ describe "device update" do
   def  update_device token
     url = "#{@servername_with_credentials}/devices/update"
     response = RestClient.post url, {'token' =>token,
-                                     'device_token'=>'device_token', 'device_name'=> 'device_name',
+                                     'device_token'=>'device_token', 'new_device_token' => 'new_device_token', 'device_name'=> 'device_name',
                                      'model'=> UPDATEDMODEL, 'system_version' => 'system_version',
                                      'app_version' => 'app_version', 'app_bundle_version' => 'app_bundle_version',
                                      'locale'=> 'locale', 'development' => 'true'}.to_json

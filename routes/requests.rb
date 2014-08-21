@@ -128,13 +128,6 @@ class App < Sinatra::Base
 
       EventBus.announce(:request_stopped, request_id: request.id)
 
-      #update helper with points for call
-      if !request.helper.nil?
-        point = HelperPoint.finish_helping_request
-        request.helper.helper_points.push point
-        request.helper.save
-      end
-
       return request.to_json
     end
 

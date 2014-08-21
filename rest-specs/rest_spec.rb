@@ -47,6 +47,7 @@ describe "Rest api" do
                it "can create user,log in and log out" do
             #create user
             create_user
+             register_device
             token = log_user_in
             #log user out
             logoutUser_url  = "#{@servername_with_credentials}/users/logout"
@@ -57,6 +58,7 @@ describe "Rest api" do
     end
     describe 'time specific behaviour' do
         def change_awake_info params
+           register_device
              id = create_user
           token = log_user_in
 
@@ -70,6 +72,7 @@ describe "Rest api" do
 
         it "needs a valid token to change settings" do
           id = create_user
+           register_device
           token = log_user_in
 
           invalid_token = '123'

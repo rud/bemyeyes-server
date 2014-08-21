@@ -38,12 +38,12 @@ class App < Sinatra::Base
     EventBus.subscribe(:request_stopped, MarkRequestStopped.new, :request_stopped)
     EventBus.subscribe(:request_stopped, AssignHelperPointsOnRequestStopped.new, :request_stopped)
     EventBus.subscribe(:request_answered, MarkRequestAnswered.new, :request_answered)
-    EventBus.subscribe(:request_answered, requests_helper, :request_answered) 
-    EventBus.subscribe(:request_cancelled, requests_helper, :request_answered) 
-    EventBus.subscribe(:request_cancelled, MarkHelperRequestCancelled.new, :helper_request_cancelled) 
-    EventBus.subscribe(:request_cancelled, MarkRequestNotAnsweredAnyway.new, :request_cancelled)  
-    EventBus.subscribe(:helper_notified, MarkHelperNotified.new, :helper_notified) 
-    EventBus.subscribe(:helper_notified, AssignLastHelpRequest.new, :helper_notified) 
+    EventBus.subscribe(:request_answered, requests_helper, :request_answered)
+    EventBus.subscribe(:request_cancelled, requests_helper, :request_answered)
+    EventBus.subscribe(:request_cancelled, MarkHelperRequestCancelled.new, :helper_request_cancelled)
+    EventBus.subscribe(:request_cancelled, MarkRequestNotAnsweredAnyway.new, :request_cancelled)
+    EventBus.subscribe(:helper_notified, MarkHelperNotified.new, :helper_notified)
+    EventBus.subscribe(:helper_notified, AssignLastHelpRequest.new, :helper_notified)
   end
   def self.ensure_indeces
     Helper.ensure_index(:last_help_request)
@@ -75,7 +75,7 @@ class App < Sinatra::Base
   end
 
   def self.setup_logger
-     #logging according to: http://spin.atomicobject.com/2013/11/12/production-logging-sinatra/
+    #logging according to: http://spin.atomicobject.com/2013/11/12/production-logging-sinatra/
     ::Logger.class_eval { alias :write :'<<' }
     error_logger.sync = true
     TheLogger.log.level = Logger::DEBUG  # could be DEBUG, ERROR, FATAL, INFO, UNKNOWN, WARN
@@ -89,17 +89,17 @@ class App < Sinatra::Base
     if db_config.has_key? 'username'
       MongoMapper.connection[db_config['name']].authenticate(db_config['username'], db_config['password'])
     else
-     MongoMapper.connection[db_config['name']]
+      MongoMapper.connection[db_config['name']]
     end
-  end 
+  end
 
   def self.start_cron_jobs
     cron_job = CronJobs.new(Helper.new, requests_helper, Rufus::Scheduler.new, WaitingRequests.new, HelperPointChecker.new)
     cron_job.start_jobs
   end
- 
+
   setup_logger
- 
+
   # Do any configurations
   configure do
     set :environment, :development
@@ -111,16 +111,16 @@ class App < Sinatra::Base
     set :config, YAML.load_file('config/config.yml') rescue nil || {}
     set :scheduler, Rufus::Scheduler.new
     Encoding.default_external = 'UTF-8'
-   
+
     use ::Rack::CommonLogger, access_logger
 
     opentok_config = settings.config['opentok']
     OpenTokSDK = OpenTok::OpenTok.new opentok_config['api_key'], opentok_config['api_secret']
-    
+
     setup_mongo
     start_cron_jobs
   end
-  
+
   setup_event_bus
   ensure_indeces
 

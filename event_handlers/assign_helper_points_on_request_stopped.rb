@@ -1,4 +1,4 @@
-class AssignHelperPoingsOnRequestStopped
+class AssignHelperPointsOnRequestStopped
   def request_stopped(payload)
     request_id = payload[:request_id]
 

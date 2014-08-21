@@ -29,9 +29,12 @@ class App < Sinatra::Base
 
   config_file 'config/config.yml'
 
+  def self.requests_helper
+    ua_config = settings.config['urbanairship']
+    RequestsHelper.new ua_config, TheLogger
+  end
+
   def self.setup_event_bus
-     ua_config = settings.config['urbanairship']
-    requests_helper = RequestsHelper.new ua_config, TheLogger
     EventBus.subscribe(:request_stopped, MarkRequestStopped.new, :request_stopped)
     EventBus.subscribe(:request_stopped, AssignHelperPointsOnRequestStopped.new, :request_stopped)
     EventBus.subscribe(:request_answered, MarkRequestAnswered.new, :request_answered)

@@ -1,7 +1,3 @@
-require_relative 'requests'
-require_relative 'users'
-require_relative 'devices'
-require_relative 'abuses'
-require_relative 'reset_passwords'
-require_relative 'auth'
-require_relative 'helpers'
+Dir[File.join(File.dirname(__FILE__), '..',  'routes', '**/*.rb')].sort.each do |file|
+  require file
+end

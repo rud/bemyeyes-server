@@ -2,6 +2,7 @@ class Helper < User
   many :helper_request, :foreign_key => :helper_id, :class_name => "HelperRequest"
   many :helper_points, :foreign_key => :user_id, :class_name => "HelperPoint"
   key :role, String
+  key :last_help_request, Time, :default=> Time.new(1970, 1, 1, 0, 0, 0, "+02:00") 
 
   before_create :set_role
   after_create :set_points
@@ -96,6 +97,7 @@ TheLogger.log.info asleep_users
     .where(:user_id.nin => blocked_users)
     .where(:user_id.in => helpers_who_speaks_blind_persons_language)
     .where(:user_id.nin => helpers_in_a_call)
+    .sort(:last_help_request.desc)
     .all.sample(limit)
   end
 end

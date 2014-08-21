@@ -51,7 +51,7 @@ class NotificationHandler
 
   def set_sent_helper devices, request
     devices.each do |device|
-      HelperRequest.create! :request => request, :helper => device.user
+      EventBus.announce(:helper_notified, :request => request, :helper => device.user )
     end
   end
 end

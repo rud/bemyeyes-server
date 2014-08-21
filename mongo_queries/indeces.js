@@ -1,5 +1,0 @@
-db.helper_requests.ensureIndex({request_id:1})
-db.tokens.ensureIndex({expiry_time:1})
-db.abuse_reports.ensureIndex({blind_id:1})
-db.users.ensureIndex({wake_up_in_seconds_since_midnight:1, go_to_sleep_in_seconds_since_midnight:1, role:1})
-db.helpers.ensureIndex({lanugages:1})

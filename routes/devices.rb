@@ -21,12 +21,10 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
 
-      register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
+      device = register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
       
       unless inactive
-        ua_config = settings.config['urbanairship']
-        requests_helper = RequestsHelper.new ua_config, TheLogger
-        requests_helper.register_device development, device_token, :alias => device_name, :tags => [ model, system_version, "v" + app_version, "v" + app_bundle_version, locale ]
+        EventBus.publish(:device_created_or_updated, device_id:device.id)
       end
       return { "success" => true, "token" => device_token }.to_json
     end
@@ -45,20 +43,14 @@ class App < Sinatra::Base
         development = body_params["development"]
         inactive= body_params["inactive"]
 
-        ua_config = settings.config['urbanairship']
-        requests_helper = RequestsHelper.new ua_config, TheLogger
-        requests_helper.register_device development, device_token, :alias => device_name, 
-          :tags => [ model, system_version, "v" + app_version, "v" + app_bundle_version, locale ]
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
 
-      update_device(device_token, new_device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
+      device = update_device(device_token, new_device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
 
       unless inactive
-        ua_config = settings.config['urbanairship']
-        requests_helper = RequestsHelper.new ua_config, TheLogger
-        requests_helper.register_device development, device_token, :alias => device_name, :tags => [ model, system_version, "v" + app_version, "v" + app_bundle_version, locale ]
+        EventBus.publish(:device_created_or_updated, device_id:device.id)
       end
 
       return { "success" => true, "token" => device_token }.to_json
@@ -88,6 +80,7 @@ class App < Sinatra::Base
     device.inactive = inactive
 
     device.save!
+    device
   end
 
   def register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
@@ -113,5 +106,6 @@ class App < Sinatra::Base
     device.inactive = inactive
 
     device.save!
+    device
   end
 end

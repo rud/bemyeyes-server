@@ -70,9 +70,8 @@ class App < Sinatra::Base
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, e.message)
       end
-      ua_config = settings.config['urbanairship']
-      requests_helper = RequestsHelper.new ua_config, TheLogger
-      requests_helper.unregister_device device.development, device.device_token
+
+      EventBus.publish(:user_logged_out, device_id:device.id)
       return { "success" => true }.to_json
     end
    
@@ -139,9 +138,8 @@ class App < Sinatra::Base
       device.save!
       token.save!
 
-      ua_config = settings.config['urbanairship']
-      requests_helper = RequestsHelper.new ua_config, TheLogger
-      requests_helper.register_device device.development, device.device_token, :alias => device.device_name, :tags => [ device.model, device.system_version, "v" + device.app_version, "v" + device.app_bundle_version, device.locale ]
+      EventBus.publish(:user_logged_in, device_id:device.id)
+     
       return { "token" => JSON.parse(token.to_json), "user" => JSON.parse(token.user.to_json) }.to_json
     end
     

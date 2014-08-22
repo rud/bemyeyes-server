@@ -32,6 +32,15 @@ shared_context "rest-context" do
 
     @email =  create_unique_email
     @password = encrypt_password('Password1')
+
+    AbuseReport.destroy_all
+    User.destroy_all
+    Device.destroy_all
+    HelperPoint.destroy_all
+    HelperRequest.destroy_all
+    Request.destroy_all
+    ResetPasswordToken.destroy_all
+    Token.destroy_all
   end
 
   def create_user role ="helper", email = @email, password = @password

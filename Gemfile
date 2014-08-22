@@ -14,6 +14,8 @@ gem 'bson_ext'
 gem 'mandrill-api'
 gem 'tzinfo'
 gem 'tzinfo-data'
+
+gem 'event_bus'
 group :development do
   gem 'rspec-mocks'
   gem 'factory_girl'

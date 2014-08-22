@@ -81,6 +81,7 @@ describe "log device in" do
   it "can log user out with token and token is deleted" do
     #create user
     create_user
+    register_device
     #log user in
     loginUser_url = "#{@servername_with_credentials}/users/login"
     response = RestClient.post loginUser_url,

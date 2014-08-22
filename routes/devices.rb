@@ -16,16 +16,18 @@ class App < Sinatra::Base
         app_bundle_version = body_params["app_bundle_version"]
         locale = body_params["locale"]
         development = body_params["development"]
+        inactive= body_params["inactive"]
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
 
-      register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
-
-      ua_config = settings.config['urbanairship']
-      requests_helper = RequestsHelper.new ua_config, TheLogger
-      requests_helper.register_device development, device_token, :alias => device_name, :tags => [ model, system_version, "v" + app_version, "v" + app_bundle_version, locale ]
-
+      register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
+      
+      unless inactive
+        ua_config = settings.config['urbanairship']
+        requests_helper = RequestsHelper.new ua_config, TheLogger
+        requests_helper.register_device development, device_token, :alias => device_name, :tags => [ model, system_version, "v" + app_version, "v" + app_bundle_version, locale ]
+      end
       return { "success" => true, "token" => device_token }.to_json
     end
 
@@ -33,6 +35,7 @@ class App < Sinatra::Base
       begin
         body_params = JSON.parse(request.body.read)
         device_token = body_params["device_token"]
+        new_device_token = body_params["new_device_token"]
         device_name = body_params["device_name"]
         model = body_params["model"]
         system_version = body_params["system_version"]
@@ -40,6 +43,7 @@ class App < Sinatra::Base
         app_bundle_version = body_params["app_bundle_version"]
         locale = body_params["locale"]
         development = body_params["development"]
+        inactive= body_params["inactive"]
 
         ua_config = settings.config['urbanairship']
         requests_helper = RequestsHelper.new ua_config, TheLogger
@@ -49,21 +53,31 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
 
-      update_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
+      update_device(device_token, new_device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
+
+      unless inactive
+        ua_config = settings.config['urbanairship']
+        requests_helper = RequestsHelper.new ua_config, TheLogger
+        requests_helper.register_device development, device_token, :alias => device_name, :tags => [ model, system_version, "v" + app_version, "v" + app_bundle_version, locale ]
+      end
 
       return { "success" => true, "token" => device_token }.to_json
     end
   end # End namespace /devices
 
-  def update_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
+  def update_device(device_token, new_device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
     device = Device.first(:device_token => device_token)
 
     if device.nil?
       raise "The device does not exist, please register a device"
     end
 
+    if new_device_token.nil? || new_device_token.to_s.strip.length == 0
+      new_device_token = device_token
+    end
+
     # Update information
-    device.device_token = device_token
+    device.device_token = new_device_token
     device.device_name = device_name
     device.model = model
     device.system_version = system_version
@@ -71,11 +85,12 @@ class App < Sinatra::Base
     device.app_bundle_version = app_bundle_version
     device.locale = locale
     device.development = development
+    device.inactive = inactive
 
     device.save!
   end
 
-  def register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development)
+  def register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
     device = Device.first(:device_token => device_token)
 
     unless device.nil?
@@ -95,6 +110,7 @@ class App < Sinatra::Base
     device.app_bundle_version = app_bundle_version
     device.locale = locale
     device.development = development
+    device.inactive = inactive
 
     device.save!
   end

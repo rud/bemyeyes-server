@@ -77,12 +77,8 @@ class App < Sinatra::Base
       elsif request.stopped?
         give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
       else
-        # Update request
-        request.helper = user
-        request.answered = true
-        request.save!
+        EventBus.announce(:request_answered, request_id: request.id, helper:user)
 
-        requests_helper.request_answered
         return request.to_json
       end
     end
@@ -106,17 +102,8 @@ class App < Sinatra::Base
       elsif request.helper._id != user._id
         give_error(400, ERROR_NOT_PERMITTED, "This action is not permitted for the user.").to_json
       end
-      # Update request
-      helper_id = request.helper.id
-      request.helper = nil
-      request.answered = false
-      request.save!
 
-      helper_request = HelperRequest.where(:request_id => request._id, :helper_id => helper_id).first
-      helper_request.cancelled = true
-      helper_request.save!
-
-      requests_helper.request_answered
+      EventBus.announce(:request_cancelled, request_id: request.id, helper_id: user.id)
 
       return request.to_json
     end
@@ -139,16 +126,7 @@ class App < Sinatra::Base
         give_error(400, ERROR_NOT_PERMITTED, "This action is not permitted for the user.").to_json
       end
 
-      # Update request
-      request.stopped = true
-      request.save!
-
-      #update helper with points for call
-      if !request.helper.nil?
-        point = HelperPoint.finish_helping_request
-        request.helper.helper_points.push point
-        request.helper.save
-      end
+      EventBus.announce(:request_stopped, request_id: request.id)
 
       return request.to_json
     end

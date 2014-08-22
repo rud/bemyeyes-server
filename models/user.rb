@@ -1,5 +1,6 @@
 require 'bcrypt'
 require 'tzinfo'
+require 'event_bus'
 
 DEFAULT_WAKE_UP_HOUR = 7
 DEFAULT_WAKE_UP_MINUTE = 0
@@ -51,6 +52,7 @@ class User
   before_save :encrypt_password
   before_create :set_unique_id
   before_save :convert_times_to_utc
+  after_save :user_saved
 
   scope :by_languages,  lambda { |languages| where(:languages => { :$in => languages }) }
 
@@ -68,6 +70,7 @@ class User
 
   def self.authenticate_using_email(email, password)
     user = User.first(:email => { :$regex => /#{Regexp.escape(email)}/i })
+
                                   if !user.nil?
                                     return authenticate_password(user, password)
                                   end
@@ -115,6 +118,10 @@ class User
                                   end
 
                                   private
+
+                                  def user_saved
+                                    EventBus.announce(:user_saved, user_id: _id)
+                                  end
 
                                   def convert_times_to_utc
                                     wake_up_time = Time.parse(wake_up)

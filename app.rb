@@ -23,6 +23,7 @@ require_relative 'helpers/thelogger_module'
 require_relative 'helpers/waiting_requests'
 require_relative 'helpers/date_helper'
 require_relative 'helpers/helper_point_checker'
+require_relative 'helpers/ambient_request'
 I18n.config.enforce_available_locales=false
 class App < Sinatra::Base
   register Sinatra::ConfigFile
@@ -45,6 +46,8 @@ class App < Sinatra::Base
     EventBus.subscribe(:helper_notified, MarkHelperNotified.new, :helper_notified)
     EventBus.subscribe(:helper_notified, AssignLastHelpRequest.new, :helper_notified)
     EventBus.subscribe(:user_saved, AssignLanguageToUser.new, :user_saved)
+    send_reset_password_mail =SendResetPasswordMail.new settings
+    EventBus.subscribe(:rest_password_token_created, send_reset_password_mail, :reset_password_token_created)
   end
   def self.ensure_indeces
     Helper.ensure_index(:last_help_request)
@@ -127,6 +130,7 @@ class App < Sinatra::Base
 
   before  do
     env["rack.errors"] = error_log
+    AmbientRequest.instance.request = request
   end
 
   # Protect anything but the root

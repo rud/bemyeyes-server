@@ -10,11 +10,6 @@ class App < Sinatra::Base
     token
   end
 
-  def create_mail_service settings
-    mandrill_config = settings.config['mandrill']
-    MailService.new mandrill_config
-  end
-
   def user
     @user ||= User.first({:email => @email}) || give_error(400, ERROR_USER_NOT_FOUND, "User Not found")
   end
@@ -30,10 +25,9 @@ class App < Sinatra::Base
         end
 
         token = create_reset_password_token user 
-        mail_service = create_mail_service settings
+
+        EventBus.publish(:rest_password_token_created, token_id: token.id)
         
-        reset_password_mail_message = ResetPasswordMailMessage.new(request.base_url, token.token, user.email, "#{user.first_name} #{user.last_name}")
-        mail_service.send_mail reset_password_mail_message
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "Unable to create reset password token").to_json
       end

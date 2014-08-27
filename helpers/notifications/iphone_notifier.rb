@@ -19,9 +19,6 @@ module IphoneNotifier
       :device_tokens => device_tokens,
       :aps => {
         :alert => {
-          :"loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_MESSAGE",
-          :"loc-args" => [ notification_args_name ],
-          :"action-loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_ACTION",
           :badge => 0,
         }
       }

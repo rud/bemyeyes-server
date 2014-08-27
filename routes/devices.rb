@@ -67,7 +67,7 @@ class App < Sinatra::Base
     if new_device_token.nil? || new_device_token.to_s.strip.length == 0
       new_device_token = device_token
     end
-
+    begin 
     # Update information
     device.device_token = new_device_token
     device.device_name = device_name
@@ -81,6 +81,11 @@ class App < Sinatra::Base
 
     device.save!
     device
+      rescue Exception => e
+        give_error(400, ERROR_DEVICE_ALREADY_EXIST, "Device Already exists").to_json
+      end
+
+
   end
 
   def register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)

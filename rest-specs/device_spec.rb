@@ -8,10 +8,10 @@ describe "device update" do
     Device.destroy_all
   end
 
-  def  update_device token
+  def  update_device token, device_token = 'device_token', new_device_token = 'new_device_token'
     url = "#{@servername_with_credentials}/devices/update"
     response = RestClient.post url, {'token' =>token,
-                                     'device_token'=>'device_token', 'new_device_token' => 'new_device_token', 'device_name'=> 'device_name',
+                                     'device_token'=> device_token, 'new_device_token' => new_device_token, 'device_name'=> 'device_name',
                                      'model'=> UPDATEDMODEL, 'system_version' => 'system_version',
                                      'app_version' => 'app_version', 'app_bundle_version' => 'app_bundle_version',
                                      'locale'=> 'locale', 'development' => 'true'}.to_json
@@ -25,5 +25,25 @@ describe "device update" do
     update_device token
 
     expect(Device.where(:model => UPDATEDMODEL).count).to eq(1)
+  end
+
+  it "will not allow change from temp device token to already existing token" do
+    temp_device_token = "temp_device_token"
+    doublet_device_token = "doublet"
+
+    token = create_user
+    register_device doublet_device_token
+
+    register_device temp_device_token
+    expect {update_device token, temp_device_token, doublet_device_token}.to raise_error(RestClient::BadRequest)
+  end
+
+  it "will not allow two devices with same device_token" do
+    my_device_token = "my very special device token"
+    create_user
+    register_device my_device_token
+    register_device my_device_token
+
+    expect(Device.where(:device_token => my_device_token).count).to eq(1)
   end
 end

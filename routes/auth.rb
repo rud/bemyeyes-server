@@ -19,15 +19,15 @@ class App < Sinatra::Base
       begin
         body_params = JSON.parse(request.body.read)
         @email = body_params["email"]
-        
+
         if user.is_external_user
           give_error(400, ERROR_NOT_PERMITTED, "external users can not have their passwords reset")
         end
 
-        token = create_reset_password_token user 
+        token = create_reset_password_token user
 
         EventBus.publish(:rest_password_token_created, token_id: token.id)
-        
+
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "Unable to create reset password token").to_json
       end

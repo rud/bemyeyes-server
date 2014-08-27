@@ -10,9 +10,9 @@ describe Request do
   end
 
   describe "running requests" do
-  before(:each) do
-    Request.destroy_all
-  end
+    before(:each) do
+      Request.destroy_all
+    end
     def create_request running
       rq1 = build(:request)
       rq1.stopped = !running
@@ -24,7 +24,7 @@ describe Request do
       create_request true
       create_request false
 
-      expect(Request.running_requests().count).to eq(2) 
+      expect(Request.running_requests().count).to eq(2)
     end
   end
   describe "can create Request" do

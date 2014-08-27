@@ -25,7 +25,7 @@ class HelperPointDateHelper
 
       end
       sums << HelperPoint.new(sum, "day", log_time )
-    end 
+    end
     sums
   end
 

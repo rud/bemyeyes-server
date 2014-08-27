@@ -42,8 +42,7 @@ class App < Sinatra::Base
         locale = body_params["locale"]
         development = body_params["development"]
         inactive= body_params["inactive"]
-
-      rescue Exception => e
+     rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
 

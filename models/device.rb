@@ -13,7 +13,7 @@ class Device
   key :locale, String
   key :development, Boolean, :default => false
   key :inactive, Boolean, :default => false
-  
+
   timestamps!
   def is_logged_in
     !token.nil?

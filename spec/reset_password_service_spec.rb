@@ -32,7 +32,7 @@ describe "ResetPasswordService" do
     reset_password_token.user =  helper
     reset_password_token.save!
     logger_double = setup_logger
-    
+
     sut = ResetPasswordService.new logger_double
 
     new_password = 'password1'

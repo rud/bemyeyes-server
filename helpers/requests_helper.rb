@@ -18,10 +18,10 @@ class RequestsHelper
 
   def unregister_device(development, device_token, options = {})
     if development
-        @iphone_development_notifier.unregister_device device_token, options
-      else
-        @iphone_production_notifier.unregister_device device_token, options
-      end
+      @iphone_development_notifier.unregister_device device_token, options
+    else
+      @iphone_production_notifier.unregister_device device_token, options
+    end
   end
 
   def register_device(development, device_token, options = {})

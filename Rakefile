@@ -1,9 +1,14 @@
 require 'rspec/core/rake_task'
 require './app.rb'
+require './lib/mongomodel.rb'
 
 RSpec::Core::RakeTask.new(:spec)
 
 task :default => :spec
+
+task :create_yuml_output do
+  Uml.create_yuml_output
+end
 
 task :add_signup_points_to_all_helpers do
   Helper.find_each() do |helper|

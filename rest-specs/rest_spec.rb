@@ -58,6 +58,7 @@ describe "Rest api" do
   end
   describe 'time specific behaviour' do
     def change_awake_info params
+
       register_device
       id = create_user
       token = log_user_in

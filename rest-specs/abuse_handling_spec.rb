@@ -15,13 +15,13 @@ describe "abuse handling" do
   end
   include_context "rest-context"
 
-def report_abuse(token, request_id)
+  def report_abuse(token, request_id)
     url = "#{@servername_with_credentials}/abuse/report"
-    response = RestClient.post url, 
+    response = RestClient.post url,
       {'token' =>token, 'request_id'=>request_id, 'reason'=> 'abusive stuff'}.to_json
 
     expect(response.code).to eq(200)
-end
+  end
 
   before(:each) do
     AbuseReport.destroy_all
@@ -34,13 +34,13 @@ end
   end
 
   it "will not accept a abuse report if reporter is  not logged in " do
-   register_device
+    register_device
     create_user
     token = log_user_in
 
     #we could add a helper and all to the request, but for this test we don't need it
     request = create_request token
-    
+
     #log user out
     logoutUser_url  = "#{@servername_with_credentials}/users/logout"
     RestClient.put logoutUser_url, {'token'=> token}.to_json
@@ -58,6 +58,6 @@ end
     #we could add a helper and all to the request, but for this test we don't need it
     request = create_request token
     report_abuse token, request.id
-   expect(AbuseReport.count).to eq(1)
+    expect(AbuseReport.count).to eq(1)
   end
-end 
+end

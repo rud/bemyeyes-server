@@ -18,6 +18,11 @@ before do
   IntegrationSpecHelper.InitializeMongo()
 end
 
+before(:each) do
+  Device.destroy_all
+end
+
+
 it "filters out development devices" do
   device = build(:device)
   device.development = true

@@ -18,9 +18,7 @@ module IphoneNotifier
     notification = {
       :device_tokens => device_tokens,
       :aps => {
-        :alert => {
           :badge => 0,
-        }
       }
     }
     # Send notification
@@ -44,9 +42,9 @@ module IphoneNotifier
           :"loc-args" => [ notification_args_name ],
           :"action-loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_ACTION",
           :short_id => request.short_id,
-          :badge => 1,
         },
-        :sound => "call.aiff"
+        :sound => "call.aiff",
+        :badge => 1,
       }
     }
     # Send notification

@@ -34,6 +34,7 @@ Copy config.yml to the config folder
 Use the config.temp.yml as a template    
 ruby -S rackup -w config.ru
 
+##Authentication
 All interactions with the server demands HTTP Basic AUTH - the username password can be found in the config file under the "authentication" section.
 
 ##Run tests

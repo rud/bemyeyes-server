@@ -1,35 +1,35 @@
 BeMyEyes Server
 ====
-#This is the server side of Be My Eyes
-Whenever the iOs app makes a request it calls this API.
+###This is the server side of Be My Eyes  
+Whenever the iOs app makes a request it calls this API.  
 
 [![Code Climate](https://codeclimate.com/github/bemyeyes/bemyeyes-server.png)](https://codeclimate.com/github/bemyeyes/bemyeyes-server)
 
-##Getting started
-You can either use vagrant to run the site - this is the prefered way
-Or you can run the server locally.
+##Getting started  
+You can either use vagrant to run the site - this is the prefered way  
+Or you can run the server locally.  
 
-##Use vagrant
-Install VirtualBox
-Install Vagrant
-run 'vagrant up' in the root directory
+##Use vagrant  
+Install VirtualBox  
+Install Vagrant  
+run 'vagrant up' in the root directory  
 
-The setup will take some time, since it sets up the entire server.
+The setup will take some time, since it sets up the entire server.  
 
-When the server is installed log in 'vagrant ssh'
+When the server is installed log in 'vagrant ssh'  
 
-Set up a user with the username and password configured in config.yml
-start mongo: 'mongo bemyeyes'
+Set up a user with the username and password configured in config.yml  
+start mongo: 'mongo bemyeyes'  
 
-db.addUser( { user: "bemyeyes",
-              pwd: "myPassword",
+db.addUser( { user: "bemyeyes",  
+              pwd: "myPassword",  
               roles: [ "readWrite", "dbAdmin" ]
-            } )
+            } )  
 
-Please note to provison the server we have created a script, which can also be used as a template for a server:
-https://github.com/bemyeyes/railsready/blob/master/railsready.sh
-
-##Start the server locally
+Please note to provison the server we have created a script, which can also be used as a template for a server:  
+https://github.com/bemyeyes/railsready/blob/master/railsready.sh  
+  
+##Start the server locally  
 Copy config.yml to the config folder    
 Use the config.temp.yml as a template    
 ruby -S rackup -w config.ru

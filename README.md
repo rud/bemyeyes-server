@@ -9,6 +9,10 @@ Whenever the iOs app makes a request it calls this API.
 You can either use vagrant to run the site - this is the prefered way  
 Or you can run the server locally.  
 
+##Configuration
+Copy config.yml to the config folder    
+Use the config.temp.yml as a template  
+
 ##Use vagrant  
 Install VirtualBox  
 Install Vagrant  
@@ -29,9 +33,7 @@ db.addUser( { user: "bemyeyes",
 Please note to provison the server we have created a script, which can also be used as a template for a server:  
 https://github.com/bemyeyes/railsready/blob/master/railsready.sh  
   
-##Start the server locally  
-Copy config.yml to the config folder    
-Use the config.temp.yml as a template    
+##Start the server locally    
 ruby -S rackup -w config.ru
 
 ##Authentication

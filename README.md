@@ -36,43 +36,10 @@ ruby -S rackup -w config.ru
 
 All interactions with the server demands HTTP Basic AUTH - the username password can be found in the config file under the "authentication" section.
 
-##	Setup server 
-Install rbenv system wide
-https://gist.github.com/jnx/1256593
+##Run tests
+  
+There is two parts to testing, in the root of the project:  
+1. 'rspec will simply run unit tests and tests against the db.  
+2. 'rspec rest-spec' will run tests against the rest api.  
 
-		# Update, upgrade and install development tools:
-		apt-get update
-		apt-get -y upgrade
-		apt-get -y install build-essential
-		apt-get -y install git-core
-		apt-get install libssl-dev
-
-		# Install rbenv
-		git clone git://github.com/sstephenson/rbenv.git /usr/local/rbenv
-		 
-		# Add rbenv to the path:
-		echo '# rbenv setup' > /etc/profile.d/rbenv.sh
-		echo 'export RBENV_ROOT=/usr/local/rbenv' >> /etc/profile.d/rbenv.sh
-		echo 'export PATH="$RBENV_ROOT/bin:$PATH"' >> /etc/profile.d/rbenv.sh
-		echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh
-		 
-		chmod +x /etc/profile.d/rbenv.sh
-		source /etc/profile.d/rbenv.sh
-		 
-		# Install ruby-build:
-		pushd /tmp
-		  git clone git://github.com/sstephenson/ruby-build.git
-		  cd ruby-build
-		  ./install.sh
-		popd
-		 
-		# Install Ruby 2.0.0p353:
-		rbenv install 2.0.0p353
-		rbenv global 2.0.0p353
-		 
-		# Rehash:
-		rbenv rehash
-
-Install Passenger
-http://www.modrails.com/documentation/Users%20guide%20Apache.html#install_on_debian_ubuntu
-gem install passenger
+At the moment the tests are hardcoded to test against localhost:9001 which is the website exposed by the vagrant server.  

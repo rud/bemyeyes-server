@@ -35,6 +35,7 @@ describe "device update" do
     update_device token, temp_device_token, new_device_token
 
     expect(Device.where(:device_token => new_device_token).count).to eq(1)
+    expect(Device.where(:device_token => temp_device_token).count).to eq(0)
   end
 
   it "will not allow change from temp device token to already existing token" do

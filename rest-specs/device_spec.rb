@@ -27,6 +27,16 @@ describe "device update" do
     expect(Device.where(:model => UPDATEDMODEL).count).to eq(1)
   end
 
+  it "can update a device with a new device_token" do
+    temp_device_token = "temp_device_token"
+    new_device_token = "new_device_token"
+    token = create_user
+    register_device temp_device_token
+    update_device token, temp_device_token, new_device_token
+
+    expect(Device.where(:device_token => new_device_token).count).to eq(1)
+  end
+
   it "will not allow change from temp device token to already existing token" do
     temp_device_token = "temp_device_token"
     doublet_device_token = "doublet"

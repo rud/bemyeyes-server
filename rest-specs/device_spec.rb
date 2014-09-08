@@ -38,17 +38,6 @@ describe "device update" do
     expect(Device.where(:device_token => temp_device_token).count).to eq(0)
   end
 
-  it "will not allow change from temp device token to already existing token" do
-    temp_device_token = "temp_device_token"
-    doublet_device_token = "doublet"
-
-    token = create_user
-    register_device doublet_device_token
-
-    register_device temp_device_token
-    expect {update_device token, temp_device_token, doublet_device_token}.to raise_error(RestClient::BadRequest)
-  end
-
   it "will not allow two devices with same device_token" do
     my_device_token = "my very special device token"
     create_user

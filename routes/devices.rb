@@ -63,26 +63,36 @@ class App < Sinatra::Base
       raise "The device does not exist, please register a device"
     end
 
+    if new_device_token != device_token
+      Device.first(:device_token => device_token).destroy
+    end
+
     if new_device_token.nil? || new_device_token.to_s.strip.length == 0
       new_device_token = device_token
     end
+    
     begin 
-    # Update information
-    device.device_token = new_device_token
-    device.device_name = device_name
-    device.model = model
-    device.system_version = system_version
-    device.app_version = app_version
-    device.app_bundle_version = app_bundle_version
-    device.locale = locale
-    device.development = development
-    device.inactive = inactive
+      device = Device.first(:device_token => new_device_token)
 
-    device.save!
-    device
-      rescue Exception => e
-        give_error(400, ERROR_DEVICE_ALREADY_EXIST, "Device Already exists").to_json
-      end
+      device.destroy unless device.nil?
+      device = Device.new
+
+      # Update information
+      device.device_token = new_device_token
+      device.device_name = device_name
+      device.model = model
+      device.system_version = system_version
+      device.app_version = app_version
+      device.app_bundle_version = app_bundle_version
+      device.locale = locale
+      device.development = development
+      device.inactive = inactive
+
+      device.save!
+      device
+    rescue Exception => e
+      give_error(400, ERROR_DEVICE_ALREADY_EXIST, "Error updating device").to_json
+    end
 
 
   end

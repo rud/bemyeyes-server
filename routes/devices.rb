@@ -78,6 +78,7 @@ class App < Sinatra::Base
       device.destroy unless device.nil?
       device = Device.new
       device.token = token unless token.nil?
+      token.device = device unless token.nil?
 
       # Update information
       device.device_token = new_device_token
@@ -95,8 +96,6 @@ class App < Sinatra::Base
     rescue Exception => e
       give_error(400, ERROR_DEVICE_ALREADY_EXIST, "Error updating device").to_json
     end
-
-
   end
 
   def register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)

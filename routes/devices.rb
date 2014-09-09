@@ -57,10 +57,9 @@ class App < Sinatra::Base
   end # End namespace /devices
 
   def update_device(device_token, new_device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
-    device = Device.first(:device_token => device_token)
-
     if new_device_token != device_token
-      Device.first(:device_token => device_token).destroy
+      old_device = Device.first(:device_token => device_token)
+      old_device.destroy unless old_device.nil?
     end
 
     if new_device_token.nil? || new_device_token.to_s.strip.length == 0

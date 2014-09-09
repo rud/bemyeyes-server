@@ -74,8 +74,10 @@ class App < Sinatra::Base
     begin 
       device = Device.first(:device_token => new_device_token)
 
+      token = device.token unless device.nil? || device.token.nil?
       device.destroy unless device.nil?
       device = Device.new
+      device.token = token unless token.nil?
 
       # Update information
       device.device_token = new_device_token

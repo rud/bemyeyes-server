@@ -71,7 +71,7 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, e.message)
       end
 
-      EventBus.publish(:user_logged_out, device_id:device.id)
+      EventBus.publish(:user_logged_out, device_id:device.id) unless device.nil?
       return { "success" => true }.to_json
     end
 

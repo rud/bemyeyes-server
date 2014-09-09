@@ -59,10 +59,6 @@ class App < Sinatra::Base
   def update_device(device_token, new_device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
     device = Device.first(:device_token => device_token)
 
-    if device.nil?
-      raise "The device does not exist, please register a device"
-    end
-
     if new_device_token != device_token
       Device.first(:device_token => device_token).destroy
     end

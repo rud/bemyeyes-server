@@ -59,6 +59,7 @@ class App < Sinatra::Base
   def update_device(device_token, new_device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
     old_device = Device.first(:device_token => device_token)
     token = old_device.token unless old_device.nil?
+    user = old_device.user unless old_device.nil?
     old_device.destroy
 
     new_device = Device.first(:device_token => new_device_token)
@@ -82,6 +83,8 @@ class App < Sinatra::Base
       device.locale = locale
       device.development = development
       device.inactive = inactive
+      user.devices.push(device) unless user.nil?
+      user.save! unless user.nil?
 
       device.save!
       device

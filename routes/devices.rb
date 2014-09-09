@@ -1,3 +1,5 @@
+require 'active_support'
+require 'active_support/core_ext'
 class App < Sinatra::Base
   register Sinatra::Namespace
 
@@ -21,7 +23,7 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
 
-      device = register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
+      device = update_device(device_token, nil, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
       
       unless inactive
         EventBus.publish(:device_created_or_updated, device_id:device.id)
@@ -58,14 +60,16 @@ class App < Sinatra::Base
 
   def update_device(device_token, new_device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
     old_device = Device.first(:device_token => device_token)
-    token = old_device.token unless old_device.nil?
-    user = old_device.user unless old_device.nil?
-    old_device.destroy
+    unless old_device.nil?
+      token = old_device.token
+      user = old_device.user 
+      old_device.destroy
+    end
 
     new_device = Device.first(:device_token => new_device_token)
     new_device.destroy unless new_device.nil?
 
-    if new_device_token.nil? || new_device_token.to_s.strip.length == 0
+    if new_device_token.blank?
       new_device_token = device_token
     end
 
@@ -83,39 +87,16 @@ class App < Sinatra::Base
       device.locale = locale
       device.development = development
       device.inactive = inactive
-      user.devices.push(device) unless user.nil?
-      user.save! unless user.nil?
+
+      unless user.nil?
+        user.devices.push(device) 
+        user.save!
+      end
 
       device.save!
       device
     rescue Exception => e
       give_error(400, ERROR_DEVICE_ALREADY_EXIST, "Error updating device").to_json
     end
-  end
-
-  def register_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
-    device = Device.first(:device_token => device_token)
-
-    unless device.nil?
-      device.token.destroy unless device.token.nil?
-      device.destroy
-    end
-
-    # Create new device if it does not already exist
-    device = Device.new
-
-    # Update information
-    device.device_token = device_token
-    device.device_name = device_name
-    device.model = model
-    device.system_version = system_version
-    device.app_version = app_version
-    device.app_bundle_version = app_bundle_version
-    device.locale = locale
-    device.development = development
-    device.inactive = inactive
-
-    device.save!
-    device
   end
 end

@@ -42,7 +42,7 @@ class App < Sinatra::Base
     EventBus.subscribe(:request_stopped, MarkRequestAnswered.new, :request_answered)
     EventBus.subscribe(:request_stopped, requests_helper, :request_answered)
     EventBus.subscribe(:request_answered, requests_helper, :request_answered)
-    #EventBus.subscribe(:request_cancelled, requests_helper, :request_answered)
+    EventBus.subscribe(:request_cancelled, requests_helper, :request_answered)
     EventBus.subscribe(:request_cancelled, MarkHelperRequestCancelled.new, :helper_request_cancelled)
     EventBus.subscribe(:request_cancelled, MarkRequestNotAnsweredAnyway.new, :request_cancelled)
     EventBus.subscribe(:helper_notified, MarkHelperNotified.new, :helper_notified)

@@ -4,7 +4,7 @@ class MarkRequestAnswered
     helper = payload[:helper]
 
     request = Request.first(:_id => request_id)
-    request.helper = helper
+    request.helper = helper unless helper.nil?
     request.answered = true
     request.save! 
   end

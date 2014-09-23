@@ -14,18 +14,17 @@ describe HelperPointChecker do
     HelperPoint.destroy_all
     HelperRequest.destroy_all
   end
-  context "5 high fives " do
-    it "No helper requests does nothing" do
+  context '5 high fives ' do
+    it 'No helper requests does nothing' do
       @sut.check_helper_points
 
-      count = HelperPoint.count()
+      count = HelperPoint.count
       expect(count).to be(0)
     end
-    it "one helper request exists for helper with high five - no points" do
+    it 'one helper request exists for helper with high five - no points' do
       helper = build(:helper)
       helper.save
       create_high_five_for_helper(helper)
-
 
       @sut.check_helper_points
 
@@ -33,7 +32,7 @@ describe HelperPointChecker do
       expect(count).to be(1)
     end
 
-    it "5 high fives in one week - 10 points" do
+    it '5 high fives in one week - 10 points' do
       helper = build(:helper)
       helper.save
 
@@ -43,11 +42,11 @@ describe HelperPointChecker do
 
       @sut.check_helper_points
 
-      count = HelperPoint.all(:user_id => helper.id).count
+      count = HelperPoint.all(user_id: helper.id).count
       expect(count).to eq(2)
     end
 
-    it "5 high fives in one week - then one more high five - 10 points" do
+    it '5 high fives in one week - then one more high five - 10 points' do
       helper = build(:helper)
       helper.save
 
@@ -60,12 +59,11 @@ describe HelperPointChecker do
 
       @sut.check_helper_points
 
-
-      count = HelperPoint.all(:user_id => helper.id).count
+      count = HelperPoint.all(user_id: helper.id).count
       expect(count).to eq(2)
     end
 
-    it "4 high fives in a week - 0 points" do
+    it '4 high fives in a week - 0 points' do
       helper = build(:helper)
       helper.save
 
@@ -75,7 +73,7 @@ describe HelperPointChecker do
 
       @sut.check_helper_points
 
-      count = HelperPoint.all(:user_id => helper.id).count
+      count = HelperPoint.all(user_id: helper.id).count
       expect(count).to eq(1)
     end
   end

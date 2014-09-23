@@ -21,7 +21,7 @@ FactoryGirl.define do
   factory :helper, class: Helper do
     first_name "Helper"
     last_name "User"
-    email {"helper_#{(Time.now.to_f*100000).to_s}@example.com" }
+    email { "helper_#{(Time.now.to_f*100000).to_s}@example.com" }
     password "password"
     role "helper"
   end

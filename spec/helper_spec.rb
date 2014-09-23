@@ -17,12 +17,12 @@ describe 'Helper' do
       request = build(:request)
 
       helper = request.helper
-      helper.languages = ['ab', 'en']
+      helper.languages = %w(ab en)
       helper.first_name = 'non-english'
       helper.save!
 
       blind =request.blind
-      blind.languages = ['en', 'da']
+      blind.languages = %w(en da)
       blind.save!
 
       token = Token.new
@@ -36,12 +36,12 @@ describe 'Helper' do
       request = build(:request)
 
       helper = request.helper
-      helper.languages = ['ab', 'aa']
+      helper.languages = %w(ab aa)
       helper.first_name = 'non-english'
       helper.save!
 
       blind =request.blind
-      blind.languages = ['en', 'da']
+      blind.languages = %w(en da)
       blind.save!
 
       token = Token.new
@@ -55,7 +55,7 @@ describe 'Helper' do
   describe 'languages' do
     it 'can create a Helper with two languages' do
       helper = build(:helper)
-      helper.languages = ['ab', 'aa']
+      helper.languages = %w(ab aa)
       helper.save!
     end
 
@@ -63,7 +63,7 @@ describe 'Helper' do
       request = build(:request)
 
       helper = request.helper
-      helper.languages = ['ab', 'aa']
+      helper.languages = %w(ab aa)
       helper.first_name = 'non-english'
       helper.save!
 
@@ -78,12 +78,12 @@ describe 'Helper' do
       request = build(:request)
 
       helper = request.helper
-      helper.languages = ['ab', 'en']
+      helper.languages = %w(ab en)
       helper.first_name = 'non-english'
       helper.save!
 
       blind =request.blind
-      blind.languages = ['en', 'da']
+      blind.languages = %w(en da)
       blind.save!
 
       expect(Helper.helpers_who_speaks_blind_persons_language(request).count).to eq(1)

@@ -50,7 +50,7 @@ describe User do
       request = build(:request)
 
       Timecop.freeze(Time.gm(2014, 'jul', 9, 4, 30)) do
-        asleep_users = User.asleep_users.where(:role => 'helper')
+        asleep_users = User.asleep_users.where(role: 'helper')
         expect(asleep_users.count).to eq(1)
 
         available_helpers = request.helper.available request

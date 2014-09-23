@@ -47,7 +47,7 @@ describe NotificationHandler do
 
     successor_double = double('successor')
     #should not be called since the only device existing is inactive
-    expect(successor_double).to_not receive(:handle_notifications) do |devices, request|
+    expect(successor_double).to_not receive(:handle_notifications) do |_devices, _request|
     end
 
     logger_double = setup_logger

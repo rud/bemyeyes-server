@@ -34,7 +34,7 @@ describe 'ResetPasswordService' do
     sut = ResetPasswordService.new logger_double
 
     new_password = 'password1'
-    success, message = sut.reset_password reset_password_token.token, new_password
+    success, _message = sut.reset_password reset_password_token.token, new_password
     expect(success).to eq(true)
 
     helper.reload

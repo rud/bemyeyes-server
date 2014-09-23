@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'event_bus'
 require 'sinatra'
-require "sinatra/config_file"
+require 'sinatra/config_file'
 require 'sinatra/namespace'
 require 'newrelic_rpm'
 require 'opentok'
@@ -73,17 +73,17 @@ class App < Sinatra::Base
   end
 
   def self.error_logger
-    @error_logger ||= ::File.new(::File.join(::File.dirname(::File.expand_path(__FILE__)),'log','error.log'),"a+")
+    @error_logger ||= ::File.new(::File.join(::File.dirname(::File.expand_path(__FILE__)),'log','error.log'),'a+')
     @error_logger
   end
 
   def self.access_log
-    @access_log ||= ::File.join(::File.dirname(::File.expand_path(__FILE__)),'log','access.log')
+    @access_log ||= ::File.join(::File.dirname(::File.expand_path(__FILE__)), 'log', 'access.log')
     @access_log
   end
 
   def error_log
-    @error_log ||= ::File.new("log/error.log","a+")
+    @error_log ||= ::File.new('log/error.log',"a+")
     @error_log
   end
 
@@ -92,7 +92,7 @@ class App < Sinatra::Base
     ::Logger.class_eval { alias :write :'<<' }
     error_logger.sync = true
     TheLogger.log.level = Logger::DEBUG  # could be DEBUG, ERROR, FATAL, INFO, UNKNOWN, WARN
-    TheLogger.log.formatter = proc { |severity, datetime, progname, msg| "[#{severity}] #{datetime.strftime('%Y-%m-%d %H:%M:%S')} : #{msg}\n" }
+    TheLogger.log.formatter = proc { |severity, datetime, progname, msg| "[#{severity}] #{datetime.strftime("%Y-%m-%d %H:%M:%S")} : #{msg}\n" }
   end
 
   def self.setup_mongo
@@ -135,7 +135,7 @@ class App < Sinatra::Base
   ensure_indeces
 
   before  do
-    env["rack.errors"] = error_log
+    env['rack.errors'] = error_log
     AmbientRequest.instance.request = request
   end
 
@@ -154,22 +154,22 @@ class App < Sinatra::Base
   end
 
   get '/log/' do
-    log_file = params[:file] || "app"
+    log_file = params[:file] || 'app'
     log_file = "log/#{log_file}.log"
 
     if !File.exists? log_file
-      log_file = "log/app.log"
+      log_file = 'log/app.log'
     end
-    File.read(log_file).gsub(/^/, '<br/>').gsub("[INFO]", "<span style='color:green'>[INFO]</span>").gsub("[ERROR]", "<span style='color:red'>[ERROR]</span>")
+    File.read(log_file).gsub(/^/, '<br/>').gsub('[INFO]', "<span style='color:green'>[INFO]</span>").gsub("[ERROR]", "<span style='color:red'>[ERROR]</span>")
   end
   # Handle errors
   error do
     content_type :json
     status 500
 
-    e = env["sinatra.error"]
+    e = env['sinatra.error']
     TheLogger.log.error(e)
-    return { "result" => "error", "message" => e.message }.to_json
+    return { 'result' => "error", "message" => e.message }.to_json
   end
 
   # Check if ww are authorized
@@ -183,12 +183,12 @@ class App < Sinatra::Base
     return if authorized?
     content_type :json
     headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
-    halt 401, create_error_hash(ERROR_NOT_AUTHORIZED, "Not authorized.").to_json
+    halt 401, create_error_hash(ERROR_NOT_AUTHORIZED, 'Not authorized.').to_json
   end
 
   # 404 not found
   not_found do
     content_type :json
-    give_error(404, ERROR_RESOURCE_NOT_FOUND, "Resource not found.").to_json
+    give_error(404, ERROR_RESOURCE_NOT_FOUND, 'Resource not found.').to_json
   end
 end

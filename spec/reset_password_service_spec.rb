@@ -4,7 +4,7 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 end
 
-describe "ResetPasswordService" do
+describe 'ResetPasswordService' do
 
   def setup_logger
     log_instance_double = double('logger instance')
@@ -22,7 +22,7 @@ describe "ResetPasswordService" do
     ResetPasswordToken.destroy_all
   end
 
-  it "can reset a password" do
+  it 'can reset a password' do
     helper = build(:helper)
     helper.save
 

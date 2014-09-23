@@ -3,7 +3,7 @@ require_relative './init'
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 end
-describe "Reset Password Token" do
+describe 'Reset Password Token' do
   before do
     IntegrationSpecHelper.InitializeMongo()
   end
@@ -12,7 +12,7 @@ describe "Reset Password Token" do
     ResetPasswordToken.destroy_all
   end
 
-  it "Can create a token" do
+  it 'Can create a token' do
     helper = build(:helper)
     helper.save
 

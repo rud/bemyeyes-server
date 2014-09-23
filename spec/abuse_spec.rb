@@ -3,7 +3,7 @@ require_relative './init'
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 end
-describe "Helper" do
+describe 'Helper' do
   before do
     IntegrationSpecHelper.InitializeMongo()
   end
@@ -16,8 +16,8 @@ describe "Helper" do
 
   def create_request
     request = Request.new
-    request.session_id = "session_id"
-    request.token = "token"
+    request.session_id = 'session_id'
+    request.token = 'token'
     request.answered = true
     request.stopped = true
     request.save!
@@ -42,7 +42,7 @@ describe "Helper" do
     abuse_report.save!
   end
 
-  it "will block user after three reports" do
+  it 'will block user after three reports' do
     helper = build(:helper)
     helper.save
 
@@ -61,7 +61,7 @@ describe "Helper" do
     expect(helper.blocked).to eq(true)
   end
 
-  it "will not let a blind meet a helper from an abusive request" do
+  it 'will not let a blind meet a helper from an abusive request' do
     helper = build(:helper)
     helper.save
 

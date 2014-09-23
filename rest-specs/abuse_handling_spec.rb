@@ -1,6 +1,6 @@
 require_relative './rest_shared_context'
 
-describe "abuse handling" do
+describe 'abuse handling' do
   def create_request(token_repr)
     session_id = 'session_id'
     token = Token.first(:token => token_repr)
@@ -13,7 +13,7 @@ describe "abuse handling" do
     request.save!
     request
   end
-  include_context "rest-context"
+  include_context 'rest-context'
 
   def report_abuse(token, request_id)
     url = "#{@servername_with_credentials}/abuse/report"
@@ -27,13 +27,13 @@ describe "abuse handling" do
     AbuseReport.destroy_all
   end
 
-  it "will complain if no parameters are sent" do
+  it 'will complain if no parameters are sent' do
     url = "#{@servername_with_credentials}/abuse/report"
     expect{ RestClient.post url, {}.to_json}
     .to raise_error(RestClient::BadRequest)
   end
 
-  it "will not accept a abuse report if reporter is  not logged in " do
+  it 'will not accept a abuse report if reporter is  not logged in ' do
     register_device
     create_user
     token = log_user_in
@@ -50,7 +50,7 @@ describe "abuse handling" do
     .to raise_error(RestClient::Unauthorized)
   end
 
-  it "will let user report abuse" do
+  it 'will let user report abuse' do
     register_device
     create_user
     token = log_user_in

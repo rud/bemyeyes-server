@@ -1,23 +1,23 @@
 class Helper < User
-  many :helper_request, :foreign_key => :helper_id, :class_name => "HelperRequest"
-  many :helper_points, :foreign_key => :user_id, :class_name => "HelperPoint"
-  many :abuse_report, :foreign_key => :abuse_report_id, :class_name => "AbuseReport"
-  many :request, :foreign_key => :request_id, :class_name => "Request"
+  many :helper_request, :foreign_key => :helper_id, :class_name => 'HelperRequest'
+  many :helper_points, :foreign_key => :user_id, :class_name => 'HelperPoint'
+  many :abuse_report, :foreign_key => :abuse_report_id, :class_name => 'AbuseReport'
+  many :request, :foreign_key => :request_id, :class_name => 'Request'
   key :role, String
-  key :last_help_request, Time, :default=> Time.new(1970, 1, 1, 0, 0, 0, "+02:00") 
+  key :last_help_request, Time, :default=> Time.new(1970, 1, 1, 0, 0, 0, '+02:00') 
 
   before_create :set_role
   after_create :set_points
 
   def set_points()
-    if role == "helper"
+    if role == 'helper'
       point = HelperPoint.signup
       self.helper_points.push point
     end
   end
 
   def set_role()
-    self.role = "helper"
+    self.role = 'helper'
   end
 
   def self.helpers_who_speaks_blind_persons_language request
@@ -70,7 +70,7 @@ class Helper < User
       .all
       .collect(&:user_id)
 
-      TheLogger.log.info "Asleep users:"
+      TheLogger.log.info 'Asleep users:'
       TheLogger.log.info asleep_users
 
       helpers_who_speaks_blind_persons_language = Helper.helpers_who_speaks_blind_persons_language(request)
@@ -89,7 +89,7 @@ class Helper < User
 
     Helper.where(
       :id.nin => contacted_helpers,
-      "$or" => [
+      '$or' => [
         {:available_from => nil},
         {:available_from.lt => Time.now.utc}
     ])

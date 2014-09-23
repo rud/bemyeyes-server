@@ -22,7 +22,7 @@ describe NotificationHandler do
     Device.destroy_all
   end
 
-  it "filters out development devices" do
+  it 'filters out development devices' do
     device = build(:device)
     device.development = true
     device.save!
@@ -34,7 +34,7 @@ describe NotificationHandler do
     request.save!
   end
 
-  it "filters out inactive devices" do
+  it 'filters out inactive devices' do
     device = build(:device)
     device.inactive = true
     device.save!

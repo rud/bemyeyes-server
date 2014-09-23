@@ -14,7 +14,7 @@ module IphoneNotifier
   def send_reset_notifications device_tokens
     initialize_urbanairship
     # Create notification
-    notification_args_name = "request cancelled"
+    notification_args_name = 'request cancelled'
     notification = {
       :device_tokens => device_tokens,
       :aps => {
@@ -24,9 +24,9 @@ module IphoneNotifier
     # Send notification
     Urbanairship.push(notification)
     device_tokens.each do |token|
-      TheLogger.log.info("sending reset request to token device " + token)
+      TheLogger.log.info('sending reset request to token device ' + token)
     end
-    TheLogger.log.info "Push notification handled by: " + self.class.to_s
+    TheLogger.log.info 'Push notification handled by: ' + self.class.to_s
   end
 
   def send_notifications request, device_tokens
@@ -38,33 +38,33 @@ module IphoneNotifier
       :device_tokens => device_tokens,
       :aps => {
         :alert => {
-          :"loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_MESSAGE",
-          :"loc-args" => [ notification_args_name ],
-          :"action-loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_ACTION",
+          :'loc-key' => "PUSH_NOTIFICATION_ANSWER_REQUEST_MESSAGE",
+          :'loc-args' => [ notification_args_name ],
+          :'action-loc-key' => "PUSH_NOTIFICATION_ANSWER_REQUEST_ACTION",
           :short_id => request.short_id,
         },
-        :sound => "call.aiff",
+        :sound => 'call.aiff',
         :badge => 1,
       }
     }
     # Send notification
     Urbanairship.push(notification)
     device_tokens.each do |token|
-      TheLogger.log.info("sending request to token device " + token)
+      TheLogger.log.info('sending request to token device ' + token)
     end
-    TheLogger.log.info "Push notification handled by: " + self.class.to_s
+    TheLogger.log.info 'Push notification handled by: ' + self.class.to_s
   end
 
   def register_device(device_token, options = {})
     initialize_urbanairship
     Urbanairship.register_device(device_token, options)
-    TheLogger.log.info "Register device handled by: " + self.class.to_s
+    TheLogger.log.info 'Register device handled by: ' + self.class.to_s
   end
 
   def unregister_device(device_token, options = {})
     initialize_urbanairship
     Urbanairship.unregister_device(device_token, options)
-    TheLogger.log.info "UnRegister device handled by: " + self.class.to_s
+    TheLogger.log.info 'UnRegister device handled by: ' + self.class.to_s
   end
 
   def collect_feedback_on_inactive_devices

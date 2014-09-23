@@ -1,7 +1,7 @@
 require_relative './rest_shared_context'
 
-describe "Helpers" do
-  include_context "rest-context"
+describe 'Helpers' do
+  include_context 'rest-context'
 
   before(:each) do
     User.destroy_all
@@ -9,7 +9,7 @@ describe "Helpers" do
     HelperRequest.destroy_all
   end
 
-  it "does not mark a cancelled request as waiting" do
+  it 'does not mark a cancelled request as waiting' do
     blind_token = create_blind_ready_to_make_request
     helper_token, helper_id = create_helper_ready_for_call
     request_id = create_request blind_token
@@ -22,7 +22,7 @@ describe "Helpers" do
     expect(waiting_request_id).to eq(0)
   end
 
-  it "returns id of waiting requests" do
+  it 'returns id of waiting requests' do
     blind_token = create_blind_ready_to_make_request
     helper_token, helper_id = create_helper_ready_for_call
 
@@ -56,7 +56,7 @@ describe "Helpers" do
   def create_helper_ready_for_call
     device_token = 'Helper device token'
     device_system_version ='iPhone for test'
-    role ="helper"
+    role ='helper'
     email = create_unique_email
     password = encrypt_password 'helperPassword'
     register_device device_token, device_system_version
@@ -83,6 +83,6 @@ describe "Helpers" do
     expect(response.code).to eq(200)
 
     jsn = JSON.parse(response.to_s)
-    jsn["id"]
+    jsn['id']
   end
 end

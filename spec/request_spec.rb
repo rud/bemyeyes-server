@@ -9,7 +9,7 @@ describe Request do
     IntegrationSpecHelper.InitializeMongo()
   end
 
-  describe "running requests" do
+  describe 'running requests' do
     before(:each) do
       Request.destroy_all
     end
@@ -19,7 +19,7 @@ describe Request do
       rq1.save!
     end
 
-    it "can find running requests" do
+    it 'can find running requests' do
       create_request true
       create_request true
       create_request false
@@ -27,7 +27,7 @@ describe Request do
       expect(Request.running_requests().count).to eq(2)
     end
   end
-  describe "can create Request" do
+  describe 'can create Request' do
     before do
       @sut = build(:request)
       @sut.save

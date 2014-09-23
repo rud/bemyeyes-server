@@ -1,7 +1,7 @@
 require_relative './rest_shared_context'
 
-describe "Request" do
-  include_context "rest-context"
+describe 'Request' do
+  include_context 'rest-context'
 
   before(:each) do
     User.destroy_all
@@ -10,7 +10,7 @@ describe "Request" do
     Request.destroy_all
   end
 
-  it "can create a request" do
+  it 'can create a request' do
     register_device
     create_user 'blind'
     token = log_user_in
@@ -20,10 +20,10 @@ describe "Request" do
 
     expect(response.code).to eq(200)
     jsn = JSON.parse(response.to_s)
-    expect(jsn["id"]).to_not eq(nil)
+    expect(jsn['id']).to_not eq(nil)
   end
 
-  it "create request and find it waiting" do
+  it 'create request and find it waiting' do
     register_device
     create_user 'blind'
     token = log_user_in
@@ -40,7 +40,7 @@ describe "Request" do
     create_request_url  = "#{@servername_with_credentials}/requests"
     response = RestClient.post create_request_url, {'token'=> token}.to_json
     json = JSON.parse(response.body)
-    json["short_id"]
+    json['short_id']
   end
 
   def answer_request(short_id, helper_token)
@@ -51,7 +51,7 @@ describe "Request" do
   def create_helper_ready_for_call
     device_token = 'Helper device token'
     device_system_version ='iPhone for test'
-    role ="helper"
+    role ='helper'
     email = create_unique_email
     password = encrypt_password 'helperPassword'
     register_device device_token, device_system_version
@@ -61,7 +61,7 @@ describe "Request" do
     return token, user_id
   end
 
-  it "can answer request and helper is added" do
+  it 'can answer request and helper is added' do
     register_device
     create_user 'blind'
     token = log_user_in

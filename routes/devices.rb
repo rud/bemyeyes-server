@@ -10,17 +10,17 @@ class App < Sinatra::Base
     post '/register' do
       begin
         body_params = JSON.parse(request.body.read)
-        device_token = body_params["device_token"]
-        device_name = body_params["device_name"]
-        model = body_params["model"]
-        system_version = body_params["system_version"]
-        app_version = body_params["app_version"]
-        app_bundle_version = body_params["app_bundle_version"]
-        locale = body_params["locale"]
-        development = body_params["development"]
-        inactive= body_params["inactive"]
+        device_token = body_params['device_token']
+        device_name = body_params['device_name']
+        model = body_params['model']
+        system_version = body_params['system_version']
+        app_version = body_params['app_version']
+        app_bundle_version = body_params['app_bundle_version']
+        locale = body_params['locale']
+        development = body_params['development']
+        inactive= body_params['inactive']
       rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        give_error(400, ERROR_INVALID_BODY, 'The body is not valid.').to_json
       end
 
       device = update_device(device_token, nil, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
@@ -28,24 +28,24 @@ class App < Sinatra::Base
       unless inactive
         EventBus.publish(:device_created_or_updated, device_id:device.id)
       end
-      return { "success" => true, "token" => device_token }.to_json
+      return { 'success' => true, "token" => device_token }.to_json
     end
 
     post '/update' do
       begin
         body_params = JSON.parse(request.body.read)
-        device_token = body_params["device_token"]
-        new_device_token = body_params["new_device_token"]
-        device_name = body_params["device_name"]
-        model = body_params["model"]
-        system_version = body_params["system_version"]
-        app_version = body_params["app_version"]
-        app_bundle_version = body_params["app_bundle_version"]
-        locale = body_params["locale"]
-        development = body_params["development"]
-        inactive= body_params["inactive"]
+        device_token = body_params['device_token']
+        new_device_token = body_params['new_device_token']
+        device_name = body_params['device_name']
+        model = body_params['model']
+        system_version = body_params['system_version']
+        app_version = body_params['app_version']
+        app_bundle_version = body_params['app_bundle_version']
+        locale = body_params['locale']
+        development = body_params['development']
+        inactive= body_params['inactive']
      rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        give_error(400, ERROR_INVALID_BODY, 'The body is not valid.').to_json
       end
 
       device = update_device(device_token, new_device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
@@ -54,7 +54,7 @@ class App < Sinatra::Base
         EventBus.publish(:device_created_or_updated, device_id:device.id)
       end
 
-      return { "success" => true, "token" => device_token }.to_json
+      return { 'success' => true, "token" => device_token }.to_json
     end
   end # End namespace /devices
 
@@ -101,7 +101,7 @@ class App < Sinatra::Base
       device.save!
       device
     rescue Exception => e
-      give_error(400, ERROR_DEVICE_ALREADY_EXIST, "Error updating device").to_json
+      give_error(400, ERROR_DEVICE_ALREADY_EXIST, 'Error updating device').to_json
     end
   end
 end

@@ -4,8 +4,8 @@ class Uml
   def self.create_yuml_output
     Dir.glob('./models/*.rb') do |rb_file|
       text=File.open(rb_file).read
-      text.gsub!(/\r\n?/, "\n")
-      klass = ""
+      text.gsub!(/\r\n?/, '\n')
+      klass = ''
       text.each_line do |line|
         if match = line.match(/class (\w+)( < .*)?/i)
           klass = match.captures[0]
@@ -17,7 +17,7 @@ class Uml
         end
 
         if line.strip.start_with?('many') || line.strip.start_with?('one')
-          if match = line.match(/.*:class_name => "(\w+)"/)
+          if match = line.match(/.*:class_name => '(\w+)'/)
             to_klass = match.captures[0]
           end
 

@@ -2,8 +2,8 @@ class Token
   include MongoMapper::Document
 
   key :user_id, ObjectId
-  belongs_to :user, :class_name => "User"
-  belongs_to :device, :class_name => "Device"
+  belongs_to :user, :class_name => 'User'
+  belongs_to :device, :class_name => 'Device'
 
 
   key :token, String, :unique => true
@@ -15,7 +15,7 @@ class Token
   before_create :calculate_expiry_time
 
   def to_json()
-    return { "token" => self.token, "expiry_time" => self.expiry_time.utc.iso8601 }.to_json
+    return { 'token' => self.token, "expiry_time" => self.expiry_time.utc.iso8601 }.to_json
   end
 
   def valid()

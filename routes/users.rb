@@ -15,38 +15,38 @@ class App < Sinatra::Base
 
     def validate_body_for_create_user
       begin
-        required_fields = {"required" => ["email", "first_name", "last_name", "role"]}
+        required_fields = {'required' => ["email", "first_name", "last_name", "role"]}
         schema = User::SCHEMA.merge(required_fields)
         JSON::Validator.validate!(schema, body_params)
       rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        give_error(400, ERROR_INVALID_BODY, 'The body is not valid.').to_json
       end
     end
 
     # Create new user
     post '/?' do
       validate_body_for_create_user
-      user = case body_params["role"].downcase
-      when "blind"
+      user = case body_params['role'].downcase
+      when 'blind'
         Blind.new
-      when "helper"
+      when 'helper'
         Helper.new
       else
-        give_error(400, ERROR_UNDEFINED_ROLE, "Undefined role.").to_json
+        give_error(400, ERROR_UNDEFINED_ROLE, 'Undefined role.').to_json
       end
       if !body_params['password'].nil?
         password = decrypted_password(body_params['password'])
-        user.update_attributes body_params.merge({ "password" => password })
+        user.update_attributes body_params.merge({ 'password' => password })
       elsif !body_params['user_id'].nil?
-        user.update_attributes body_params.merge({ "user_id" => body_params['user_id'] })
+        user.update_attributes body_params.merge({ 'user_id' => body_params['user_id'] })
         user.is_external_user = true
       else
-        give_error(400, ERROR_INVALID_BODY, "Missing parameter 'user_id' for registering a Facebook user or parameter 'password' for registering a regular user.").to_json
+        give_error(400, ERROR_INVALID_BODY, 'Missing parameter "user_id" for registering a Facebook user or parameter "password" for registering a regular user.').to_json
       end
       begin
         user.save!
       rescue Exception => e
-        give_error(400, ERROR_USER_EMAIL_ALREADY_REGISTERED, "The e-mail is already registered.").to_json if e.message.match /email/i
+        give_error(400, ERROR_USER_EMAIL_ALREADY_REGISTERED, 'The e-mail is already registered.').to_json if e.message.match /email/i
       end
 
       return user_from_id(user._id).to_json
@@ -55,14 +55,14 @@ class App < Sinatra::Base
     # Logout, thereby deleting the token
     put '/logout' do
       begin
-        token_repr = body_params["token"]
+        token_repr = body_params['token']
       rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        give_error(400, ERROR_INVALID_BODY, 'The body is not valid.').to_json
       end
 
       token = token_from_representation(token_repr)
       if !token.valid?
-        give_error(400, ERROR_USER_TOKEN_EXPIRED, "Token has expired.").to_json
+        give_error(400, ERROR_USER_TOKEN_EXPIRED, 'Token has expired.').to_json
       end
       begin
         device = token.device
@@ -72,18 +72,18 @@ class App < Sinatra::Base
       end
 
       EventBus.publish(:user_logged_out, device_id:device.id) unless device.nil?
-      return { "success" => true }.to_json
+      return { 'success' => true }.to_json
     end
 
     def get_device
-      device_token = body_params["device_token"]
+      device_token = body_params['device_token']
       if device_token.nil? or device_token.length == 0
-        raise "device_token must be present"
+        raise 'device_token must be present'
       end
 
       device = Device.first(:device_token => device_token)
       if device.nil?
-        raise "device not found"
+        raise 'device not found'
       end
       device
     end
@@ -92,20 +92,20 @@ class App < Sinatra::Base
       begin
         device = get_device
       rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        give_error(400, ERROR_INVALID_BODY, 'The body is not valid.').to_json
       end
 
-      secure_password = body_params["password"]
-      user_id = body_params["user_id"]
+      secure_password = body_params['password']
+      user_id = body_params['user_id']
 
       # We need either a password or a user ID to login
       if secure_password.nil? && user_id.nil?
-        give_error(400, ERROR_INVALID_BODY, "Missing password or user ID.").to_json
+        give_error(400, ERROR_INVALID_BODY, 'Missing password or user ID.').to_json
       end
 
       # We need an e-mail to login
       if body_params['email'].nil?
-        give_error(400, ERROR_INVALID_BODY, "Missing e-mail.").to_json
+        give_error(400, ERROR_INVALID_BODY, 'Missing e-mail.').to_json
       end
 
       if !secure_password.nil?
@@ -115,7 +115,7 @@ class App < Sinatra::Base
 
         # Check if we managed to log in
         if user.nil?
-          give_error(400, ERROR_USER_INCORRECT_CREDENTIALS, "No user found matching the credentials.").to_json
+          give_error(400, ERROR_USER_INCORRECT_CREDENTIALS, 'No user found matching the credentials.').to_json
         end
       elsif !user_id.nil?
         # Login using user ID
@@ -123,7 +123,7 @@ class App < Sinatra::Base
 
         # Check if we managed to log in
         if user.nil?
-          give_error(400, ERROR_USER_FACEBOOK_USER_NOT_FOUND, "The Facebook user was not found.").to_json
+          give_error(400, ERROR_USER_FACEBOOK_USER_NOT_FOUND, 'The Facebook user was not found.').to_json
         end
       end
 
@@ -140,23 +140,23 @@ class App < Sinatra::Base
 
       EventBus.publish(:user_logged_in, device_id:device.id)
      
-      return { "token" => JSON.parse(token.to_json), "user" => JSON.parse(token.user.to_json) }.to_json
+      return { 'token' => JSON.parse(token.to_json), "user" => JSON.parse(token.user.to_json) }.to_json
     end
 
     # Login with a token
     put '/login/token' do
       begin
-        token_repr = body_params["token"]
+        token_repr = body_params['token']
       rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        give_error(400, ERROR_INVALID_BODY, 'The body is not valid.').to_json
       end
 
       token = token_from_representation(token_repr)
       if !token.valid?
-        give_error(400, ERROR_USER_TOKEN_EXPIRED, "Token has expired.").to_json
+        give_error(400, ERROR_USER_TOKEN_EXPIRED, 'Token has expired.').to_json
       end
 
-      return { "user" => JSON.parse(token.user.to_json) }.to_json
+      return { 'user' => JSON.parse(token.user.to_json) }.to_json
     end
 
     # Get user by id
@@ -181,7 +181,7 @@ class App < Sinatra::Base
     get '/helper_points_sum/:user_id' do
       retval = OpenStruct.new
       helper = helper_from_id(params[:user_id])
-      if(helper.helper_points.count == 0)
+      if (helper.helper_points.count == 0)
         retval.sum = 0
         return retval.marshal_dump.to_json
       end
@@ -197,12 +197,12 @@ class App < Sinatra::Base
         user.update_attributes!(body_params)
       rescue Exception => e
         puts e.message
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        give_error(400, ERROR_INVALID_BODY, 'The body is not valid.').to_json
       end
       return user
     end
 
-    def 24_hour_string? the_str
+    def twenty_four_hour_string? the_str
       !the_str.nil? and /\d\d:\d\d/.match the_str
     end
 
@@ -210,13 +210,13 @@ class App < Sinatra::Base
       begin
         token = token_from_representation(params[:token_repr])
         user = token.user
-        user.wake_up = body_params['wake_up'] if 24_hour_string? body_params['wake_up']
-        user.go_to_sleep = body_params['go_to_sleep'] if 24_hour_string? body_params['go_to_sleep']
+        user.wake_up = body_params['wake_up'] if twenty_four_hour_string? body_params['wake_up']
+        user.go_to_sleep = body_params['go_to_sleep'] if twenty_four_hour_string? body_params['go_to_sleep']
         user.utc_offset = body_params['utc_offset'] unless body_params['utc_offset'].nil? or not /-?\d{1,2}/.match body_params['utc_offset']
 
         user.save!
       rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        give_error(400, ERROR_INVALID_BODY, 'The body is not valid.').to_json
       end
     end
 
@@ -250,7 +250,7 @@ class App < Sinatra::Base
   def user_from_id(user_id)
     user = User.first(:_id => user_id)
     if user.nil?
-      give_error(400, ERROR_USER_NOT_FOUND, "No user found.").to_json
+      give_error(400, ERROR_USER_NOT_FOUND, 'No user found.').to_json
     end
     return user
   end
@@ -258,7 +258,7 @@ class App < Sinatra::Base
   def helper_from_id(user_id)
     helper = Helper.first(:_id => user_id)
     if helper.nil?
-      give_error(400, ERROR_USER_NOT_FOUND, "No helper found.").to_json
+      give_error(400, ERROR_USER_NOT_FOUND, 'No helper found.').to_json
     end
     
     return helper
@@ -268,7 +268,7 @@ class App < Sinatra::Base
   def token_from_representation(repr)
     token = Token.first(:token => repr)
     if token.nil?
-      give_error(400, ERROR_USER_TOKEN_NOT_FOUND, "Token not found.").to_json
+      give_error(400, ERROR_USER_TOKEN_NOT_FOUND, 'Token not found.').to_json
     end
     
     return token
@@ -277,9 +277,9 @@ class App < Sinatra::Base
   # Decrypt the password
   def decrypted_password(secure_password)
     begin
-      return AESCrypt.decrypt(secure_password, settings.config["security_salt"])
+      return AESCrypt.decrypt(secure_password, settings.config['security_salt'])
     rescue Exception => e
-      give_error(400, ERROR_INVALID_PASSWORD, "The password is invalid.").to_json
+      give_error(400, ERROR_INVALID_PASSWORD, 'The password is invalid.').to_json
     end
   end
 

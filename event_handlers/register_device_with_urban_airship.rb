@@ -8,6 +8,6 @@ class RegisterDeviceWithUrbanAirship
     device = Device.first(:_id => device_id)
 
     return if device.nil?
-    @requests_helper.register_device device.development, device.device_token, :alias => device.device_name, :tags => [ device.model, device.system_version, "v" + device.app_version, "v" + device.app_bundle_version, device.locale ]
+    @requests_helper.register_device device.development, device.device_token, :alias => device.device_name, :tags => [ device.model, device.system_version, 'v' + device.app_version, "v" + device.app_bundle_version, device.locale ]
   end
 end

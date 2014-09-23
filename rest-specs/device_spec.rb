@@ -1,7 +1,7 @@
 require_relative './rest_shared_context'
 
-describe "device update" do
-  include_context "rest-context"
+describe 'device update' do
+  include_context 'rest-context'
   UPDATEDMODEL = 'update_model'
 
   before(:each) do
@@ -17,9 +17,9 @@ describe "device update" do
                                      'locale'=> 'locale', 'development' => 'true'}.to_json
     expect(response.code).to eq(200)
     json = JSON.parse(response.body)
-    json["token"]
+    json['token']
   end
-  it "can update a device" do
+  it 'can update a device' do
     create_user
     token = register_device
     update_device token
@@ -27,9 +27,9 @@ describe "device update" do
     expect(Device.where(:model => UPDATEDMODEL).count).to eq(1)
   end
 
-  it "can update a device with a new device_token" do
-    temp_device_token = "temp_device_token"
-    new_device_token = "new_device_token"
+  it 'can update a device with a new device_token' do
+    temp_device_token = 'temp_device_token'
+    new_device_token = 'new_device_token'
     token = create_user
     register_device temp_device_token
     update_device token, temp_device_token, new_device_token
@@ -38,8 +38,8 @@ describe "device update" do
     expect(Device.where(:device_token => temp_device_token).count).to eq(0)
   end
 
-  it "will not allow two devices with same device_token" do
-    my_device_token = "my very special device token"
+  it 'will not allow two devices with same device_token' do
+    my_device_token = 'my very special device token'
     create_user
     register_device my_device_token
     register_device my_device_token

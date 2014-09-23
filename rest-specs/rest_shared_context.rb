@@ -21,13 +21,13 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 end
 
-shared_context "rest-context" do
+shared_context 'rest-context' do
   before(:each) do
     config = YAML.load_file('config/config.yml')
     @username = config['authentication']['username']
     @password = config['authentication']['password']
-    @security_salt = config["security_salt"]
-    @servername = "http://localhost:3001"
+    @security_salt = config['security_salt']
+    @servername = 'http://localhost:3001'
     @servername_with_credentials = "http://#{@username}:#{@password}@localhost:3001"
 
     @email =  create_unique_email
@@ -43,7 +43,7 @@ shared_context "rest-context" do
     Token.destroy_all
   end
 
-  def create_user role ="helper", email = @email, password = @password
+  def create_user role ='helper', email = @email, password = @password
     createUser_url = "#{@servername_with_credentials}/users/"
     response = RestClient.post createUser_url, {'first_name' =>'first_name',
                                                 'last_name'=>'last_name', 'email'=> email,
@@ -67,7 +67,7 @@ shared_context "rest-context" do
     loginUser_url = "#{@servername_with_credentials}/users/login"
     response = RestClient.post loginUser_url, {'email' => email, 'password'=> password, 'device_token' => device_token}.to_json
     jsn = JSON.parse(response.to_s)
-    token = jsn["token"]["token"]
+    token = jsn['token']["token"]
     token
   end
 
@@ -80,7 +80,7 @@ shared_context "rest-context" do
                                      'locale'=> 'locale', 'development' => 'true'}.to_json
     expect(response.code).to eq(200)
     json = JSON.parse(response.body)
-    json["token"]
+    json['token']
   end
 
 end

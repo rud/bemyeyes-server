@@ -2,10 +2,10 @@
 class Request
   include MongoMapper::Document
 
-  belongs_to :blind, :class_name => "Blind"
-  belongs_to :helper, :class_name => "Helper"
-  many :helper_request, :foreign_key => :request_id, :class_name => "HelperRequest"
-  one :abuse_report, :foreign_key => :abuse_report_id, :class_name => "AbuseReport"
+  belongs_to :blind, :class_name => 'Blind'
+  belongs_to :helper, :class_name => 'Helper'
+  many :helper_request, :foreign_key => :request_id, :class_name => 'HelperRequest'
+  one :abuse_report, :foreign_key => :abuse_report_id, :class_name => 'AbuseReport'
   key :short_id, String
   key :session_id, String, :required => true
   key :token, String, :required => true
@@ -25,17 +25,17 @@ class Request
   end
 
   def to_json()
-    return { "opentok" => {
-               "session_id" => self.session_id,
-               "token" => self.token
+    return { 'opentok' => {
+               'session_id' => self.session_id,
+               'token' => self.token
              },
-             "id" => self._id,
-             "short_id" => self.short_id,
-             "ratings" => {
-               "blind" => self.blind_rating,
-               "helper" => self.helper_rating
+             'id' => self._id,
+             'short_id' => self.short_id,
+             'ratings' => {
+               'blind' => self.blind_rating,
+               'helper' => self.helper_rating
              },
-             "answered" => self.answered
+             'answered' => self.answered
              }.to_json
   end
 

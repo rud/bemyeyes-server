@@ -1,10 +1,10 @@
 class Device
   include MongoMapper::Document
 
-  belongs_to :user, :class_name => "User"
+  belongs_to :user, :class_name => 'User'
 
   key :device_token, String, :required => true, :unique => true
-  one :token, :foreign_key => :token_id, :class_name => "Token"
+  one :token, :foreign_key => :token_id, :class_name => 'Token'
   key :device_name, String
   key :model, String
   key :system_version, String

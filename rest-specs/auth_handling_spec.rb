@@ -1,8 +1,8 @@
 require_relative './rest_shared_context'
 
-describe "auth" do
-  include_context "rest-context"
-  it "can start a reset password flow" do
+describe 'auth' do
+  include_context 'rest-context'
+  it 'can start a reset password flow' do
     register_device
     id = create_user
     user = User.first(:_id => id)
@@ -11,7 +11,7 @@ describe "auth" do
     RestClient.post url, {:email => user.email}.to_json
   end
 
-  it "cannot start a reset password flow for external user" do
+  it 'cannot start a reset password flow for external user' do
     register_device
     id = create_user
     user = User.first(:_id => id)

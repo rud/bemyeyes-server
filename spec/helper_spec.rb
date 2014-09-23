@@ -21,7 +21,7 @@ describe 'Helper' do
       helper.first_name = 'non-english'
       helper.save!
 
-      blind =request.blind
+      blind = request.blind
       blind.languages = %w(en da)
       blind.save!
 
@@ -40,7 +40,7 @@ describe 'Helper' do
       helper.first_name = 'non-english'
       helper.save!
 
-      blind =request.blind
+      blind = request.blind
       blind.languages = %w(en da)
       blind.save!
 
@@ -67,7 +67,7 @@ describe 'Helper' do
       helper.first_name = 'non-english'
       helper.save!
 
-      blind =request.blind
+      blind = request.blind
       blind.languages = ['en']
       blind.save!
 
@@ -82,7 +82,7 @@ describe 'Helper' do
       helper.first_name = 'non-english'
       helper.save!
 
-      blind =request.blind
+      blind = request.blind
       blind.languages = %w(en da)
       blind.save!
 

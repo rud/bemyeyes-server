@@ -8,14 +8,13 @@ class App < Sinatra::Base
       next unless request.post? || request.put?
       @body_params = JSON.parse(request.body.read)
     end
-
-    def body_params
+   def body_params
       @body_params
-    end
+   end
 
     def validate_body_for_create_user
       begin
-        required_fields = {'required' => ["email", "first_name", "last_name", "role"]}
+        required_fields = { 'required' => %w(email first_name last_name role) }
         schema = User::SCHEMA.merge(required_fields)
         JSON::Validator.validate!(schema, body_params)
       rescue Exception => e
@@ -26,7 +25,8 @@ class App < Sinatra::Base
     # Create new user
     post '/?' do
       validate_body_for_create_user
-      user = case body_params['role'].downcase
+      user = 
+      case body_params['role'].downcase
       when 'blind'
         Blind.new
       when 'helper'
@@ -271,7 +271,7 @@ class App < Sinatra::Base
       give_error(400, ERROR_USER_TOKEN_NOT_FOUND, 'Token not found.').to_json
     end
     
-    return token
+    token
   end
   
   # Decrypt the password

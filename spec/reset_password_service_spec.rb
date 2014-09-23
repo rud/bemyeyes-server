@@ -26,8 +26,6 @@ describe "ResetPasswordService" do
     helper = build(:helper)
     helper.save
 
-    old_password = helper.password_hash
-
     reset_password_token = ResetPasswordToken.new
     reset_password_token.user =  helper
     reset_password_token.save!

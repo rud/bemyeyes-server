@@ -12,7 +12,7 @@ FactoryGirl.define do
 
   factory :blind, class: Blind do
     first_name "Blind"
-    last_name  "User"
+    last_name "User"
     email {"blind_#{(Time.now.to_f*100000).to_s}@example.com" }
     password "password"
     role "blind"
@@ -20,13 +20,13 @@ FactoryGirl.define do
 
   factory :helper, class: Helper do
     first_name "Helper"
-    last_name  "User"
+    last_name "User"
     email {"helper_#{(Time.now.to_f*100000).to_s}@example.com" }
     password "password"
     role "helper"
   end
 
-  factory :request , class: Request do
+  factory :request, class: Request do
     answered false
     stopped false
     blind_rating 1
@@ -41,5 +41,4 @@ FactoryGirl.define do
   factory :device, class: Device do
     device_token "device_token"
   end
-
 end

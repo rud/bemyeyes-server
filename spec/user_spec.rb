@@ -22,7 +22,7 @@ describe User do
 
   describe "awake times in different timezones" do
     it "sets default wake up time in utc" do
-      expected = DEFAULT_WAKE_UP_HOUR - 2 #withdraw the utc_offset
+      expected = DEFAULT_WAKE_UP_HOUR - 2 # withdraw the utc_offset
       expect(@sut.wake_up_in_seconds_since_midnight).to eq(expected  * 3600)
     end
 
@@ -49,8 +49,8 @@ describe User do
     it "does not wake up asleep helper in DK when blind from US needs help" do
       request = build(:request)
 
-      Timecop.freeze(Time.gm(2014,"jul",9,4,30) ) do
-        asleep_users = User.asleep_users.where(:role => "helper")
+      Timecop.freeze(Time.gm(2014, 'jul', 9, 4, 30)) do
+        asleep_users = User.asleep_users.where(:role => 'helper')
         expect(asleep_users.count).to eq(1)
 
         available_helpers = request.helper.available request
@@ -62,7 +62,7 @@ describe User do
       @sut.utc_offset = 0
       @sut.go_to_sleep = "22:00"
       @sut.save!
-      Timecop.travel(Time.gm(2000,"jan",1,23,15,1) ) do
+      Timecop.travel(Time.gm(2000, 'jan', 1, 23, 15, 1)) do
         awake_users = User.asleep_users
         expect(awake_users.count).to eq(1)
       end
@@ -78,7 +78,7 @@ describe User do
       awake.go_to_sleep = "23:30"
       awake.save!
 
-      Timecop.travel(Time.gm(2000,"jan",1,23,15,1) ) do
+      Timecop.travel(Time.gm(2000, 'jan', 1, 23, 15, 1)) do
         asleep_users = User.asleep_users
         expect(asleep_users.count).to eq(1)
       end
@@ -88,7 +88,7 @@ describe User do
       @sut.utc_offset = -4
       @sut.go_to_sleep = "22:00"
       @sut.save!
-      Timecop.travel(Time.gm(2000,"jan",1,20,15,1) ) do
+      Timecop.travel(Time.gm(2000, 'jan', 1, 20, 15, 1)) do
         asleep_users = User.asleep_users
         expect(asleep_users.count).to eq(0)
       end
@@ -98,7 +98,7 @@ describe User do
       @sut.utc_offset =  4
       @sut.go_to_sleep = "22:00"
       @sut.save!
-      Timecop.travel(Time.gm(2000,"jan",1,20,15,1) ) do
+      Timecop.travel(Time.gm(2000, 'jan', 1, 20, 15, 1)) do
         asleep_users = User.asleep_users
         expect(asleep_users.count).to eq(1)
       end
@@ -108,7 +108,7 @@ describe User do
       @sut.utc_offset = 0
       @sut.go_to_sleep = "22:00"
       @sut.save!
-      Timecop.travel(Time.gm(2000,"jan",1,20,15,1) ) do
+      Timecop.travel(Time.gm(2000, 'jan', 1, 20, 15, 1)) do
         asleep_users = User.asleep_users
         expect(asleep_users.count).to eq(0)
       end

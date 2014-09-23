@@ -4,17 +4,17 @@ require './lib/mongomodel.rb'
 
 RSpec::Core::RakeTask.new(:spec)
 
-task :default => :spec
+task default: spec
 
 task :create_yuml_output do
   Uml.create_yuml_output
 end
 
 task :add_signup_points_to_all_helpers do
-  Helper.find_each() do |helper|
+  Helper.find_each do |helper|
     puts helper
     signup_found = false
-    helper.helper_points.each() do |hp| 
+    helper.helper_points.each do |hp|
       if(hp.message == "signup")
         signup_found = true
       end

@@ -202,7 +202,7 @@ class App < Sinatra::Base
       return user
     end
 
-    def is_24_hour_string the_str
+    def 24_hour_string? the_str
       !the_str.nil? and /\d\d:\d\d/.match the_str
     end
 
@@ -210,8 +210,8 @@ class App < Sinatra::Base
       begin
         token = token_from_representation(params[:token_repr])
         user = token.user
-        user.wake_up = body_params['wake_up'] if is_24_hour_string body_params['wake_up']
-        user.go_to_sleep = body_params['go_to_sleep'] if is_24_hour_string body_params['go_to_sleep']
+        user.wake_up = body_params['wake_up'] if 24_hour_string? body_params['wake_up']
+        user.go_to_sleep = body_params['go_to_sleep'] if 24_hour_string? body_params['go_to_sleep']
         user.utc_offset = body_params['utc_offset'] unless body_params['utc_offset'].nil? or not /-?\d{1,2}/.match body_params['utc_offset']
 
         user.save!

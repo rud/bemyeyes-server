@@ -17,6 +17,7 @@ class App < Sinatra::Base
       return {'no_helped' => no_helped, 'total_points' => total_points, 'events' => events}.to_json
     end
   end
+  
   class BMEPointEvent < Struct.new(:title, :date, :point)
   end
 

@@ -12,13 +12,18 @@ class App < Sinatra::Base
 
       no_helped = Request.count(:helper_id => helper._id, :answered => true)
       total_points = helper.helper_points.inject(0){|sum,x| sum + x.point }
-
-      class BMEPointEvent < Struct.new(:title, :date, :point)
-      end
-      events = helper.helper_points.collect{|point| BMEPointEvent.new(point.message,  point.log_time, point.point)}
+      events = get_point_events helper
 
       return {'no_helped' => no_helped, 'total_points' => total_points, 'events' => events}.to_json
     end
+  end
+  class BMEPointEvent < Struct.new(:title, :date, :point)
+  end
+
+  def get_point_events helper
+
+    events = helper.helper_points.collect{|point| BMEPointEvent.new(point.message,  point.log_time, point.point)}
+    events
   end
 
   def helper_from_token token_repr

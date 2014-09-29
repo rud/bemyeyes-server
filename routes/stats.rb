@@ -14,10 +14,10 @@ class App < Sinatra::Base
       total_points = helper.helper_points.inject(0){|sum,x| sum + x.point }
       events = get_point_events helper
       levels = Array.new
-      levels << BMELevel.new("beginner", 0)
-      levels << BMELevel.new("rookie", 200)
+      current_level =  BMELevel.new("beginner", 0)
+      next_level = BMELevel.new("rookie", 200)
 
-      return {'no_helped' => no_helped, 'total_points' => total_points, 'events' => events, 'levels'=> levels}.to_json
+      return {'no_helped' => no_helped, 'total_points' => total_points, 'events' => events, 'current_level'=> current_level, 'next_level' => next_level}.to_json
     end
   end
   

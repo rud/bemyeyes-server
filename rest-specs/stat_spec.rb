@@ -34,6 +34,8 @@ describe 'profile endpoint' do
     expect(jsn['no_helped']).to_not be_nil
     expect(jsn['total_points']).to_not be_nil
     expect(jsn['events']).to_not be_nil
+    expect(jsn['current_level']).to_not be_nil
+    expect(jsn['next_level']).to_not be_nil
 
   end
 

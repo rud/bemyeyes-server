@@ -140,7 +140,7 @@ class App < Sinatra::Base
   end
 
   # Protect anything but the root
-  before /^(?!\/reset-password)\/.+$/ do
+ before /^(?!\/((reset-password)|(stats\/community)))\/.+$/ do
     protected!
   end
 

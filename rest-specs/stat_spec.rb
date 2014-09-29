@@ -32,6 +32,9 @@ describe 'profile endpoint' do
 
     jsn = JSON.parse response.body
     expect(jsn['no_helped']).to_not be_nil
+    expect(jsn['total_points']).to_not be_nil
+    expect(jsn['events']).to_not be_nil
+
   end
 
   def create_user_return_token

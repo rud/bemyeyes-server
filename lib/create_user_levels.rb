@@ -15,7 +15,6 @@ class CreateUserLevels
     helper.set_user_level
     helper.save!
    end
-
   end
 
   def self.create_level(name, point_threshold, next_user_level)

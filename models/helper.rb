@@ -28,7 +28,7 @@ class Helper < User
   end
 
   def points
-    helper_points.inject(0){|sum,x| sum + x.point }
+    self.helper_points.inject(0){|sum,x| sum + x.point }
   end
 
   def self.helpers_who_speaks_blind_persons_language request

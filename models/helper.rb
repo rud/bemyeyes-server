@@ -3,11 +3,14 @@ class Helper < User
   many :helper_points, :foreign_key => :user_id, :class_name => "HelperPoint"
   many :abuse_report, :foreign_key => :abuse_report_id, :class_name => "AbuseReport"
   many :request, :foreign_key => :request_id, :class_name => "Request"
+  key :user_level_id, ObjectId
+  belongs_to :user_level, :class_name => 'UserLevel'
   key :role, String
   key :last_help_request, Time, :default=> Time.new(1970, 1, 1, 0, 0, 0, "+02:00") 
 
   before_create :set_role
   after_create :set_points
+  before_save :set_user_level
 
   def set_points()
     if role == "helper"
@@ -18,6 +21,14 @@ class Helper < User
 
   def set_role()
     self.role = "helper"
+  end
+
+  def set_user_level
+    self.user_level = UserLevel.first(:point_threshold.gte => points, :order => :point_threshold.asc) 
+  end
+
+  def points
+    self.helper_points.inject(0){|sum,x| sum + x.point }
   end
 
   def self.helpers_who_speaks_blind_persons_language request

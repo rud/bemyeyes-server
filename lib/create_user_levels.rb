@@ -11,6 +11,10 @@ class CreateUserLevels
     create_level('New Helper', 0, user_level2)
 
    #calculate level for each user
+   Helper.find_each do |helper|
+    helper.set_user_level
+    helper.save!
+   end
 
   end
 

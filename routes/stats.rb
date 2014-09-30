@@ -11,7 +11,7 @@ class App < Sinatra::Base
       helper = helper_from_token token_repr
 
       no_helped = Request.count(:helper_id => helper._id, :answered => true)
-      total_points = helper.helper_points.inject(0){|sum,x| sum + x.point }
+      total_points = helper.points
       events = get_point_events helper
       current_level =  BMELevel.new("beginner", 0)
       next_level = BMELevel.new("rookie", 200)

@@ -27,7 +27,6 @@ class User
   many :tokens, :foreign_key => :user_id, :class_name => "Token", :dependent => :destroy
   many :devices, :foreign_key => :user_id, :class_name => "Device"
   one :reset_password_token, :foreign_key => :reset_password_token_id, :class_name => "ResetPasswordToken"
-  one :user_level, :foreign_key => :user_level_id, :class_name => "UserLevel"
 
   key :password_hash, String
   key :password_salt, String

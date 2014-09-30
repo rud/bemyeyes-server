@@ -11,7 +11,7 @@ class App < Sinatra::Base
       helper = helper_from_token token_repr
 
       no_helped = Request.count(:helper_id => helper._id, :answered => true)
-      total_points = helper.points.order(:created_at).limit 10
+      total_points = helper.points.limit 10
       events = get_point_events helper
       current_level =  user_level_to_BMELevel helper.user_level
       next_level = user_level_to_BMELevel helper.user_level.next_user_level 

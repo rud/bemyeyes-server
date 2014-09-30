@@ -13,8 +13,8 @@ class App < Sinatra::Base
       no_helped = Request.count(:helper_id => helper._id, :answered => true)
       total_points = helper.points
       events = get_point_events helper
-      current_level =  BMELevel.new("beginner", 0)
-      next_level = BMELevel.new("rookie", 200)
+      current_level = helper.user_level
+      next_level = helper.user_level.next_user_level
 
       return {'no_helped' => no_helped, 'total_points' => total_points, 'events' => events, 'current_level'=> current_level, 'next_level' => next_level}.to_json
     end

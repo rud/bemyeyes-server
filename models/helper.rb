@@ -24,7 +24,7 @@ class Helper < User
   end
 
   def set_user_level
-    self.user_level = UserLevel.first(:point_threshold.gte => points, :order => :point_threshold.asc) 
+    self.user_level = UserLevel.first(:point_threshold.lte => points, :order => :point_threshold.desc) 
   end
 
   def points

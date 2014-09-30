@@ -4,9 +4,9 @@ class CreateUserLevels
   def self.create_levels
     UserLevel.delete_all
 
-    user_level5 = create_level('Master Helper', 15000, nil)
-    user_level4 = create_level('Expert Helper', 5000, user_level4)
-    user_level3 = create_level('Trusted Helper', 1000, user_level4)
+    user_level5 = create_level('Master Helper', 4000, nil)
+    user_level4 = create_level('Expert Helper', 2500, user_level4)
+    user_level3 = create_level('Trusted Helper', 1500, user_level4)
     user_level2 = create_level('Promising Helper', 500, user_level3)
     create_level('New Helper', 0, user_level2)
 

@@ -36,10 +36,25 @@ class HelperPoint
   def self.finish_5_high_fives_in_a_week( )
     return HelperPoint.new(30, "finish_5_high_fives_in_a_week")
   end
+    
+  def self.share_on_twitter()
+    return HelperPoint.new(10, "share_on_twitter")
+  end
+
+  def self.share_on_facebook()
+    return HelperPoint.new(10, "share_on_facebook")
+  end
+
+  def self.watch_video()
+    return HelperPoint.new(10, "watch_video")
+  end
+
   def to_json()
     return { "point" => self.point, "log_time" => self.log_time.utc.iso8601 }.to_json
   end
+
   private
+  
   def generate_time()
     self.log_time = Time.now
   end

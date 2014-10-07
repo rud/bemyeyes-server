@@ -246,16 +246,6 @@ class App < Sinatra::Base
     end
   end # End namespace /users
   
-  # Get user from ID
-  def user_from_id(user_id)
-    user = User.first(:_id => user_id)
-    if user.nil?
-      give_error(400, ERROR_USER_NOT_FOUND, "No user found.").to_json
-    end
-    return user
-  end
-
-  
   # Decrypt the password
   def decrypted_password(secure_password)
     begin

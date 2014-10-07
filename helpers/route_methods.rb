@@ -23,11 +23,19 @@ def helper_from_token token_repr
   end
 
    def helper_from_id(user_id)
-    helper = Helper.first(:_id => user_id)
-    if helper.nil?
-      give_error(400, ERROR_USER_NOT_FOUND, "No helper found.").to_json
+    model_from_id(user_id, Helper, ERROR_USER_NOT_FOUND, "No helper found.")
+  end
+
+  def user_from_id(user_id)
+    model_from_id(user_id, User, ERROR_USER_NOT_FOUND, "No user found.")
+  end
+
+  def model_from_id(id, model_class, code, message)
+    model = model_class.first(:_id => id)
+    if model.nil?
+      give_error(400, code, message).to_json
     end
     
-    return helper
+    return model
   end
 end

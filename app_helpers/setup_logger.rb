@@ -26,4 +26,13 @@ class App < Sinatra::Base
     TheLogger.log.level = Logger::DEBUG  # could be DEBUG, ERROR, FATAL, INFO, UNKNOWN, WARN
     TheLogger.log.formatter = proc { |severity, datetime, progname, msg| "[#{severity}] #{datetime.strftime('%Y-%m-%d %H:%M:%S')} : #{msg}\n" }
   end
+
+
+  # Do any configurations
+  configure do
+    set :dump_errors, true
+    enable :logging
+
+    use ::Rack::CommonLogger, access_logger
+  end
 end

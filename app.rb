@@ -24,8 +24,8 @@ require_relative 'helpers/date_helper'
 require_relative 'helpers/helper_point_checker'
 require_relative 'helpers/ambient_request'
 require_relative 'helpers/route_methods'
-require_relative 'helpers/app_setup'
-require_relative 'helpers/setup_logger'
+require_relative 'app_helpers/app_setup'
+require_relative 'app_helpers/setup_logger'
 I18n.config.enforce_available_locales=false
 class App < Sinatra::Base
   register Sinatra::ConfigFile
@@ -52,14 +52,10 @@ class App < Sinatra::Base
 
   # Do any configurations
   configure do
-    set :dump_errors, true
-    enable :logging
     set :app_file, __FILE__
     set :config, YAML.load_file('config/config.yml') rescue nil || {}
     set :scheduler, Rufus::Scheduler.new
     Encoding.default_external = 'UTF-8'
-
-    use ::Rack::CommonLogger, access_logger
 
     opentok_config = settings.config['opentok']
     OpenTokSDK = OpenTok::OpenTok.new opentok_config['api_key'], opentok_config['api_secret']

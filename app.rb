@@ -25,40 +25,13 @@ require_relative 'helpers/helper_point_checker'
 require_relative 'helpers/ambient_request'
 require_relative 'helpers/route_methods'
 require_relative 'helpers/app_setup'
+require_relative 'helpers/setup_logger'
 I18n.config.enforce_available_locales=false
 class App < Sinatra::Base
   register Sinatra::ConfigFile
 
   config_file 'config/config.yml'
-
-  def self.access_logger
-    @access_logger||= ::Logger.new(access_log, 'daily')
-    @access_logger
-  end
-
-  def self.error_logger
-    @error_logger ||= ::File.new(::File.join(::File.dirname(::File.expand_path(__FILE__)),'log','error.log'),"a+")
-    @error_logger
-  end
-
-  def self.access_log
-    @access_log ||= ::File.join(::File.dirname(::File.expand_path(__FILE__)),'log','access.log')
-    @access_log
-  end
-
-  def error_log
-    @error_log ||= ::File.new("log/error.log","a+")
-    @error_log
-  end
-
-  def self.setup_logger
-    #logging according to: http://spin.atomicobject.com/2013/11/12/production-logging-sinatra/
-    ::Logger.class_eval { alias :write :'<<' }
-    error_logger.sync = true
-    TheLogger.log.level = Logger::DEBUG  # could be DEBUG, ERROR, FATAL, INFO, UNKNOWN, WARN
-    TheLogger.log.formatter = proc { |severity, datetime, progname, msg| "[#{severity}] #{datetime.strftime('%Y-%m-%d %H:%M:%S')} : #{msg}\n" }
-  end
-
+  
   def self.setup_mongo
     db_config = settings.config['database']
     MongoMapper.connection = Mongo::Connection.new(db_config['host'])

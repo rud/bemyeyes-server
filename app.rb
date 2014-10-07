@@ -31,8 +31,6 @@ class App < Sinatra::Base
 
   config_file 'config/config.yml'
 
-  
-
   def self.access_logger
     @access_logger||= ::Logger.new(access_log, 'daily')
     @access_logger

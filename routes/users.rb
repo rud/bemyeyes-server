@@ -264,15 +264,6 @@ class App < Sinatra::Base
     return helper
   end
   
-  # Find token by representation of the token
-  def token_from_representation(repr)
-    token = Token.first(:token => repr)
-    if token.nil?
-      give_error(400, ERROR_USER_TOKEN_NOT_FOUND, "Token not found.").to_json
-    end
-    
-    return token
-  end
   
   # Decrypt the password
   def decrypted_password(secure_password)

@@ -23,7 +23,7 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
 
-      token = token_from_representation_with_validation(token_repr, true)
+      token = token_from_representation(token_repr)
       user = token.user
 
       begin
@@ -64,7 +64,7 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
 
-      token = token_from_representation_with_validation(token_repr, true)
+      token = token_from_representation(token_repr)
       user = token.user
       request = request_from_short_id(params[:short_id])
 
@@ -90,7 +90,7 @@ class App < Sinatra::Base
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
-      token = token_from_representation_with_validation(token_repr, true)
+      token = token_from_representation(token_repr)
       user = token.user
       request = request_from_short_id(params[:short_id])
 
@@ -116,7 +116,7 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
 
-      token = token_from_representation_with_validation(token_repr, true)
+      token = token_from_representation(token_repr)
       user = token.user
       request = request_from_short_id(params[:short_id])
 
@@ -140,7 +140,7 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
 
-      token = token_from_representation_with_validation(token_repr, true)
+      token = token_from_representation(token_repr)
       user = token.user
       request = request_from_short_id(params[:short_id])
 
@@ -172,19 +172,4 @@ class App < Sinatra::Base
 
     return request
   end
-
-  # Find token by representation of the token
-  def token_from_representation_with_validation(repr, validation)
-    token = Token.first(:token => repr)
-    if token.nil?
-      give_error(400, ERROR_USER_TOKEN_NOT_FOUND, "Token not found.").to_json
-    end
-
-    if validation && !token.valid?
-      give_error(400, ERROR_USER_TOKEN_EXPIRED, "Token has expired.").to_json
-    end
-
-    return token
-  end
-
 end

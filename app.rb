@@ -24,6 +24,7 @@ require_relative 'helpers/waiting_requests'
 require_relative 'helpers/date_helper'
 require_relative 'helpers/helper_point_checker'
 require_relative 'helpers/ambient_request'
+require_relative 'helpers/route_methods'
 I18n.config.enforce_available_locales=false
 class App < Sinatra::Base
   register Sinatra::ConfigFile

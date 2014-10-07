@@ -21,4 +21,13 @@ def helper_from_token token_repr
 
     return token
   end
+
+   def helper_from_id(user_id)
+    helper = Helper.first(:_id => user_id)
+    if helper.nil?
+      give_error(400, ERROR_USER_NOT_FOUND, "No helper found.").to_json
+    end
+    
+    return helper
+  end
 end

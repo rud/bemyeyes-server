@@ -43,13 +43,22 @@ class App < Sinatra::Base
     end
 
     get '/remaining_tasks/:token_repr' do
-      token_repr = params[:token_repr]
-      helper = helper_from_token_repr token_repr
-      completed_point_events = get_point_events helper
+      begin
+        token_repr = params[:token_repr]
+        helper = helper_from_token_repr token_repr
+        completed_point_events = get_point_events helper
 
-      all_point_events = get_points_events_from_hash HelperPoint.points
-      remaining_tasks = all_point_events.reject completed_point_events
-      HelperPoint.remaining_tasks.to_json
+        all_point_events = get_points_events_from_hash HelperPoint.points
+
+        remaining_tasks = Array.new
+        all_point_events.each do |point|
+          remaining_tasks << point unless completed_point_events.any? { | completed_point | completed_point.title == point.title}
+        end
+
+        remaining_tasks.to_json
+      rescue
+        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+      end
     end
   end
 
@@ -70,12 +79,11 @@ class App < Sinatra::Base
   end
 
   def get_points_events_from_hash points_hash
-   events = points_hash.collect{| point | point.key, nil, point.value}
-   events
+    events = points_hash.collect{| message, point | BMEPointEvent.new(message, Time.now, point)}
+    events
   end
 
   def get_point_events helper
-    events = helper.helper_points.collect{|point| BMEPointEvent.new(point.message,  point.log_time, point.point)}
-    events
+    helper.helper_points.collect{|point| BMEPointEvent.new(point.message,  point.log_time, point.point)}
   end
 end

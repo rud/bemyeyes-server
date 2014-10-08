@@ -14,23 +14,24 @@ class HelperPoint
     self.log_time = log_time
   end
 
+  @points ={
+    "signup" => 50,
+    "answer_push_message" => 5,
+    "answer_push_message_technical_error" => 10,
+    "finish_helping_request" => 30,
+    "finish_10_helping_request_in_a_week" => 30,
+    "finish_5_high_fives_in_a_week" => 30,
+    "share_on_twitter" => 10,
+    "share_on_facebook" => 10,
+    "watch_video" => 10
+  }
+
   class << self
 
     def point_type_exists? point_name
       @points.has_key? point_name
     end
 
-    @points ={
-      "signup" => 50,
-      "answer_push_message" => 5,
-      "answer_push_message_technical_error" => 10,
-      "finish_helping_request" => 30,
-      "finish_10_helping_request_in_a_week" => 30,
-      "finish_5_high_fives_in_a_week" => 30,
-      "share_on_twitter" => 10,
-      "share_on_facebook" => 10,
-      "watch_video" => 10,
-    }
     def method_missing(meth, *args, &block)
       method_as_string = meth.to_s
       if @points.has_key? method_as_string
@@ -39,7 +40,8 @@ class HelperPoint
         super # You *must* call super if you don't handle the
         # method, otherwise you'll mess up Ruby's method lookup.
       end
-    end
+
+    end # class << self
 
     def respond_to?(meth, include_private = false)
       method_as_string = meth.to_s

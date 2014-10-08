@@ -1,8 +1,16 @@
 class App < Sinatra::Base
   register Sinatra::Namespace
   namespace '/stats' do
-    get '/community' do
+    before do
+      next unless request.post? || request.put?
+      @body_params = JSON.parse(request.body.read)
+    end
 
+    def body_params
+      @body_params
+    end
+
+    get '/community' do
       return { 'blind' => Blind.count, 'helpers' => Helper.count, 'no_helped' =>Request.count }.to_json
     end
 
@@ -14,12 +22,29 @@ class App < Sinatra::Base
       total_points = helper.points
       events = get_point_events helper
       current_level =  user_level_to_BMELevel helper.user_level
-      next_level = user_level_to_BMELevel helper.user_level.next_user_level 
+      next_level = user_level_to_BMELevel helper.user_level.next_user_level
 
       return {'no_helped' => no_helped, 'total_points' => total_points, 'events' => events, 'current_level'=> current_level, 'next_level' => next_level}.to_json
     end
+
+    post '/event' do
+      token_repr = body_params['token_repr']
+      event = body_params['event']
+
+      unless HelperPoint.point_type_exists? event.to_s
+        give_error(400, ERROR_INVALID_BODY, "Event not found").to_json
+      end
+
+      token = token_from_representation(token_repr)
+      user = token.user
+      helper = helper_from_id user._id
+      
+      point = HelperPoint.send(event)
+      helper.helper_points.push point
+      helper.save
+    end
   end
-  
+
   class BMEPointEvent < Struct.new(:title, :date, :point)
   end
 

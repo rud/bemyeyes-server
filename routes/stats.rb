@@ -46,8 +46,8 @@ class App < Sinatra::Base
       begin
         token_repr = params[:token_repr]
         helper = helper_from_token_repr token_repr
-        completed_point_events = get_point_events helper
 
+        completed_point_events = get_point_events helper
         all_point_events = get_points_events_from_hash HelperPoint.points
 
         remaining_tasks = Array.new

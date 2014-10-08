@@ -13,6 +13,10 @@ class HelperPoint
     self.message = message
     self.log_time = log_time
   end
+  
+  def self.points
+    @points
+  end
 
   @points ={
     "signup" => 50,

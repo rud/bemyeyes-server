@@ -35,14 +35,28 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "Event not found").to_json
       end
 
-      token = token_from_representation(token_repr)
-      user = token.user
-      helper = helper_from_id user._id
-      
+      helper = helper_from_token_repr token_repr
+
       point = HelperPoint.send(event)
       helper.helper_points.push point
       helper.save
     end
+
+    get '/remaining_tasks/:token_repr' do
+      token_repr = params[:token_repr]
+      helper = helper_from_token_repr token_repr
+      completed_point_events = get_point_events helper
+
+      all_point_events = get_points_events_from_hash HelperPoint.points
+      remaining_tasks = all_point_events.reject completed_point_events
+      HelperPoint.remaining_tasks.to_json
+    end
+  end
+
+  def helper_from_token_repr token_repr
+    token = token_from_representation(token_repr)
+    user = token.user
+    helper_from_id user._id
   end
 
   class BMEPointEvent < Struct.new(:title, :date, :point)
@@ -55,8 +69,12 @@ class App < Sinatra::Base
     BMELevel.new(user_level.name, user_level.point_threshold)
   end
 
-  def get_point_events helper
+  def get_points_events_from_hash points_hash
+   events = points_hash.collect{| point | point.key, nil, point.value}
+   events
+  end
 
+  def get_point_events helper
     events = helper.helper_points.collect{|point| BMEPointEvent.new(point.message,  point.log_time, point.point)}
     events
   end

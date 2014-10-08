@@ -3,7 +3,7 @@ class HelperPoint
   key :user_id, ObjectId
   key :log_time, Time
   key :point, Integer
-  key :message, String
+  key :message, String, required: true
 
   belongs_to :user, :class_name => "User"
   before_create :generate_time
@@ -35,7 +35,7 @@ class HelperPoint
     def method_missing(meth, *args, &block)
       method_as_string = meth.to_s
       if @points.has_key? method_as_string
-        return HelperPoint.new(@points[method_as_string], @method_as_string)
+        return HelperPoint.new(@points[method_as_string], method_as_string)
       else
         super # You *must* call super if you don't handle the
         # method, otherwise you'll mess up Ruby's method lookup.

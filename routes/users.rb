@@ -247,34 +247,6 @@ class App < Sinatra::Base
     end
   end # End namespace /users
   
-  # Get user from ID
-  def user_from_id(user_id)
-    user = User.first(:_id => user_id)
-    if user.nil?
-      give_error(400, ERROR_USER_NOT_FOUND, "No user found.").to_json
-    end
-    return user
-  end
-
-  def helper_from_id(user_id)
-    helper = Helper.first(:_id => user_id)
-    if helper.nil?
-      give_error(400, ERROR_USER_NOT_FOUND, "No helper found.").to_json
-    end
-    
-    return helper
-  end
-  
-  # Find token by representation of the token
-  def token_from_representation(repr)
-    token = Token.first(:token => repr)
-    if token.nil?
-      give_error(400, ERROR_USER_TOKEN_NOT_FOUND, "Token not found.").to_json
-    end
-    
-    return token
-  end
-  
   # Decrypt the password
   def decrypted_password(secure_password)
     begin

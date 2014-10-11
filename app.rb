@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'event_bus'
 require 'sinatra'
 require "sinatra/config_file"
 require 'sinatra/namespace'
@@ -24,77 +23,15 @@ require_relative 'helpers/waiting_requests'
 require_relative 'helpers/date_helper'
 require_relative 'helpers/helper_point_checker'
 require_relative 'helpers/ambient_request'
+require_relative 'helpers/route_methods'
+require_relative 'app_helpers/app_setup'
+require_relative 'app_helpers/setup_logger'
 I18n.config.enforce_available_locales=false
 class App < Sinatra::Base
   register Sinatra::ConfigFile
 
   config_file 'config/config.yml'
-
-  def self.requests_helper
-    ua_config = settings.config['urbanairship']
-    RequestsHelper.new ua_config, TheLogger
-  end
-
-  def self.setup_event_bus
-    EventBus.subscribe(:request_stopped, MarkRequestStopped.new, :request_stopped)
-    EventBus.subscribe(:request_stopped, AssignHelperPointsOnRequestStopped.new, :request_stopped)
-    EventBus.subscribe(:request_answered, MarkRequestAnswered.new, :request_answered)
-    EventBus.subscribe(:request_stopped, MarkRequestAnswered.new, :request_answered)
-    EventBus.subscribe(:request_stopped, requests_helper, :request_answered)
-    EventBus.subscribe(:request_answered, requests_helper, :request_answered)
-    EventBus.subscribe(:request_cancelled, requests_helper, :request_answered)
-    EventBus.subscribe(:request_cancelled, MarkHelperRequestCancelled.new, :helper_request_cancelled)
-    EventBus.subscribe(:request_cancelled, MarkRequestNotAnsweredAnyway.new, :request_cancelled)
-    EventBus.subscribe(:helper_notified, MarkHelperNotified.new, :helper_notified)
-    EventBus.subscribe(:helper_notified, AssignLastHelpRequest.new, :helper_notified)
-
-    send_reset_password_mail =SendResetPasswordMail.new settings
-    EventBus.subscribe(:rest_password_token_created, send_reset_password_mail, :reset_password_token_created)
-
-    unregister_device_with_urban_airship = UnRegisterDeviceWithUrbanAirship.new requests_helper
-    EventBus.subscribe(:user_logged_out, unregister_device_with_urban_airship, :user_logged_out)
-
-    register_device_with_urban_airship = RegisterDeviceWithUrbanAirship.new requests_helper
-    EventBus.subscribe(:user_logged_in, register_device_with_urban_airship, :register)
-    EventBus.subscribe(:device_created_or_updated, register_device_with_urban_airship, :register)
-  end
-  def self.ensure_indeces
-    Helper.ensure_index(:last_help_request)
-    HelperRequest.ensure_index(:request_id)
-    Token.ensure_index(:expiry_time)
-    AbuseReport.ensure_index(:blind_id)
-    User.ensure_index([[:wake_up_in_seconds_since_midnight, 1], [:go_to_sleep_in_seconds_since_midnight, 1], [:role, 1]])
-    Helper.ensure_index(:lanugages)
-  end
-
-  def self.access_logger
-    @access_logger||= ::Logger.new(access_log, 'daily')
-    @access_logger
-  end
-
-  def self.error_logger
-    @error_logger ||= ::File.new(::File.join(::File.dirname(::File.expand_path(__FILE__)),'log','error.log'),"a+")
-    @error_logger
-  end
-
-  def self.access_log
-    @access_log ||= ::File.join(::File.dirname(::File.expand_path(__FILE__)),'log','access.log')
-    @access_log
-  end
-
-  def error_log
-    @error_log ||= ::File.new("log/error.log","a+")
-    @error_log
-  end
-
-  def self.setup_logger
-    #logging according to: http://spin.atomicobject.com/2013/11/12/production-logging-sinatra/
-    ::Logger.class_eval { alias :write :'<<' }
-    error_logger.sync = true
-    TheLogger.log.level = Logger::DEBUG  # could be DEBUG, ERROR, FATAL, INFO, UNKNOWN, WARN
-    TheLogger.log.formatter = proc { |severity, datetime, progname, msg| "[#{severity}] #{datetime.strftime('%Y-%m-%d %H:%M:%S')} : #{msg}\n" }
-  end
-
+  
   def self.setup_mongo
     db_config = settings.config['database']
     MongoMapper.connection = Mongo::Connection.new(db_config['host'])
@@ -115,14 +52,10 @@ class App < Sinatra::Base
 
   # Do any configurations
   configure do
-    set :dump_errors, true
-    enable :logging
     set :app_file, __FILE__
     set :config, YAML.load_file('config/config.yml') rescue nil || {}
     set :scheduler, Rufus::Scheduler.new
     Encoding.default_external = 'UTF-8'
-
-    use ::Rack::CommonLogger, access_logger
 
     opentok_config = settings.config['opentok']
     OpenTokSDK = OpenTok::OpenTok.new opentok_config['api_key'], opentok_config['api_secret']

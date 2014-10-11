@@ -14,6 +14,7 @@ gem 'bson_ext'
 gem 'mandrill-api'
 gem 'tzinfo'
 gem 'tzinfo-data'
+gem 'language_list'
 
 gem 'event_bus'
 group :development do

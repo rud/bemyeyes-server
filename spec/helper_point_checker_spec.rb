@@ -60,7 +60,6 @@ describe HelperPointChecker do
 
       @sut.check_helper_points
 
-
       count = HelperPoint.all(:user_id => helper.id).count
       expect(count).to eq(2)
     end

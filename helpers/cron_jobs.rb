@@ -28,7 +28,7 @@ class CronJobs
 
   def start_jobs
     @job ||= @scheduler.every('20s') do
-      @request_helper.check_requests 200
+      @request_helper.check_requests 20
     end
 
     @point_job ||= @scheduler.every('1d') do

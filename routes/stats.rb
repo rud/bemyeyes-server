@@ -48,7 +48,7 @@ class App < Sinatra::Base
         helper = helper_from_token_repr token_repr
 
         completed_point_events = get_point_events helper
-        all_point_events = get_points_events_from_hash HelperPoint.points
+        all_point_events = get_points_events_from_hash HelperPoint.actionable_points
 
         remaining_tasks = Array.new
         all_point_events.each do |point|

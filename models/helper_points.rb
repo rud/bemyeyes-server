@@ -15,19 +15,26 @@ class HelperPoint
   end
   
   def self.points
-    @points
+    @app_usage_points.merge actionable_points
   end
 
-  @points ={
+  def self.actionable_points
+    @actionable_points  
+  end
+
+  @actionable_points ={
+    "share_on_twitter" => 10,
+    "share_on_facebook" => 10,
+    "watch_video" => 10
+  } 
+
+  @app_usage_points ={
     "signup" => 50,
     "answer_push_message" => 5,
     "answer_push_message_technical_error" => 10,
     "finish_helping_request" => 30,
     "finish_10_helping_request_in_a_week" => 30,
-    "finish_5_high_fives_in_a_week" => 30,
-    "share_on_twitter" => 10,
-    "share_on_facebook" => 10,
-    "watch_video" => 10
+    "finish_5_high_fives_in_a_week" => 30
   }
 
   class << self

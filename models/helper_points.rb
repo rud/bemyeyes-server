@@ -40,12 +40,12 @@ class HelperPoint
   class << self
 
     def point_type_exists? point_name
-      @app_usage_points.has_key? point_name
+      HelperPoint.points.has_key? point_name
     end
 
     def method_missing(meth, *args, &block)
       method_as_string = meth.to_s
-      if @app_usage_points.has_key? method_as_string
+      if HelperPoint.points.has_key? method_as_string
         return HelperPoint.new(@app_usage_points[method_as_string], method_as_string)
       else
         super # You *must* call super if you don't handle the
@@ -56,7 +56,7 @@ class HelperPoint
 
     def respond_to?(meth, include_private = false)
       method_as_string = meth.to_s
-      @app_usage_points.has_key? method_as_string || super(meth, include_private)
+      HelperPoint.points.has_key? method_as_string || super(meth, include_private)
     end
   end
 

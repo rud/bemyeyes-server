@@ -28,6 +28,7 @@ class App < Sinatra::Base
     end
 
     post '/event' do
+      begin
       token_repr = body_params['token_repr']
       event = body_params['event']
 
@@ -40,6 +41,9 @@ class App < Sinatra::Base
       point = HelperPoint.send(event)
       helper.helper_points.push point
       helper.save
+       rescue
+        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+      end
     end
 
     get '/remaining_tasks/:token_repr' do

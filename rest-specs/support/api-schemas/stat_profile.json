@@ -41,9 +41,9 @@
               "id": "http://jsonschema.net/events/0/point",
               "required":false
             },
-            "title": {
+            "event": {
               "type":"string",
-              "id": "http://jsonschema.net/events/0/title",
+              "id": "http://jsonschema.net/events/0/event",
               "required":false
             }
           }

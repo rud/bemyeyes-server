@@ -24,9 +24,9 @@
               "id": "http://jsonschema.net/completed_tasks/0/point",
               "required":false
               },
-              "title": {
+              "event": {
                 "type":"string",
-                "id": "http://jsonschema.net/completed_tasks/0/title",
+                "id": "http://jsonschema.net/completed_tasks/0/event",
                 "required":false
               }
             }
@@ -52,9 +52,9 @@
                     "id": "http://jsonschema.net/remaining_tasks/0/point",
                     "required":false
                     },
-                    "title": {
+                    "event": {
                       "type":"string",
-                      "id": "http://jsonschema.net/remaining_tasks/0/title",
+                      "id": "http://jsonschema.net/remaining_tasks/0/event",
                       "required":false
                     }
                   }

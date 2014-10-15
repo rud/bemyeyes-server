@@ -62,12 +62,12 @@ class App < Sinatra::Base
 
         remaining_tasks = 
         all_point_events.select do |point|
-           not completed_point_events.any? { | completed_point | completed_point.title == point.title}
+           not completed_point_events.any? { | completed_point | completed_point.event== point.event}
         end
 
         completed_tasks =
         completed_point_events.select do |point|
-           all_point_events.any? { | completed_point | completed_point.title == point.title}
+           all_point_events.any? { | completed_point | completed_point.event == point.event}
         end
 
         BMERemainingTasks.new(remaining_tasks, completed_tasks).to_json
@@ -84,7 +84,7 @@ end
     helper_from_id user._id
   end
 
-  class BMEPointEvent < Struct.new(:title, :date, :point)
+  class BMEPointEvent < Struct.new(:event, :date, :point)
   end
 
   class BMELevel < Struct.new(:title, :threshold)

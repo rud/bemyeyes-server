@@ -27,10 +27,7 @@ describe 'community endpoint' do
     response = RestClient.get get_community_stats_url, {:accept => :json}
     expect(response.code).to eq(200)
 
-    jsn = JSON.parse response.body
-    expect(jsn['blind']).to_not be_nil
-    expect(jsn['helpers']).to_not be_nil
-    expect(jsn['no_helped']).to_not be_nil
+    expect(response).to match_response_schema("stat_community")
   end
 end
 
@@ -48,11 +45,9 @@ describe 'profile endpoint' do
     token = create_user_return_token
     get_profile_stats_url = "#{@servername_with_credentials}/stats/profile/#{token}"
     response = RestClient.get get_profile_stats_url, {:accept => :json}
+
     expect(response.code).to eq(200)
-
-    jsn = JSON.parse response.body
     expect(response).to match_response_schema("stat_profile")
-
   end
 
   describe "remaining tasks" do

@@ -52,7 +52,7 @@ class App < Sinatra::Base
       {:status => "OK"}.to_json
     end
 
-    get '/remaining_tasks/:token_repr' do
+    get '/actionable_tasks/:token_repr' do
       begin
         token_repr = params[:token_repr]
         helper = helper_from_token_repr token_repr

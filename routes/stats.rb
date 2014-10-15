@@ -44,6 +44,7 @@ class App < Sinatra::Base
        rescue => error
         give_error(400, ERROR_INVALID_BODY, "Error").to_json
       end
+      {:status => "OK"}.to_json
     end
 
     get '/remaining_tasks/:token_repr' do

@@ -14,6 +14,10 @@ describe  "post event" do
     user = User.first(:_id => user_id)
     expect(user.helper_points.count).to eq(2)
   end
+
+  it "can only post an event once" do
+    pending "this needs to be implemented"
+  end
 end
 
 describe 'community endpoint' do
@@ -56,13 +60,13 @@ describe 'profile endpoint' do
   end
 
   describe "remaining tasks" do
-   it "returns valid json" do
-     token = create_user_return_token
-    get_remaining_tasks_url = "#{@servername_with_credentials}/stats/remaining_tasks/#{token}"
-    response = RestClient.get get_remaining_tasks_url, {:accept => :json}
-    expect(response.code).to eq(200) 
-     expect(response).to match_response_schema("remaining_tasks")
-    end 
+    it "returns valid json" do
+      token = create_user_return_token
+      get_remaining_tasks_url = "#{@servername_with_credentials}/stats/remaining_tasks/#{token}"
+      response = RestClient.get get_remaining_tasks_url, {:accept => :json}
+      expect(response.code).to eq(200)
+      expect(response).to match_response_schema("remaining_tasks")
+    end
   end
 
   def create_user_return_token

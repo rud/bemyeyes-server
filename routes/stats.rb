@@ -38,6 +38,11 @@ class App < Sinatra::Base
 
       helper = helper_from_token_repr token_repr
 
+      # these events can only be registered once
+      if helper.helper_points.any? { | point | point.message == event }
+        give_error(400, ERROR_NOT_PERMITTED, "Event already registred").to_json
+      end
+
       point = HelperPoint.send(event)
       helper.helper_points.push point
       helper.save

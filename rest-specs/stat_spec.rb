@@ -16,7 +16,17 @@ describe  "post event" do
   end
 
   it "can only post an event once" do
-    pending "this needs to be implemented"
+    register_device
+    user_id = create_user 'helper'
+    token = log_user_in
+
+    create_event_url  = "#{@servername_with_credentials}/stats/event"
+    response = RestClient.post create_event_url, {'token_repr'=> token, 'event'=> 'share_on_twitter'}.to_json
+
+    expect(response.code).to eq(200)
+
+    expect{ RestClient.post create_event_url, {'token_repr'=> token, 'event'=> 'share_on_twitter'}.to_json}
+    .to raise_error(RestClient::BadRequest)
   end
 end
 

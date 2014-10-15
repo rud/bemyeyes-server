@@ -42,7 +42,7 @@ class App < Sinatra::Base
       helper.helper_points.push point
       helper.save
        rescue => error
-        give_error(400, ERROR_INVALID_BODY, "Error #{error}").to_json
+        give_error(400, ERROR_INVALID_BODY, "Error").to_json
       end
     end
 

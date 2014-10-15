@@ -59,13 +59,21 @@ class App < Sinatra::Base
           remaining_tasks << point unless completed_point_events.any? { | completed_point | completed_point.title == point.title}
         end
 
-        remaining_tasks.to_json
+        completed_tasks = Array.new
+        completed_point_events.each do |point|
+          completed_tasks << point if all_point_events.any? { | completed_point | completed_point.title == point.title}
+        end
+
+        retval = BMERemainingTasks.new(remaining_tasks, completed_tasks)
+
+        retval.to_json
       rescue
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
     end
   end
-
+class BMERemainingTasks< Struct.new(:remaining_tasks, :completed_tasks)
+end
   def helper_from_token_repr token_repr
     token = token_from_representation(token_repr)
     user = token.user

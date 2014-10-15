@@ -46,7 +46,7 @@ class HelperPoint
     def method_missing(meth, *args, &block)
       method_as_string = meth.to_s
       if HelperPoint.points.has_key? method_as_string
-        return HelperPoint.new(@app_usage_points[method_as_string], method_as_string)
+        return HelperPoint.new(HelperPoint.points[method_as_string], method_as_string)
       else
         super # You *must* call super if you don't handle the
         # method, otherwise you'll mess up Ruby's method lookup.

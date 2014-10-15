@@ -89,7 +89,7 @@ end
   end
 
   def get_points_events_from_hash points_hash
-    events = points_hash.collect{| message, point | BMEPointEvent.new(message, Time.now, point)}
+    events = points_hash.collect{| message, point | BMEPointEvent.new(message, nil, point)}
     events
   end
 

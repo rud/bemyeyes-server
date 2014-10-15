@@ -41,8 +41,8 @@ class App < Sinatra::Base
       point = HelperPoint.send(event)
       helper.helper_points.push point
       helper.save
-       rescue
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+       rescue => error
+        give_error(400, ERROR_INVALID_BODY, "The body is not valid. #{error}").to_json
       end
     end
 

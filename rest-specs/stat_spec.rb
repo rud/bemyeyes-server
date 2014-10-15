@@ -44,18 +44,14 @@ describe 'profile endpoint' do
     .to raise_error(RestClient::BadRequest)
   end
 
-  it 'shows no of blind helped' do
+  it 'returns valid json' do
     token = create_user_return_token
     get_profile_stats_url = "#{@servername_with_credentials}/stats/profile/#{token}"
     response = RestClient.get get_profile_stats_url, {:accept => :json}
     expect(response.code).to eq(200)
 
     jsn = JSON.parse response.body
-    expect(jsn['no_helped']).to_not be_nil
-    expect(jsn['total_points']).to_not be_nil
-    expect(jsn['events']).to_not be_nil
-    expect(jsn['current_level']).to_not be_nil
-    expect(jsn['next_level']).to_not be_nil
+    expect(response).to match_response_schema("stat_profile")
 
   end
 

@@ -11,6 +11,7 @@ require 'aescrypt'
 require 'bcrypt'
 require 'base64'
 require 'factory_girl'
+require 'uri'
 require_relative '../app'
 require_relative '../models/init'
 require_relative '../spec/integration_spec_helper'
@@ -19,6 +20,16 @@ require_relative '../spec/factories'
 I18n.config.enforce_available_locales=false
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
+end
+
+# http://robots.thoughtbot.com/validating-json-schemas-with-an-rspec-matcher
+RSpec::Matchers.define :match_response_schema do |schema|
+  match do |response|
+    schema_directory = "#{Dir.pwd}/rest-specs/support/api-schemas"
+    schema_path = "#{schema_directory}/#{schema}.json"
+    puts schema_path
+    JSON::Validator.validate!(schema_path, response.body, strict: true)
+  end
 end
 
 shared_context "rest-context" do

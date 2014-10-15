@@ -54,19 +54,17 @@ class App < Sinatra::Base
         completed_point_events = get_point_events helper
         all_point_events = get_points_events_from_hash HelperPoint.actionable_points
 
-        remaining_tasks = Array.new
-        all_point_events.each do |point|
-          remaining_tasks << point unless completed_point_events.any? { | completed_point | completed_point.title == point.title}
+        remaining_tasks = 
+        all_point_events.select do |point|
+           not completed_point_events.any? { | completed_point | completed_point.title == point.title}
         end
 
-        completed_tasks = Array.new
-        completed_point_events.each do |point|
-          completed_tasks << point if all_point_events.any? { | completed_point | completed_point.title == point.title}
+        completed_tasks =
+        completed_point_events.select do |point|
+           all_point_events.any? { | completed_point | completed_point.title == point.title}
         end
 
-        retval = BMERemainingTasks.new(remaining_tasks, completed_tasks)
-
-        retval.to_json
+        BMERemainingTasks.new(remaining_tasks, completed_tasks).to_json
       rescue
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end

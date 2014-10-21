@@ -44,7 +44,7 @@ class App < Sinatra::Base
       request.save!
 
 
-      requests_helper.check_requests 10
+      requests_helper.check_requests 1
       return request.to_json
     end
 

@@ -29,7 +29,7 @@ group :development do
   gem 'rspec-autotest'
   gem 'timecop'
 end
-
+gem "json-schema"
 gem 'rake'
 
 gem 'newrelic_rpm'

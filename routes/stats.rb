@@ -28,6 +28,7 @@ class App < Sinatra::Base
     end
 
     post '/event' do
+      begin
       token_repr = body_params['token_repr']
       event = body_params['event']
 
@@ -37,38 +38,53 @@ class App < Sinatra::Base
 
       helper = helper_from_token_repr token_repr
 
+      # these events can only be registered once
+      if helper.helper_points.any? { | point | point.message == event }
+        give_error(400, ERROR_NOT_PERMITTED, "Event already registred").to_json
+      end
+
       point = HelperPoint.send(event)
       helper.helper_points.push point
       helper.save
+       rescue => error
+        give_error(400, ERROR_INVALID_BODY, "Error").to_json
+      end
+      {:status => "OK"}.to_json
     end
 
-    get '/remaining_tasks/:token_repr' do
+    get '/actionable_tasks/:token_repr' do
       begin
         token_repr = params[:token_repr]
         helper = helper_from_token_repr token_repr
 
         completed_point_events = get_point_events helper
-        all_point_events = get_points_events_from_hash HelperPoint.points
+        all_point_events = get_points_events_from_hash HelperPoint.actionable_points
 
-        remaining_tasks = Array.new
-        all_point_events.each do |point|
-          remaining_tasks << point unless completed_point_events.any? { | completed_point | completed_point.title == point.title}
+        remaining_tasks = 
+        all_point_events.select do |point|
+           not completed_point_events.any? { | completed_point | completed_point.event== point.event}
         end
 
-        remaining_tasks.to_json
+        completed_tasks =
+        completed_point_events.select do |point|
+           all_point_events.any? { | completed_point | completed_point.event == point.event}
+        end
+
+        BMERemainingTasks.new(remaining_tasks, completed_tasks).to_json
       rescue
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
     end
   end
-
+class BMERemainingTasks< Struct.new(:remaining_tasks, :completed_tasks)
+end
   def helper_from_token_repr token_repr
     token = token_from_representation(token_repr)
     user = token.user
     helper_from_id user._id
   end
 
-  class BMEPointEvent < Struct.new(:title, :date, :point)
+  class BMEPointEvent < Struct.new(:event, :date, :point)
   end
 
   class BMELevel < Struct.new(:title, :threshold)
@@ -79,7 +95,7 @@ class App < Sinatra::Base
   end
 
   def get_points_events_from_hash points_hash
-    events = points_hash.collect{| message, point | BMEPointEvent.new(message, Time.now, point)}
+    events = points_hash.collect{| message, point | BMEPointEvent.new(message, nil, point)}
     events
   end
 

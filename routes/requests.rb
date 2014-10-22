@@ -45,6 +45,8 @@ class App < Sinatra::Base
 
 
       requests_helper.check_requests 1
+
+      EventBus.announce(:request_created, request_id: request.id)
       return request.to_json
     end
 
@@ -71,6 +73,7 @@ class App < Sinatra::Base
         EventBus.announce(:try_answer_request_but_already_answered, request_id: request.id, helper:helper)
         give_error(400, ERROR_REQUEST_ALREADY_ANSWERED, "The request has already been answered.").to_json
       elsif request.stopped?
+        EventBus.announce(:try_answer_request_but_already_stopped, request_id: request.id, helper:helper)
         give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
       else
         EventBus.announce(:request_answered, request_id: request.id, helper:helper)

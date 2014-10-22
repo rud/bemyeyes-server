@@ -64,20 +64,16 @@ class App < Sinatra::Base
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
 
-      token = token_from_representation(token_repr)
-      user = token.user
+      helper = helper_from_token token_repr 
       request = request_from_short_id(params[:short_id])
 
       if request.answered?
-        request.helper = user
-        point = HelperPoint.answer_push_message
-        request.helper.helper_points.push point
-        request.helper.save
+        EventBus.announce(:try_answer_request_but_already_answered, request_id: request.id, helper:helper)
         give_error(400, ERROR_REQUEST_ALREADY_ANSWERED, "The request has already been answered.").to_json
       elsif request.stopped?
         give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
       else
-        EventBus.announce(:request_answered, request_id: request.id, helper:user)
+        EventBus.announce(:request_answered, request_id: request.id, helper:helper)
 
         return request.to_json
       end

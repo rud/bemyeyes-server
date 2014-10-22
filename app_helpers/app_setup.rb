@@ -29,6 +29,7 @@ class App < Sinatra::Base
         EventBus.subscribe(:user_logged_in, register_device_with_urban_airship, :register)
         EventBus.subscribe(:device_created_or_updated, register_device_with_urban_airship, :register)
         EventBus.subscribe(:try_answer_request_but_already_answered, AssignHelperPointsOnTryAnswerAnsweredRequest.new, :answer_request)
+        EventBus.subscribe(EventLogger.new)
     end
     def self.ensure_indeces
         Helper.ensure_index(:last_help_request)

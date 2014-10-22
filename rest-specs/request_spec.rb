@@ -75,4 +75,19 @@ describe "Request" do
     expect(Request.first.helper_id).not_to be_nil
     expect(Request.count).to eq(1)
   end
+
+  it "warns user that request is already answered" do
+    register_device
+    create_user 'blind'
+    token = log_user_in
+    short_id = create_request token
+
+    helper_token, helper_id = create_helper_ready_for_call
+
+    answer_request short_id, helper_token
+    
+    
+    #yeah I know its the same helper, but that is not important now
+    expect{answer_request short_id, helper_token}.to raise_error(RestClient::BadRequest)
+  end
 end

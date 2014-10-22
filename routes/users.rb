@@ -48,7 +48,7 @@ class App < Sinatra::Base
       rescue Exception => e
         give_error(400, ERROR_USER_EMAIL_ALREADY_REGISTERED, "The e-mail is already registered.").to_json if e.message.match /email/i
       end
-
+      EventBus.announce(:user_created, user_id: user.id)
       return user_from_id(user._id).to_json
     end
 
@@ -200,6 +200,7 @@ class App < Sinatra::Base
         puts e.message
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
+      EventBus.announce(:user_updated, user: user)
       return user
     end
 

@@ -44,7 +44,9 @@ class App < Sinatra::Base
   end
 
   def self.start_cron_jobs
-    cron_job = CronJobs.new(Helper.new, requests_helper, Rufus::Scheduler.new, WaitingRequests.new, HelperPointChecker.new)
+    db_config = settings.config['database']
+    db_name = db_config['name']
+    cron_job = CronJobs.new(Helper.new, requests_helper, Rufus::Scheduler.new, WaitingRequests.new, HelperPointChecker.new, db_name)
     cron_job.start_jobs
   end
 

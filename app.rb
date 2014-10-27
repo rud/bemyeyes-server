@@ -74,6 +74,7 @@ class App < Sinatra::Base
 
   # Protect anything but the root
   before /^(?!\/reset-password)\/.+$/ do
+    return if request.path_info == '/stats/community'
     protected!
   end
 

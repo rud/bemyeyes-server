@@ -1,5 +1,8 @@
+require "sinatra/jsonp"
+
 class App < Sinatra::Base
   register Sinatra::Namespace
+  helpers Sinatra::Jsonp
   namespace '/stats' do
     before do
       next unless request.post? || request.put?
@@ -11,7 +14,7 @@ class App < Sinatra::Base
     end
 
     get '/community' do
-      return { 'blind' => Blind.count, 'helpers' => Helper.count, 'no_helped' =>Request.count }.to_json
+      return jsonp ({ 'blind' => Blind.count, 'helpers' => Helper.count, 'no_helped' =>Request.count })
     end
 
     get '/profile/:token_repr' do

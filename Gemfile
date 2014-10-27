@@ -17,6 +17,7 @@ gem 'tzinfo-data'
 gem 'language_list'
 
 gem 'event_bus'
+gem 'sinatra-jsonp'
 group :development do
   gem 'rspec-mocks'
   gem 'factory_girl'

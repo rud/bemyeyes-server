@@ -24,7 +24,7 @@ describe "abuse handling" do
   end
 
   before(:each) do
-    AbuseReport.destroy_all
+    User.destroy_all
   end
 
   it "will complain if no parameters are sent" do
@@ -52,12 +52,14 @@ describe "abuse handling" do
 
   it "will let user report abuse" do
     register_device
-    create_user
+    user_id = create_user
     token = log_user_in
 
     #we could add a helper and all to the request, but for this test we don't need it
     request = create_request token
     report_abuse token, request.id
-    expect(AbuseReport.count).to eq(1)
+
+    user = User.first(:id => user_id)
+    expect(user.abuse_reports.count).to eq(1)
   end
 end

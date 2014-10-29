@@ -43,7 +43,6 @@ shared_context "rest-context" do
     @email =  create_unique_email
     @password = encrypt_password('Password1')
 
-    AbuseReport.destroy_all
     User.destroy_all
     Device.destroy_all
     HelperPoint.destroy_all
